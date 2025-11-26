@@ -4,6 +4,9 @@
  */
 
 const SplashScreen = {
+    // Available languages (synced with i18n)
+    availableLanguages: ['es', 'en', 'ro'],
+
     // Wave types configuration
     waveTypes: {
         calm: {
@@ -46,7 +49,53 @@ const SplashScreen = {
 
     currentView: 'main',
 
+    /**
+     * Get i18n instance with safe fallback
+     * @private
+     * @returns {Object} i18n instance or null object
+     */
+    _getI18n() {
+        if (window.i18n && typeof window.i18n.t === 'function') {
+            return window.i18n;
+        }
+        // Null Object Pattern - safe fallback
+        return {
+            t: (key) => {
+                console.warn(`i18n not loaded, returning key: ${key}`);
+                return key;
+            },
+            getLanguage: () => 'es'
+        };
+    },
+
+    /**
+     * Validate language code
+     * @private
+     * @param {string} lang - Language code to validate
+     * @returns {boolean} True if valid
+     */
+    _validateLanguage(lang) {
+        return this.availableLanguages.includes(lang);
+    },
+
+    /**
+     * Generate language options HTML
+     * @private
+     * @returns {string} HTML string for language options
+     */
+    _getLanguageOptions() {
+        const lang = localStorage.getItem('whispers-language') || 'es';
+        return this.availableLanguages
+            .map(code => `<option value="${code}" ${lang === code ? 'selected' : ''}>${code.toUpperCase()}</option>`)
+            .join('');
+    },
+
     init() {
+        // Sync available languages with i18n module
+        if (window.i18n && typeof window.i18n.getAvailableLanguages === 'function') {
+            this.availableLanguages = window.i18n.getAvailableLanguages();
+        }
+
         // Check if splash should be shown
         const hasSeenSplash = localStorage.getItem('whispers-splash-seen');
         const selectedWave = localStorage.getItem('whispers-selected-wave');
@@ -83,8 +132,7 @@ const SplashScreen = {
     },
 
     getHTML() {
-        const lang = localStorage.getItem('whispers-language') || 'es';
-        const i18nInstance = window.i18n || { t: (key) => key };
+        const i18n = this._getI18n();
 
         return `
             <!-- Splash Controls -->
@@ -93,9 +141,7 @@ const SplashScreen = {
                     <span id="splashThemeIcon">☀️</span>
                 </button>
                 <select class="splash-control-btn splash-language-selector" id="splashLanguageSelector" aria-label="Select language">
-                    <option value="es" ${lang === 'es' ? 'selected' : ''}>ES</option>
-                    <option value="en" ${lang === 'en' ? 'selected' : ''}>EN</option>
-                    <option value="ro" ${lang === 'ro' ? 'selected' : ''}>RO</option>
+                    ${this._getLanguageOptions()}
                 </select>
             </div>
 
@@ -104,18 +150,18 @@ const SplashScreen = {
                 <div class="splash-content">
                     <div class="splash-logo">
                         <div class="logo-wave">🌊</div>
-                        <h1 class="logo-title">${i18nInstance.t('splash.title')}</h1>
-                        <p class="splash-subtitle">${i18nInstance.t('appName')}</p>
+                        <h1 class="logo-title">${i18n.t('splash.title')}</h1>
+                        <p class="splash-subtitle">${i18n.t('appName')}</p>
                     </div>
-                    <p class="splash-tagline">${i18nInstance.t('splash.subtitle')}</p>
+                    <p class="splash-tagline">${i18n.t('splash.subtitle')}</p>
                     <div class="splash-buttons">
                         <button class="splash-btn primary" id="startJourneyBtn">
                             <span class="btn-icon">🚀</span>
-                            <span>${i18nInstance.t('splash.startJourney')}</span>
+                            <span>${i18n.t('splash.startJourney')}</span>
                         </button>
                         <button class="splash-btn secondary" id="howItWorksBtn">
                             <span class="btn-icon">❓</span>
-                            <span>${i18nInstance.t('splash.howItWorks')}</span>
+                            <span>${i18n.t('splash.howItWorks')}</span>
                         </button>
                     </div>
                 </div>
@@ -124,27 +170,27 @@ const SplashScreen = {
             <!-- How It Works View -->
             <div class="how-it-works">
                 <div class="how-content">
-                    <h2>${i18nInstance.t('splash.howItWorks')}</h2>
+                    <h2>${i18n.t('splash.howItWorks')}</h2>
                     <div class="how-steps">
                         <div class="how-step">
                             <div class="step-icon">🌊</div>
-                            <h3>1. ${i18nInstance.t('splash.selectWave')}</h3>
-                            <p>${i18nInstance.t('splash.tutorial.step1')}</p>
+                            <h3>1. ${i18n.t('splash.selectWave')}</h3>
+                            <p>${i18n.t('splash.tutorial.step1')}</p>
                         </div>
                         <div class="how-step">
                             <div class="step-icon">💭</div>
-                            <h3>2. ${i18nInstance.t('ui.placeholder')}</h3>
-                            <p>${i18nInstance.t('splash.tutorial.step2')}</p>
+                            <h3>2. ${i18n.t('ui.placeholder')}</h3>
+                            <p>${i18n.t('splash.tutorial.step2')}</p>
                         </div>
                         <div class="how-step">
                             <div class="step-icon">✨</div>
-                            <h3>3. ${i18nInstance.t('ui.welcomeMessage')}</h3>
-                            <p>${i18nInstance.t('splash.tutorial.step3')}</p>
+                            <h3>3. ${i18n.t('ui.welcomeMessage')}</h3>
+                            <p>${i18n.t('splash.tutorial.step3')}</p>
                         </div>
                     </div>
                     <button class="splash-btn primary" id="continueFromHowBtn">
                         <span class="btn-icon">➤</span>
-                        <span>${i18nInstance.t('ui.continue')}</span>
+                        <span>${i18n.t('ui.continue')}</span>
                     </button>
                 </div>
             </div>
@@ -152,12 +198,12 @@ const SplashScreen = {
             <!-- Wave Selection View -->
             <div class="wave-selection">
                 <div class="wave-selection-content">
-                    <h2 class="wave-selection-title">${i18nInstance.t('splash.selectWave')}</h2>
-                    <p class="wave-selection-subtitle">${i18nInstance.t('splash.subtitle')}</p>
+                    <h2 class="wave-selection-title">${i18n.t('splash.selectWave')}</h2>
+                    <p class="wave-selection-subtitle">${i18n.t('splash.subtitle')}</p>
                     <div class="wave-cards" id="waveCards"></div>
-                    <button class="splash-btn secondary small" id="backToIntroBtn" title="${i18nInstance.t('ui.back')}">
+                    <button class="splash-btn secondary small" id="backToIntroBtn" title="${i18n.t('ui.back')}">
                         <span class="btn-icon">←</span>
-                        <span>${i18nInstance.t('ui.back')}</span>
+                        <span>${i18n.t('ui.back')}</span>
                     </button>
                 </div>
             </div>
@@ -179,8 +225,17 @@ const SplashScreen = {
         const langSelector = document.getElementById('splashLanguageSelector');
         if (langSelector) {
             langSelector.addEventListener('change', (e) => {
-                if (window.i18n) {
-                    window.i18n.setLanguage(e.target.value);
+                const newLang = e.target.value;
+                
+                // Validate language
+                if (!this._validateLanguage(newLang)) {
+                    console.error(`Invalid language: ${newLang}`);
+                    return;
+                }
+                
+                // Set language and refresh
+                if (window.i18n && typeof window.i18n.setLanguage === 'function') {
+                    window.i18n.setLanguage(newLang);
                     this.refresh();
                 }
             });
@@ -219,6 +274,18 @@ const SplashScreen = {
             splash.classList.add('active');
             splash.style.display = 'flex';
         }
+        
+        // Hide main container
+        const container = document.querySelector('.container');
+        if (container) {
+            container.style.display = 'none';
+        }
+        
+        // Hide fixed controls
+        const controlsLeft = document.querySelector('.fixed-controls-left');
+        const controlsRight = document.querySelector('.fixed-controls-right');
+        if (controlsLeft) controlsLeft.style.display = 'none';
+        if (controlsRight) controlsRight.style.display = 'none';
     },
 
     hide() {
@@ -230,6 +297,18 @@ const SplashScreen = {
                 splash.classList.remove('active', 'fade-out');
             }, 800);
         }
+        
+        // Show main container
+        const container = document.querySelector('.container');
+        if (container) {
+            container.style.display = 'flex';
+        }
+        
+        // Show fixed controls
+        const controlsLeft = document.querySelector('.fixed-controls-left');
+        const controlsRight = document.querySelector('.fixed-controls-right');
+        if (controlsLeft) controlsLeft.style.display = 'flex';
+        if (controlsRight) controlsRight.style.display = 'flex';
     },
 
     showHowItWorks() {
@@ -256,38 +335,58 @@ const SplashScreen = {
         this.currentView = viewClass;
     },
 
+    /**
+     * Create a single wave card element
+     * @private
+     * @param {Object} wave - Wave configuration object
+     * @returns {HTMLElement} Wave card element
+     */
+    _createWaveCard(wave) {
+        const i18n = this._getI18n();
+        const card = document.createElement('div');
+        card.className = 'wave-card';
+        card.style.setProperty('--wave-color', wave.color);
+
+        card.innerHTML = this._getWaveCardHTML(wave);
+        
+        const btn = card.querySelector('.wave-card-btn');
+        btn.addEventListener('click', () => this.selectWave(wave));
+        
+        return card;
+    },
+
+    /**
+     * Generate wave card HTML
+     * @private
+     * @param {Object} wave - Wave configuration object
+     * @returns {string} HTML string for wave card
+     */
+    _getWaveCardHTML(wave) {
+        const i18n = this._getI18n();
+        const waveName = i18n.t(`waves.${wave.id}.name`);
+        const waveDesc = i18n.t(`waves.${wave.id}.description`);
+        
+        return `
+            <div class="wave-card-icon">${wave.icon}</div>
+            <h3 class="wave-card-name">${waveName}</h3>
+            <p class="wave-card-description">${waveDesc}</p>
+            <button class="wave-card-btn" data-wave="${wave.id}">
+                <span>${i18n.t('splash.selectWave')}</span>
+                <span>➤</span>
+            </button>
+        `;
+    },
+
+    /**
+     * Render all wave cards
+     */
     renderWaveCards() {
         const container = document.getElementById('waveCards');
         if (!container) return;
 
-        const i18nInstance = window.i18n || { t: (key) => key };
-        const lang = i18nInstance.getLanguage ? i18nInstance.getLanguage() : 'es';
-
         container.innerHTML = '';
-
         Object.values(this.waveTypes).forEach(wave => {
-            const card = document.createElement('div');
-            card.className = 'wave-card';
-            card.style.setProperty('--wave-color', wave.color);
-
-            const waveName = i18nInstance.t(`waves.${wave.id}.name`);
-            const waveDesc = i18nInstance.t(`waves.${wave.id}.description`);
-
-            card.innerHTML = `
-                <div class="wave-card-icon">${wave.icon}</div>
-                <h3 class="wave-card-name">${waveName}</h3>
-                <p class="wave-card-description">${waveDesc}</p>
-                <button class="wave-card-btn" data-wave="${wave.id}">
-                    <span>${i18nInstance.t('splash.selectWave')}</span>
-                    <span>➤</span>
-                </button>
-            `;
-
-            card.querySelector('.wave-card-btn').addEventListener('click', () => {
-                this.selectWave(wave);
-            });
-
-            container.appendChild(card);
+            container.appendChild(this._createWaveCard(wave));
         });
     },
 
