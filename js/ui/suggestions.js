@@ -102,39 +102,34 @@ const SuggestionsModule = (function() {
             "Necesito hacer una lista de pros y contras"
         ],
         
-        // Estado neutral
-        neutral: [
-            "Estoy entre medicina e ingeniería",
-            "Me gusta el arte pero también la ciencia",
-            "No sé si estudiar o trabajar primero",
-            "Mis padres quieren que estudie una cosa pero yo otra"
-        ],
+        // Estado neutral - Obtiene traducciones dinámicamente
+        get neutral() {
+            const lang = typeof i18n !== 'undefined' ? i18n.getCurrentLanguage() : 'en';
+            const t = typeof translations !== 'undefined' && translations[lang] ? translations[lang] : translations.en;
+            return t.suggestions.examples.neutral;
+        },
         
-        // Life Questioning específico
-        exploration: [
-            "Me da miedo equivocarme y perder tiempo",
-            "Siento presión de mi familia por elegir algo estable",
-            "No sé qué me gusta realmente",
-            "Tengo muchas opciones y me paralizo"
-        ],
-        depth: [
-            "Tengo miedo de decepcionar a las personas que confían en mí",
-            "Me da miedo no ser lo suficientemente bueno",
-            "Temo invertir años en algo que no me llene",
-            "El miedo al fracaso me paraliza"
-        ],
-        identity: [
-            "Quiero hacer algo que tenga impacto en las personas",
-            "Me gusta crear cosas y ver resultados tangibles",
-            "Disfruto ayudar a otros y verlos crecer",
-            "Me apasiona aprender cosas nuevas constantemente"
-        ],
-        action: [
-            "Podría investigar más sobre las opciones que me interesan",
-            "Hablar con alguien que ya trabaje en eso",
-            "Probar algo pequeño esta semana para experimentar",
-            "Hacer una lista de pros y contras de cada opción"
-        ]
+        // Life Questioning específico - Obtiene traducciones dinámicamente
+        get exploration() {
+            const lang = typeof i18n !== 'undefined' ? i18n.getCurrentLanguage() : 'en';
+            const t = typeof translations !== 'undefined' && translations[lang] ? translations[lang] : translations.en;
+            return t.suggestions.examples.exploration;
+        },
+        get depth() {
+            const lang = typeof i18n !== 'undefined' ? i18n.getCurrentLanguage() : 'en';
+            const t = typeof translations !== 'undefined' && translations[lang] ? translations[lang] : translations.en;
+            return t.suggestions.examples.depth;
+        },
+        get identity() {
+            const lang = typeof i18n !== 'undefined' ? i18n.getCurrentLanguage() : 'en';
+            const t = typeof translations !== 'undefined' && translations[lang] ? translations[lang] : translations.en;
+            return t.suggestions.examples.identity;
+        },
+        get action() {
+            const lang = typeof i18n !== 'undefined' ? i18n.getCurrentLanguage() : 'en';
+            const t = typeof translations !== 'undefined' && translations[lang] ? translations[lang] : translations.en;
+            return t.suggestions.examples.action;
+        }
     };
 
     // ============================================

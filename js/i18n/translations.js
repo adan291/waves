@@ -70,7 +70,39 @@ const translations = {
             exploreWorries: 'Explora tus preocupaciones:',
             reflect: 'Reflexiona sobre:',
             deepen: 'Profundiza en:',
-            nextSteps: 'Próximos pasos:'
+            nextSteps: 'Próximos pasos:',
+            examples: {
+                neutral: [
+                    "Estoy entre medicina e ingeniería",
+                    "Me gusta el arte pero también la ciencia",
+                    "No sé si estudiar o trabajar primero",
+                    "Mis padres quieren que estudie una cosa pero yo otra"
+                ],
+                exploration: [
+                    "Me da miedo equivocarme y perder tiempo",
+                    "Siento presión de mi familia por elegir algo estable",
+                    "No sé qué me gusta realmente",
+                    "Tengo muchas opciones y me paralizo"
+                ],
+                depth: [
+                    "Tengo miedo de decepcionar a las personas que confían en mí",
+                    "Me da miedo no ser lo suficientemente bueno",
+                    "Temo invertir años en algo que no me llene",
+                    "El miedo al fracaso me paraliza"
+                ],
+                identity: [
+                    "Quiero hacer algo que tenga impacto en las personas",
+                    "Me gusta crear cosas y ver resultados tangibles",
+                    "Disfruto ayudar a otros y verlos crecer",
+                    "Me apasiona aprender cosas nuevas constantemente"
+                ],
+                action: [
+                    "Podría investigar más sobre las opciones que me interesan",
+                    "Hablar con alguien que ya trabaje en eso",
+                    "Probar algo pequeño esta semana para experimentar",
+                    "Hacer una lista de pros y contras de cada opción"
+                ]
+            }
         },
         oceanStates: {
             confused: 'Confusión',
@@ -191,7 +223,39 @@ const translations = {
             exploreWorries: 'Explore your worries:',
             reflect: 'Reflect on:',
             deepen: 'Deepen into:',
-            nextSteps: 'Next steps:'
+            nextSteps: 'Next steps:',
+            examples: {
+                neutral: [
+                    "I'm between medicine and engineering",
+                    "I like art but also science",
+                    "I don't know whether to study or work first",
+                    "My parents want me to study one thing but I want another"
+                ],
+                exploration: [
+                    "I'm afraid of making a mistake and wasting time",
+                    "I feel pressure from my family to choose something stable",
+                    "I don't know what I really like",
+                    "I have many options and I'm paralyzed"
+                ],
+                depth: [
+                    "I'm afraid of disappointing people who trust me",
+                    "I'm afraid I'm not good enough",
+                    "I fear investing years in something that won't fulfill me",
+                    "Fear of failure paralyzes me"
+                ],
+                identity: [
+                    "I want to do something that impacts people",
+                    "I like creating things and seeing tangible results",
+                    "I enjoy helping others and watching them grow",
+                    "I'm passionate about constantly learning new things"
+                ],
+                action: [
+                    "I could research more about the options that interest me",
+                    "Talk to someone who already works in that field",
+                    "Try something small this week to experiment",
+                    "Make a pros and cons list for each option"
+                ]
+            }
         },
         oceanStates: {
             confused: 'Confusion',
