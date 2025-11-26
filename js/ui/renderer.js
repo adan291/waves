@@ -339,14 +339,23 @@ const RendererModule = (function () {
 
         if (!modeText || !modeIcon) return;
 
-        // Mode names
+        // Get mode names from i18n
+        const lang = typeof i18n !== 'undefined' ? i18n.getCurrentLanguage() : 'en';
+        const t = typeof translations !== 'undefined' && translations[lang] ? translations[lang] : translations.en;
+        
         const modeNames = {
-            'default': 'El Guardián de la Ola',
-            'modoA': 'Escenas Poéticas',
-            'modoB': 'Exploración Emocional',
-            'modoC': 'Guía de Claridad',
-            'narrador': 'El Narrador del Mar',
-            'kiro': 'Kiro - Susurro de la Ola'
+            'default': t.personas.guardian,
+            'modoA': 'Escenas Poéticas', // Legacy mode
+            'modoB': 'Exploración Emocional', // Legacy mode
+            'modoC': 'Guía de Claridad', // Legacy mode
+            'narrador': 'El Narrador del Mar', // Legacy mode
+            'kiro': 'Kiro - Susurro de la Ola',
+            'guardian': t.personas.guardian,
+            'companion': t.personas.companion,
+            'deep_explorer': t.personas.deep_explorer,
+            'problem_solver': t.personas.problem_solver,
+            'healer': t.personas.healer,
+            'life_questioning': t.personas.life_questioning
         };
 
         // Mode icons
@@ -359,13 +368,25 @@ const RendererModule = (function () {
             'kiro': '🌙'
         };
 
+        // Get selected wave name
+        const selectedWave = localStorage.getItem('whispers-selected-wave');
+        let waveName = '';
+        if (selectedWave && t.waves && t.waves[selectedWave]) {
+            waveName = t.waves[selectedWave].name;
+        }
+
         // Determine display based on persona or mode
-        let displayName = modeNames[mode] || 'El Guardián de la Ola';
+        let displayName = modeNames[mode] || t.personas.guardian;
         let displayIcon = modeIcons[mode] || '🌊';
 
         if (persona) {
             displayName = modeNames[persona] || displayName;
             displayIcon = modeIcons[persona] || displayIcon;
+        }
+
+        // Add wave name if available
+        if (waveName) {
+            displayName = `${displayName} - ${waveName}`;
         }
 
         // Update icon and text
