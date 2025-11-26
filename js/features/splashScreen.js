@@ -207,7 +207,7 @@ const SplashScreen = {
         const backToIntroBtn = document.getElementById('backToIntroBtn');
         if (backToIntroBtn) {
             backToIntroBtn.addEventListener('click', () => {
-                this.switchView('intro');
+                this.switchView('splash-main');
             });
         }
     },
