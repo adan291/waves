@@ -32,17 +32,11 @@ const LanguageSelector = (() => {
             flag: '🇬🇧',
             ttsVoice: 'en-US-Standard-C'
         }),
-        fr: Object.freeze({
-            code: 'fr-FR',
-            name: 'Français',
-            flag: '🇫🇷',
-            ttsVoice: 'fr-FR-Standard-A'
-        }),
-        de: Object.freeze({
-            code: 'de-DE',
-            name: 'Deutsch',
-            flag: '🇩🇪',
-            ttsVoice: 'de-DE-Standard-A'
+        ro: Object.freeze({
+            code: 'ro-RO',
+            name: 'Română',
+            flag: '🇷🇴',
+            ttsVoice: 'ro-RO-Standard-A'
         })
     });
     
@@ -160,8 +154,7 @@ const LanguageSelector = (() => {
         const placeholders = {
             es: 'Comparte tus pensamientos...',
             en: 'Share your thoughts...',
-            fr: 'Partagez vos pensées...',
-            de: 'Teile deine Gedanken...'
+            ro: 'Împărtășește gândurile tale...'
         };
         
         userInput.placeholder = placeholders[langCode] || placeholders.es;
