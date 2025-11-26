@@ -284,8 +284,8 @@ const SplashScreen = {
         localStorage.setItem('whispers-splash-seen', 'true');
 
         // Apply wave background
-        if (typeof WaveBackground !== 'undefined') {
-            WaveBackground.applyWave(wave.id);
+        if (typeof WaveBackground !== 'undefined' && WaveBackground.applyWaveBackground) {
+            WaveBackground.applyWaveBackground(wave.id);
         }
 
         // Emit event
