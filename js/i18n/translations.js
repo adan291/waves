@@ -72,6 +72,32 @@ const translations = {
             reflect: 'Reflexiona sobre:',
             deepen: 'Profundiza en:',
             nextSteps: 'Próximos pasos:',
+            waves: {
+                calm: [
+                    "Quiero tomarme tiempo para conocerme mejor",
+                    "¿Qué es lo que realmente me hace feliz?",
+                    "Necesito entender mis valores antes de decidir",
+                    "Quiero explorar sin presión qué me llama"
+                ],
+                deep: [
+                    "Siento que hay algo más profundo detrás de mi confusión",
+                    "Tengo miedos que no logro identificar",
+                    "¿Por qué me cuesta tanto decidir?",
+                    "Quiero entender qué me está bloqueando"
+                ],
+                energetic: [
+                    "Necesito decidir pronto entre estas opciones",
+                    "Quiero un plan de acción concreto",
+                    "¿Cuál es el primer paso que debo dar?",
+                    "Necesito momentum para empezar"
+                ],
+                healing: [
+                    "Estoy agotado de tanta presión",
+                    "Necesito procesar mis emociones primero",
+                    "Me siento abrumado por todas las expectativas",
+                    "Quiero encontrar paz antes de decidir"
+                ]
+            },
             examples: {
                 neutral: [
                     "Estoy entre medicina e ingeniería",

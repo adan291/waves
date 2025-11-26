@@ -1,33 +1,34 @@
 ```javascript
 const ReportGenerator = {
-    generate(){
-const report = {
-metadata: this.generateMetadata(),
-summary: this.generateSummary(),
-emotionalJourney: this.generateEmotionalJourney(),
-expressionMetrics: this.generateExpressionMetrics(),
-oceanStates: this.generateOceanStates(),
-achievements: this.generateAchievements(),
-insights: this.generateInsights(),
-recommendations: this.generateRecommendations()
-};
+    generate() {
+        const report = {
+            metadata: this.generateMetadata(),
+            summary: this.generateSummary(),
+            emotionalJourney: this.generateEmotionalJourney(),
+            expressionMetrics: this.generateExpressionMetrics(),
+            oceanStates: this.generateOceanStates(),
+            achievements: this.generateAchievements(),
+            insights: this.generateInsights(),
+            recommendations: this.generateRecommendations()
+        };
         return report;
-},
-    generateMetadata(){
-const selectedWave = localStorage.getItem('whispers - selected - wave');
-const waveData = typeof SplashScreen !== 'undefined' ?
-SplashScreen.waveTypes[selectedWave] : null;
-        return{
-generatedAt: new Date().toISOString(),
-appVersion: '1.0.0',
-language: localStorage.getItem('whispers - language')|| 'es',
-selectedWave:{
-id: selectedWave,
-name: waveData?.name || 'Unknown',
-nameEn: waveData?.nameEn || 'Unknown'
-}
-};
-},
+    },
+    generateMetadata() {
+        const selectedWave = localStorage.getItem('whispers-selected-wave');
+        const waveData = typeof SplashScreen !== 'undefined' ?
+            SplashScreen.waveTypes[selectedWave] : null;
+        
+        return {
+            generatedAt: new Date().toISOString(),
+            appVersion: '1.0.0',
+            language: localStorage.getItem('whispers-language') || 'es',
+            selectedWave: {
+                id: selectedWave,
+                name: waveData?.name || 'Unknown',
+                nameEn: waveData?.nameEn || 'Unknown'
+            }
+        };
+    },
     generateSummary(){
 const expressionHistory = typeof ExpressionAnalyzer !== 'undefined' ?
 ExpressionAnalyzer.getHistory(): [];
@@ -103,24 +104,41 @@ const trend = ExpressionAnalyzer.getImprovementTrend();
 const level = ExpressionAnalyzer.getCurrentLevel();
 const report = ExpressionAnalyzer.getProgressReport();
         if( ! report)return null;
-        return{
-currentLevel: level,
-trend: trend,
-averageScores:{
-clarity: Math.round(history.reduce((sum,m) => sum + m.clarity,0) / history.length),
-specificity: Math.round(history.reduce((sum,m) => sum + m.specificity,0) / history.length),
-emotionalAwareness: Math.round(history.reduce((sum,m) => sum + m.emotionalAwareness,0) / history.length),
-overall: report.averageScore
-},
-maxScores:{
-clarity: Math.round(Math.max(...history.map(m => m.clarity))),
-specificity: Math.round(Math.max(...history.map(m => m.specificity))),
-emotionalAwareness: Math.round(Math.max(...history.map(m => m.emotionalAwareness))),
-overall: report.best.score
-},
-bestMessage: report.best,
-improvement: trend.improvement
-};
+        // Calculate averages and maxes in a single pass
+        const stats = history.reduce((acc, m) => {
+            acc.clarity.sum += m.clarity;
+            acc.clarity.max = Math.max(acc.clarity.max, m.clarity);
+            acc.specificity.sum += m.specificity;
+            acc.specificity.max = Math.max(acc.specificity.max, m.specificity);
+            acc.emotionalAwareness.sum += m.emotionalAwareness;
+            acc.emotionalAwareness.max = Math.max(acc.emotionalAwareness.max, m.emotionalAwareness);
+            return acc;
+        }, {
+            clarity: { sum: 0, max: 0 },
+            specificity: { sum: 0, max: 0 },
+            emotionalAwareness: { sum: 0, max: 0 }
+        });
+
+        const count = history.length;
+
+        return {
+            currentLevel: level,
+            trend: trend,
+            averageScores: {
+                clarity: Math.round(stats.clarity.sum / count),
+                specificity: Math.round(stats.specificity.sum / count),
+                emotionalAwareness: Math.round(stats.emotionalAwareness.sum / count),
+                overall: report.averageScore
+            },
+            maxScores: {
+                clarity: Math.round(stats.clarity.max),
+                specificity: Math.round(stats.specificity.max),
+                emotionalAwareness: Math.round(stats.emotionalAwareness.max),
+                overall: report.best.score
+            },
+            bestMessage: report.best,
+            improvement: trend.improvement
+        };
 },
     generateOceanStates(){
 if(typeof OceanDynamics === 'undefined'){
@@ -186,22 +204,22 @@ unlockedAt: a.unlockedAt
 }))
 };
 },
-    generateInsights(){
-const lang = localStorage.getItem('whispers - language')|| 'es';
-const insights = [];
+    generateInsights() {
+        const lang = localStorage.getItem('whispers-language') || 'es';
+        const insights = [];
  // Expression insights
 if(typeof ExpressionAnalyzer !== 'undefined'){
 const trend = ExpressionAnalyzer.getImprovementTrend();
-const level = ExpressionAnalyzer.getCurrentLevel();
+            const level = ExpressionAnalyzer.getCurrentLevel();
             if(trend.improvement > 20){
-insights.push({
-type: 'positive',
-category: 'expression',
-text: lang === 'es' ?
-`Has mejorado significativamente tu expresión en ${trend.improvement}puntos. ¡Excelente progreso ! ` :
-`You've significantly improved your expression by ${trend.improvement}points. Excellent progress ! `
-});
-}
+                insights.push({
+                    type: 'positive',
+                    category: 'expression',
+                    text: lang === 'es' ?
+                        `Has mejorado significativamente tu expresión en ${trend.improvement} puntos. ¡Excelente progreso!` :
+                        `You've significantly improved your expression by ${trend.improvement} points. Excellent progress!`
+                });
+            }
             if(level.level >= 4){
 insights.push({
 type: 'achievement',
@@ -240,9 +258,9 @@ text: lang === 'es' ?
 }
         return insights;
 },
-    generateRecommendations(){
-const lang = localStorage.getItem('whispers - language')|| 'es';
-const recommendations = [];
+    generateRecommendations() {
+        const lang = localStorage.getItem('whispers-language') || 'es';
+        const recommendations = [];
  // Expression recommendations
 if(typeof ExpressionAnalyzer !== 'undefined'){
 const report = ExpressionAnalyzer.getProgressReport();

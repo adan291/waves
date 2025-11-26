@@ -247,8 +247,14 @@ const AchievementUI = {
      * @returns {string} HTML
      */
     renderCategories(categories) {
-        // Category names will use achievement names directly
-        // which are already in the correct language
+        const lang = typeof i18n !== 'undefined' ? i18n.getCurrentLanguage() : 'en';
+        
+        // Category names translations
+        const categoryNames = {
+            milestone: { es: 'Hitos', en: 'Milestones', ro: 'Repere' },
+            expression: { es: 'Expresión', en: 'Expression', ro: 'Expresie' },
+            special: { es: 'Especiales', en: 'Special', ro: 'Speciale' }
+        };
 
         return Object.entries(categories).map(([category, achievements]) => `
             <div class="gallery-category">
