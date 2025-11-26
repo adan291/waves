@@ -470,52 +470,104 @@ const translations = {
  * Handles translation and language switching
  */
 class I18n {
-    constructor() {
-        this.currentLanguage = localStorage.getItem('whispers-language') || 'es';
+    constructor(storage = localStorage, defaultLang = 'es') {
+        this.storage = storage;
+        this.defaultLanguage = defaultLang;
         this.translations = translations;
+        
+        // Validate and set current language
+        const storedLang = this.storage.getItem('whispers-language');
+        this.currentLanguage = this._validateLanguage(storedLang) ? storedLang : defaultLang;
     }
 
     /**
-     * Get translation by key path
+     * Validate if language is supported
+     * @private
+     * @param {string} lang - Language code to validate
+     * @returns {boolean} True if language is supported
+     */
+    _validateLanguage(lang) {
+        return lang && this.translations.hasOwnProperty(lang);
+    }
+
+    /**
+     * Get translation by key path with fallback support
      * @param {string} keyPath - Dot notation path (e.g., 'ui.welcome')
      * @param {object} params - Optional parameters for string interpolation
-     * @returns {string} Translated string
+     * @returns {string|object} Translated string or object
      */
     t(keyPath, params = {}) {
         const keys = keyPath.split('.');
-        let value = this.translations[this.currentLanguage];
-
-        for (const key of keys) {
-            if (value && typeof value === 'object') {
-                value = value[key];
-            } else {
-                console.warn(`Translation key not found: ${keyPath}`);
-                return keyPath;
+        
+        // Try current language first
+        let value = this._getNestedValue(this.translations[this.currentLanguage], keys);
+        
+        // Fallback to default language if not found
+        if (value === undefined && this.currentLanguage !== this.defaultLanguage) {
+            value = this._getNestedValue(this.translations[this.defaultLanguage], keys);
+            if (value !== undefined) {
+                console.warn(`Translation key "${keyPath}" not found in "${this.currentLanguage}", using fallback`);
             }
         }
+        
+        // Return key path if still not found
+        if (value === undefined) {
+            console.warn(`Translation key not found: ${keyPath}`);
+            return keyPath;
+        }
 
+        // Handle string interpolation
         if (typeof value === 'string' && Object.keys(params).length > 0) {
             return value.replace(/\{(\w+)\}/g, (match, key) => params[key] || match);
         }
 
-        return value || keyPath;
+        return value;
+    }
+
+    /**
+     * Get nested value from object using key path
+     * @private
+     * @param {object} obj - Object to traverse
+     * @param {Array<string>} keys - Array of keys
+     * @returns {*} Value at key path or undefined
+     */
+    _getNestedValue(obj, keys) {
+        let value = obj;
+        for (const key of keys) {
+            if (value && typeof value === 'object' && key in value) {
+                value = value[key];
+            } else {
+                return undefined;
+            }
+        }
+        return value;
     }
 
     /**
      * Set current language
-     * @param {string} lang - Language code (es, en, fr, de)
+     * @param {string} lang - Language code (es, en, ro)
+     * @returns {boolean} True if language was changed successfully
      */
     setLanguage(lang) {
-        if (this.translations[lang]) {
-            this.currentLanguage = lang;
-            localStorage.setItem('whispers-language', lang);
-            document.dispatchEvent(new CustomEvent('language:changed', {
-                detail: { language: lang }
-            }));
-            console.log(`🌐 Language changed to: ${lang}`);
-        } else {
+        if (!this._validateLanguage(lang)) {
             console.warn(`Language not supported: ${lang}`);
+            return false;
         }
+
+        const previousLanguage = this.currentLanguage;
+        this.currentLanguage = lang;
+        this.storage.setItem('whispers-language', lang);
+        
+        // Dispatch event with previous and new language
+        document.dispatchEvent(new CustomEvent('language:changed', {
+            detail: { 
+                language: lang,
+                previousLanguage: previousLanguage
+            }
+        }));
+        
+        console.log(`🌐 Language changed from ${previousLanguage} to ${lang}`);
+        return true;
     }
 
     /**
@@ -523,6 +575,14 @@ class I18n {
      * @returns {string} Current language code
      */
     getLanguage() {
+        return this.currentLanguage;
+    }
+
+    /**
+     * Get current language (alias for getLanguage)
+     * @returns {string} Current language code
+     */
+    getCurrentLanguage() {
         return this.currentLanguage;
     }
 
