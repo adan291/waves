@@ -207,7 +207,7 @@ body[data-theme="light"] {
 .tts-icon,
 .achievement-icon,
 .report-icon {
-    font-size: 1.1rem;
+    font-size: 1.3rem;
 }
 
 .achievement-count {
@@ -327,7 +327,7 @@ body[data-theme="light"] {
     border: 2px solid rgba(128, 222, 234, 0.5);
     background: rgba(10, 75, 94, 0.8);
     color: #80deea;
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     cursor: pointer;
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
