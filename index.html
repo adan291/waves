@@ -109,6 +109,13 @@
             onclick="ReportUI.show()">
             <span class="report-icon">📊</span>
         </button>
+
+        <!-- Reset Button (Development) -->
+        <button id="resetBtn" class="control-btn-inline" aria-label="Reset app" data-i18n-title="controls.reset"
+            title="Reset app"
+            onclick="if(confirm('Reset app? This will clear all data and restart.')) { localStorage.clear(); location.reload(); }">
+            <span class="reset-icon">🔄</span>
+        </button>
     </div>
 
     <!-- Main container -->

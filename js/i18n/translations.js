@@ -56,7 +56,8 @@ const translations = {
             report: 'Ver informe de viaje',
             backToWaves: 'Volver a la selección de olas',
             speak: 'Hablar',
-            search: 'Buscar en historial'
+            search: 'Buscar en historial',
+            reset: 'Reiniciar app'
         },
         modals: {
             changeWaveTitle: '🌊 Cambiar de Ola',
@@ -209,7 +210,8 @@ const translations = {
             report: 'View journey report',
             backToWaves: 'Back to wave selection',
             speak: 'Speak',
-            search: 'Search history'
+            search: 'Search history',
+            reset: 'Reset app'
         },
         modals: {
             changeWaveTitle: '🌊 Change Wave',
@@ -362,7 +364,8 @@ const translations = {
             report: 'Vezi raportul călătoriei',
             backToWaves: 'Înapoi la selecția valurilor',
             speak: 'Vorbește',
-            search: 'Caută în istoric'
+            search: 'Caută în istoric',
+            reset: 'Resetează aplicația'
         },
         modals: {
             changeWaveTitle: '🌊 Schimbă Valul',
