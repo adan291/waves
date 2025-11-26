@@ -309,6 +309,159 @@ const translations = {
                 step3: 'The waves will reflect your inner truth'
             }
         }
+    },
+    ro: {
+        appName: 'Whispers of the Wave',
+        waves: {
+            calm: {
+                name: 'Val Calm',
+                description: 'Pentru reflecție liniștită și autocunoaștere profundă'
+            },
+            deep: {
+                name: 'Val Profund',
+                description: 'Pentru a explora emoții complexe și modele interne'
+            },
+            energetic: {
+                name: 'Val Energetic',
+                description: 'Pentru a rezolva conflicte și a lua decizii clare'
+            },
+            healing: {
+                name: 'Val Vindecător',
+                description: 'Pentru a procesa durerea emoțională și a găsi pace interioară'
+            }
+        },
+        personas: {
+            guardian: 'Gardianul Valului',
+            companion: 'Companionul Oceanului',
+            deep_explorer: 'Exploratorul Profund',
+            problem_solver: 'Rezolvatorul',
+            healer: 'Vindecătorul',
+            life_questioning: 'Ghidul Scopului'
+        },
+        ui: {
+            welcome: 'Bine ai venit în oceanul gândurilor...',
+            welcomeMessage: 'Împărtășește ce porți înăuntru, și valurile vor reflecta adevărul tău.',
+            placeholder: 'Împărtășește gândurile tale...',
+            send: 'Trimite',
+            back: 'Înapoi',
+            changeWave: 'Schimbă valul',
+            continue: 'Continuă',
+            cancel: 'Anulează',
+            confirm: 'Confirmă',
+            close: 'Închide',
+            understood: 'Înțeles',
+            typingIndicator: 'Valurile formează un răspuns...'
+        },
+        controls: {
+            tts: 'Citire automată',
+            ttsOn: 'Activează citirea automată',
+            ttsOff: 'Dezactivează citirea automată',
+            theme: 'Schimbă tema',
+            language: 'Schimbă limba',
+            achievements: 'Vezi realizările',
+            report: 'Vezi raportul călătoriei',
+            backToWaves: 'Înapoi la selecția valurilor',
+            speak: 'Vorbește',
+            search: 'Caută în istoric'
+        },
+        modals: {
+            changeWaveTitle: '🌊 Schimbă Valul',
+            changeWaveMessage: 'Vrei să alegi un val nou? Conversația actuală va fi pierdută și vei începe de la zero.',
+            changeWaveConfirm: 'Schimbă Valul',
+            changeWaveCancel: 'Rămâi Aici'
+        },
+        suggestions: {
+            startWith: 'Poți începe cu:',
+            shareThoughts: 'Poți împărtăși:',
+            exploreWorries: 'Explorează îngrijorările tale:',
+            reflect: 'Reflectează asupra:',
+            deepen: 'Aprofundează în:',
+            nextSteps: 'Pașii următori:',
+            examples: {
+                neutral: [
+                    "Sunt între medicină și inginerie",
+                    "Îmi place arta dar și știința",
+                    "Nu știu dacă să studiez sau să lucrez mai întâi",
+                    "Părinții mei vor să studiez ceva dar eu vreau altceva"
+                ],
+                exploration: [
+                    "Mi-e frică să greșesc și să pierd timp",
+                    "Simt presiune din partea familiei să aleg ceva stabil",
+                    "Nu știu ce îmi place cu adevărat",
+                    "Am multe opțiuni și sunt paralizat"
+                ],
+                depth: [
+                    "Mi-e frică să dezamăgesc oamenii care au încredere în mine",
+                    "Mi-e frică că nu sunt suficient de bun",
+                    "Mă tem să investesc ani în ceva care nu mă va împlini",
+                    "Frica de eșec mă paralizează"
+                ],
+                identity: [
+                    "Vreau să fac ceva care să aibă impact asupra oamenilor",
+                    "Îmi place să creez lucruri și să văd rezultate tangibile",
+                    "Mă bucur să ajut pe alții și să îi văd crescând",
+                    "Sunt pasionat de a învăța constant lucruri noi"
+                ],
+                action: [
+                    "Aș putea cerceta mai mult despre opțiunile care mă interesează",
+                    "Să vorbesc cu cineva care lucrează deja în domeniu",
+                    "Să încerc ceva mic săptămâna aceasta pentru a experimenta",
+                    "Să fac o listă de pro și contra pentru fiecare opțiune"
+                ]
+            }
+        },
+        oceanStates: {
+            confused: 'Confuzie',
+            anxious: 'Anxietate',
+            processing: 'Procesare',
+            clarity: 'Claritate',
+            resolved: 'Rezolvare',
+            neutral: 'Neutru'
+        },
+        achievements: {
+            title: 'Realizări Deblocate',
+            unlocked: 'deblocate',
+            locked: 'blocate',
+            newAchievement: 'Realizare Nouă!',
+            viewAll: 'Vezi toate realizările'
+        },
+        report: {
+            title: 'Raport de Călătorie',
+            summary: 'Rezumat',
+            journey: 'Călătorie Emoțională',
+            metrics: 'Metrici de Expresie',
+            oceanStates: 'Stări ale Oceanului',
+            achievements: 'Realizări',
+            insights: 'Perspective',
+            recommendations: 'Recomandări',
+            download: 'Descarcă',
+            downloadJSON: 'Descarcă JSON',
+            downloadTXT: 'Descarcă TXT'
+        },
+        metrics: {
+            title: 'Metrici de Expresie',
+            clarity: 'Claritate',
+            specificity: 'Specificitate',
+            emotionalAwareness: 'Conștiință Emoțională',
+            overall: 'Scor General'
+        },
+        errors: {
+            apiKeyMissing: 'Te rog configurează cheia API Gemini',
+            connectionError: 'Eroare de conexiune. Încearcă din nou.',
+            genericError: 'Ceva nu a mers bine. Te rog încearcă din nou.'
+        },
+        splash: {
+            title: 'Whispers of the Wave',
+            subtitle: 'O călătorie de autocunoaștere ghidată de valuri',
+            howItWorks: 'Cum funcționează?',
+            startJourney: 'Începe Călătoria',
+            selectWave: 'Selectează Valul Tău',
+            tutorial: {
+                step1: 'Alege valul tău în funcție de ce trebuie să explorezi',
+                step2: 'Împărtășește gândurile tale liber',
+                step3: 'Valurile vor reflecta adevărul tău interior'
+            }
+        }
     }
 };
 
