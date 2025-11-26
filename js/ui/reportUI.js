@@ -2,6 +2,12 @@ const ReportUI = {
     currentReport: null,
 
     async show() {
+        // Remove existing modal if present
+        const existingModal = document.querySelector('.report-modal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+        
         // Lazy load ReportGenerator if not available
         if (typeof ReportGenerator === 'undefined') {
             try {

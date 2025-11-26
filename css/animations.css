@@ -455,70 +455,84 @@
    =================================== */
 
 /* CALM WAVE (Ola Tranquila) 🌊 */
+/* MOVED TO css/waves.css - DO NOT UNCOMMENT */
+/*
 body[data-wave="calm"] .ocean-background {
     background: linear-gradient(135deg, 
-        #0a1a2e 0%,      /* Deep peaceful blue */
-        #16213e 15%,     /* Night blue */
-        #1a3a52 30%,     /* Ocean blue */
-        #2e5266 45%,     /* Teal blue */
-        #3d7ea6 60%,     /* Calm blue */
-        #4a9aba 75%,     /* Soft teal */
-        #6fb3d2 90%,     /* Light teal */
-        #87ceeb 100%     /* Sky blue */
+        #0a1a2e 0%,
+        #16213e 15%,
+        #1a3a52 30%,
+        #2e5266 45%,
+        #3d7ea6 60%,
+        #4a9aba 75%,
+        #6fb3d2 90%,
+        #87ceeb 100%
     );
     background-size: 400% 400%;
     animation: waveGradient 18s ease-in-out infinite;
 }
+*/
 
 /* DEEP WAVE (Ola Profunda) 🌀 */
+/* MOVED TO css/waves.css - DO NOT UNCOMMENT */
+/*
 body[data-wave="deep"] .ocean-background {
     background: linear-gradient(135deg,
-        #0d0221 0%,      /* Deep purple night */
-        #1a0b2e 15%,     /* Dark purple */
-        #2d1b4e 30%,     /* Purple blue */
-        #3e2a5f 45%,     /* Deep violet */
-        #4a3a6f 60%,     /* Mystic purple */
-        #5b4a7f 75%,     /* Medium purple */
-        #7b68a6 90%,     /* Light purple */
-        #9b88cc 100%     /* Soft lavender */
+        #0d0221 0%,
+        #1a0b2e 15%,
+        #2d1b4e 30%,
+        #3e2a5f 45%,
+        #4a3a6f 60%,
+        #5b4a7f 75%,
+        #7b68a6 90%,
+        #9b88cc 100%
     );
     background-size: 400% 400%;
     animation: waveGradient 20s ease-in-out infinite;
 }
+*/
 
 /* ENERGETIC WAVE (Ola Energética) ⚡ */
+/* MOVED TO css/waves.css - DO NOT UNCOMMENT */
+/*
 body[data-wave="energetic"] .ocean-background {
     background: linear-gradient(135deg,
-        #1a0f0a 0%,      /* Deep warm night */
-        #2d1810 15%,     /* Dark brown */
-        #4a2615 30%,     /* Deep orange */
-        #6b3a1e 45%,     /* Burnt orange */
-        #8b4e2a 60%,     /* Warm orange */
-        #b8763e 75%,     /* Golden orange */
-        #d4a05a 90%,     /* Light gold */
-        #f0c674 100%     /* Warm yellow */
+        #1a0f0a 0%,
+        #2d1810 15%,
+        #4a2615 30%,
+        #6b3a1e 45%,
+        #8b4e2a 60%,
+        #b8763e 75%,
+        #d4a05a 90%,
+        #f0c674 100%
     );
     background-size: 400% 400%;
     animation: waveGradient 15s ease-in-out infinite;
 }
+*/
 
 /* HEALING WAVE (Ola Sanadora) 💙 */
+/* MOVED TO css/waves.css - DO NOT UNCOMMENT */
+/*
 body[data-wave="healing"] .ocean-background {
     background: linear-gradient(135deg,
-        #0a1f1a 0%,      /* Deep healing green */
-        #153428 15%,     /* Dark teal green */
-        #1f4a3a 30%,     /* Forest teal */
-        #2a5f4d 45%,     /* Deep aqua */
-        #3d7a66 60%,     /* Healing green */
-        #52a088 75%,     /* Soft aqua */
-        #6fc5a8 90%,     /* Light aqua */
-        #8de4c8 100%     /* Mint green */
+        #0a1f1a 0%,
+        #153428 15%,
+        #1f4a3a 30%,
+        #2a5f4d 45%,
+        #3d7a66 60%,
+        #52a088 75%,
+        #6fc5a8 90%,
+        #8de4c8 100%
     );
     background-size: 400% 400%;
     animation: waveGradient 22s ease-in-out infinite;
 }
+*/
 
 /* DEFAULT (No wave selected) */
+/* MOVED TO css/waves.css - DO NOT UNCOMMENT */
+/*
 body:not([data-wave]) .ocean-background,
 body[data-wave=""] .ocean-background {
     background: linear-gradient(135deg, 
@@ -534,6 +548,7 @@ body[data-wave=""] .ocean-background {
     background-size: 400% 400%;
     animation: waveGradient 15s ease-in-out infinite;
 }
+*/
 
 /* TEXT CONTRAST ADJUSTMENTS */
 body[data-wave="calm"] {

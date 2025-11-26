@@ -97,7 +97,6 @@ const SplashScreen = {
         }
 
         // Check if splash should be shown
-        const hasSeenSplash = localStorage.getItem('whispers-splash-seen');
         const selectedWave = localStorage.getItem('whispers-selected-wave');
 
         // Check if we should go directly to wave selection
@@ -214,9 +213,17 @@ const SplashScreen = {
         // Theme toggle
         const themeToggle = document.getElementById('splashThemeToggle');
         if (themeToggle) {
+            // Update splash theme icon on load
+            this.updateSplashThemeIcon();
+            
             themeToggle.addEventListener('click', () => {
-                if (typeof ThemeToggle !== 'undefined') {
-                    ThemeToggle.toggle();
+                if (typeof window.ThemeToggle !== 'undefined' && window.ThemeToggle.toggle) {
+                    window.ThemeToggle.toggle();
+                    // Update splash icon after toggle
+                    setTimeout(() => this.updateSplashThemeIcon(), 100);
+                } else {
+                    // Fallback: manual theme toggle
+                    this.toggleThemeManual();
                 }
             });
         }
@@ -268,6 +275,25 @@ const SplashScreen = {
         }
     },
 
+    /**
+     * Toggle visibility of main app elements
+     * @private
+     * @param {boolean} visible - Whether elements should be visible
+     */
+    _toggleMainAppElements(visible) {
+        const displayValue = visible ? 'flex' : 'none';
+        
+        const container = document.querySelector('.container');
+        if (container) {
+            container.style.display = displayValue;
+        }
+        
+        const controlsLeft = document.querySelector('.fixed-controls-left');
+        const controlsRight = document.querySelector('.fixed-controls-right');
+        if (controlsLeft) controlsLeft.style.display = displayValue;
+        if (controlsRight) controlsRight.style.display = displayValue;
+    },
+
     show() {
         const splash = document.getElementById('splashScreen');
         if (splash) {
@@ -275,17 +301,12 @@ const SplashScreen = {
             splash.style.display = 'flex';
         }
         
-        // Hide main container
-        const container = document.querySelector('.container');
-        if (container) {
-            container.style.display = 'none';
-        }
+        // Change title using i18n
+        const i18n = this._getI18n();
+        document.title = i18n.t('splash.titleMain');
         
-        // Hide fixed controls
-        const controlsLeft = document.querySelector('.fixed-controls-left');
-        const controlsRight = document.querySelector('.fixed-controls-right');
-        if (controlsLeft) controlsLeft.style.display = 'none';
-        if (controlsRight) controlsRight.style.display = 'none';
+        // Hide main app elements
+        this._toggleMainAppElements(false);
     },
 
     hide() {
@@ -298,17 +319,12 @@ const SplashScreen = {
             }, 800);
         }
         
-        // Show main container
-        const container = document.querySelector('.container');
-        if (container) {
-            container.style.display = 'flex';
-        }
+        // Change title back using i18n
+        const i18n = this._getI18n();
+        document.title = i18n.t('splash.titleConversation');
         
-        // Show fixed controls
-        const controlsLeft = document.querySelector('.fixed-controls-left');
-        const controlsRight = document.querySelector('.fixed-controls-right');
-        if (controlsLeft) controlsLeft.style.display = 'flex';
-        if (controlsRight) controlsRight.style.display = 'flex';
+        // Show main app elements
+        this._toggleMainAppElements(true);
     },
 
     showHowItWorks() {
@@ -316,6 +332,10 @@ const SplashScreen = {
     },
 
     showWaveSelection() {
+        // Change title using i18n
+        const i18n = this._getI18n();
+        document.title = i18n.t('splash.titleSelection');
+        
         this.switchView('wave-selection');
         this.renderWaveCards();
     },
@@ -342,7 +362,6 @@ const SplashScreen = {
      * @returns {HTMLElement} Wave card element
      */
     _createWaveCard(wave) {
-        const i18n = this._getI18n();
         const card = document.createElement('div');
         card.className = 'wave-card';
         card.style.setProperty('--wave-color', wave.color);
@@ -423,6 +442,41 @@ const SplashScreen = {
         if (currentView === 'wave-selection') {
             this.renderWaveCards();
         }
+    },
+
+    /**
+     * Update splash theme icon based on current theme
+     */
+    updateSplashThemeIcon() {
+        const icon = document.getElementById('splashThemeIcon');
+        if (!icon) return;
+
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+        icon.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+    },
+
+    /**
+     * Manual theme toggle (fallback if ThemeToggle not loaded)
+     */
+    toggleThemeManual() {
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        // Apply theme
+        document.documentElement.setAttribute('data-theme', newTheme);
+        document.body.setAttribute('data-theme', newTheme);
+        
+        // Save to localStorage
+        try {
+            localStorage.setItem('whispers-theme', newTheme);
+        } catch (e) {
+            console.warn('Could not save theme');
+        }
+        
+        // Update icon
+        this.updateSplashThemeIcon();
+        
+        console.log('🎨 Theme toggled manually:', newTheme);
     }
 };
 

@@ -739,7 +739,7 @@ body[data-theme="light"] .modal-container::before {
     border: 1px solid rgba(125, 211, 192, 0.4);
     border-radius: 10px;
     padding: 0.4rem 0.7rem;
-    z-index: 100;
+    z-index: 900;
     animation: slideInRight 0.5s ease-out;
     will-change: transform, opacity;
     transform: translateZ(0);
@@ -1760,8 +1760,8 @@ body[data-theme="light"] .modal-btn-confirm:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(10, 17, 40, 0.98);
-    backdrop-filter: blur(20px);
+    background: rgba(10, 17, 40, 0.75);
+    backdrop-filter: blur(10px);
     animation: fadeIn 0.5s ease-out;
     will-change: opacity;
     transform: translateZ(0);

@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚀 Comienza Aquí - Whispers of the Wave</title>
+    <title>🌊 Índice - Whispers of the Wave</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
     <style>
         * {
             margin: 0;
@@ -38,6 +40,71 @@
         .subtitle {
             color: #87ceeb;
             font-size: 1.3em;
+        }
+        
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(64, 224, 208, 0.2);
+            border: 2px solid rgba(64, 224, 208, 0.5);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .theme-toggle:hover {
+            background: rgba(64, 224, 208, 0.3);
+            transform: scale(1.1);
+        }
+        
+        /* Light theme */
+        body[data-theme="light"] {
+            background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
+            color: #01579b;
+        }
+        
+        body[data-theme="light"] h1 {
+            color: #0277bd;
+        }
+        
+        body[data-theme="light"] .subtitle {
+            color: #0288d1;
+        }
+        
+        body[data-theme="light"] .card {
+            background: rgba(255, 255, 255, 0.8);
+            border-color: rgba(2, 119, 189, 0.3);
+        }
+        
+        body[data-theme="light"] .card:hover {
+            border-color: #0277bd;
+            box-shadow: 0 10px 30px rgba(2, 119, 189, 0.3);
+        }
+        
+        body[data-theme="light"] .card-title {
+            color: #0277bd;
+        }
+        
+        body[data-theme="light"] .card-description {
+            color: #0288d1;
+        }
+        
+        body[data-theme="light"] .card-link {
+            background: linear-gradient(135deg, #0288d1 0%, #0277bd 100%);
+            color: white;
+        }
+        
+        body[data-theme="light"] .theme-toggle {
+            background: rgba(2, 119, 189, 0.2);
+            border-color: rgba(2, 119, 189, 0.5);
         }
         
         .grid {
@@ -187,6 +254,11 @@
     </style>
 </head>
 <body>
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
+        <span id="themeIcon">☀️</span>
+    </button>
+
     <div class="container">
         <div class="header">
             <h1>🚀 Comienza Aquí</h1>
@@ -331,5 +403,55 @@
             <p style="margin-top: 10px;">Servidor corriendo en <strong>http://localhost:8000</strong></p>
         </div>
     </div>
+
+    <script>
+        // Simple theme toggle for START_HERE page
+        (function() {
+            const THEME_KEY = 'whispers-theme';
+            
+            // Load saved theme
+            let currentTheme = 'dark';
+            try {
+                const saved = localStorage.getItem(THEME_KEY);
+                if (saved === 'light' || saved === 'dark') {
+                    currentTheme = saved;
+                }
+            } catch (e) {}
+            
+            // Apply theme
+            document.body.setAttribute('data-theme', currentTheme);
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            
+            // Update icon
+            function updateIcon() {
+                const icon = document.getElementById('themeIcon');
+                if (icon) {
+                    icon.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+                }
+            }
+            
+            updateIcon();
+            
+            // Toggle function
+            function toggleTheme() {
+                currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                document.body.setAttribute('data-theme', currentTheme);
+                document.documentElement.setAttribute('data-theme', currentTheme);
+                
+                try {
+                    localStorage.setItem(THEME_KEY, currentTheme);
+                } catch (e) {}
+                
+                updateIcon();
+                console.log('🎨 Theme changed:', currentTheme);
+            }
+            
+            // Attach to button
+            const btn = document.getElementById('themeToggle');
+            if (btn) {
+                btn.onclick = toggleTheme;
+            }
+        })();
+    </script>
 </body>
 </html>

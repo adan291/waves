@@ -126,6 +126,12 @@ const AchievementUI = {
      * Show achievement gallery modal
      */
     showGallery() {
+        // Remove existing modal if present
+        const existingModal = document.querySelector('.achievement-gallery-modal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+        
         const modal = this.createGalleryModal();
         document.body.appendChild(modal);
         

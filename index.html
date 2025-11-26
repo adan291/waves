@@ -4,17 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Whispers of the Wave - Una experiencia conversacional inmersiva con IA">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Whispers of the Wave</title>
     
     <!-- Stylesheets -->
-    <link rel="stylesheet" href="css/core.css">
-    <link rel="stylesheet" href="css/components.css">
-    <link rel="stylesheet" href="css/animations.css">
-    <link rel="stylesheet" href="css/responsive.css">
-    <link rel="stylesheet" href="css/waves.css">
+    <link rel="stylesheet" href="css/core.css?v=7">
+    <link rel="stylesheet" href="css/components.css?v=7">
+    <link rel="stylesheet" href="css/animations.css?v=7">
+    <link rel="stylesheet" href="css/responsive.css?v=7">
+    <link rel="stylesheet" href="css/waves.css?v=7">
     
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="manifest.json">
+    <!-- PWA Manifest (only works with HTTP server, not file://) -->
+    <script>
+        // Only load manifest if not using file:// protocol
+        if (window.location.protocol !== 'file:') {
+            const link = document.createElement('link');
+            link.rel = 'manifest';
+            link.href = 'manifest.json';
+            document.head.appendChild(link);
+        }
+    </script>
     
     <!-- Icons -->
     <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
@@ -58,6 +69,48 @@
             // Apply theme attribute to html element IMMEDIATELY before body renders
             // This prevents flash of wrong theme
             document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+
+    <!-- Wave initialization script - MUST run before body renders -->
+    <script>
+        (function () {
+            // Get saved wave or default to none
+            const WAVE_KEY = 'whispers-selected-wave';
+            let wave = null;
+
+            try {
+                wave = localStorage.getItem(WAVE_KEY);
+            } catch (e) {
+                // localStorage not available
+            }
+
+            // Apply wave attribute IMMEDIATELY to html element
+            // This prevents flash of default background
+            if (wave) {
+                document.documentElement.setAttribute('data-wave', wave);
+            }
+
+            // When DOM is ready, apply to body and show content
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', function() {
+                    if (wave) {
+                        document.body.setAttribute('data-wave', wave);
+                    }
+                    // Always show body after a short delay
+                    setTimeout(function() {
+                        document.body.classList.add('ready');
+                    }, 100);
+                });
+            } else {
+                if (wave) {
+                    document.body.setAttribute('data-wave', wave);
+                }
+                // Always add ready class
+                setTimeout(function() {
+                    document.body.classList.add('ready');
+                }, 100);
+            }
         })();
     </script>
 </head>

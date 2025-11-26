@@ -10,8 +10,56 @@ const RendererModule = (function () {
     'use strict';
 
     // ============================================
+    // CONFIGURATION
+    // ============================================
+
+    /**
+     * Mode configuration with icons and i18n keys
+     * @private
+     * @const
+     */
+    const MODE_CONFIG = {
+        'default': { icon: '🌊', i18nKey: 'personas.guardian', fallback: 'The Wave Guardian' },
+        'guardian': { icon: '🌊', i18nKey: 'personas.guardian', fallback: 'The Wave Guardian' },
+        'companion': { icon: '🌙', i18nKey: 'personas.companion', fallback: 'The Ocean Companion' },
+        'deep_explorer': { icon: '🔮', i18nKey: 'personas.deep_explorer', fallback: 'The Deep Explorer' },
+        'problem_solver': { icon: '🧭', i18nKey: 'personas.problem_solver', fallback: 'The Problem Solver' },
+        'healer': { icon: '💙', i18nKey: 'personas.healer', fallback: 'The Healer' },
+        'life_questioning': { icon: '✨', i18nKey: 'personas.life_questioning', fallback: 'The Purpose Guide' },
+        // Legacy modes (deprecated - kept for backwards compatibility)
+        'modoA': { icon: '🎭', name: 'Escenas Poéticas' },
+        'modoB': { icon: '💙', name: 'Exploración Emocional' },
+        'modoC': { icon: '🧭', name: 'Guía de Claridad' },
+        'narrador': { icon: '📖', name: 'El Narrador del Mar' },
+        'kiro': { icon: '🌙', name: 'Kiro - Susurro de la Ola' }
+    };
+
+    // ============================================
     // PRIVATE HELPER FUNCTIONS
     // ============================================
+
+    /**
+     * Safe translation helper with fallback
+     * @private
+     * @param {string} key - Translation key (dot notation)
+     * @param {string} fallback - Fallback text if translation fails
+     * @returns {string} Translated or fallback text
+     */
+    function safeTranslate(key, fallback) {
+        if (typeof i18n !== 'undefined' && typeof i18n.t === 'function') {
+            try {
+                const translated = i18n.t(key);
+                // Check if translation returned the key itself (not found)
+                return translated !== key ? translated : fallback;
+            } catch (e) {
+                if (typeof Logger !== 'undefined') {
+                    Logger.warn('Renderer', `Translation failed for key: ${key}`, e);
+                }
+                return fallback;
+            }
+        }
+        return fallback;
+    }
 
     /**
      * Escape HTML to prevent XSS
@@ -271,10 +319,8 @@ const RendererModule = (function () {
         // Remove existing indicator if present
         hideTypingIndicator();
 
-        // Get translated message from i18n system
-        const message = (typeof i18n !== 'undefined' && i18n.t)
-            ? i18n.t('ui.typingIndicator')
-            : 'Las olas están formando una respuesta...'; // Fallback
+        // Get translated message using safe helper
+        const message = safeTranslate('ui.typingIndicator', 'The waves are forming a response...');
 
         const indicator = document.createElement('div');
         indicator.id = 'typingIndicator';
@@ -323,11 +369,13 @@ const RendererModule = (function () {
 
     /**
      * Update mode indicator in UI
-     * @param {string} mode - Current mode (default, modoA, modoB, modoC)
-     * @param {string} persona - Optional persona (narrador, kiro)
+     * Uses MODE_CONFIG for centralized configuration
+     * 
+     * @param {string} mode - Current mode (default, guardian, companion, etc.)
+     * @param {string} persona - Optional persona override
      * 
      * @example
-     * RendererModule.updateModeIndicator('modoB');
+     * RendererModule.updateModeIndicator('guardian');
      * RendererModule.updateModeIndicator('default', 'kiro');
      */
     function updateModeIndicator(mode, persona = null) {
@@ -339,54 +387,33 @@ const RendererModule = (function () {
 
         if (!modeText || !modeIcon) return;
 
-        // Get mode names from i18n
-        const lang = typeof i18n !== 'undefined' ? i18n.getCurrentLanguage() : 'en';
-        const t = typeof translations !== 'undefined' && translations[lang] ? translations[lang] : translations.en;
-        
-        const modeNames = {
-            'default': t.personas.guardian,
-            'modoA': 'Escenas Poéticas', // Legacy mode
-            'modoB': 'Exploración Emocional', // Legacy mode
-            'modoC': 'Guía de Claridad', // Legacy mode
-            'narrador': 'El Narrador del Mar', // Legacy mode
-            'kiro': 'Kiro - Susurro de la Ola',
-            'guardian': t.personas.guardian,
-            'companion': t.personas.companion,
-            'deep_explorer': t.personas.deep_explorer,
-            'problem_solver': t.personas.problem_solver,
-            'healer': t.personas.healer,
-            'life_questioning': t.personas.life_questioning
-        };
+        // Determine which mode to display (persona overrides mode)
+        const activeMode = persona || mode || 'default';
+        const config = MODE_CONFIG[activeMode] || MODE_CONFIG['default'];
 
-        // Mode icons
-        const modeIcons = {
-            'default': '🌊',
-            'modoA': '🎭',
-            'modoB': '💙',
-            'modoC': '🧭',
-            'narrador': '📖',
-            'kiro': '🌙'
-        };
+        // Get translated name using centralized helper
+        let displayName;
+        if (config.i18nKey) {
+            // Use i18n system with fallback
+            displayName = safeTranslate(config.i18nKey, config.fallback);
+        } else if (config.name) {
+            // Legacy mode with hardcoded name
+            displayName = config.name;
+        } else {
+            displayName = config.fallback || 'The Wave Guardian';
+        }
 
-        // Get selected wave name
+        // Get icon from config
+        const displayIcon = config.icon || '🌊';
+
+        // Get selected wave name and append if available
         const selectedWave = localStorage.getItem('whispers-selected-wave');
-        let waveName = '';
-        if (selectedWave && t.waves && t.waves[selectedWave]) {
-            waveName = t.waves[selectedWave].name;
-        }
-
-        // Determine display based on persona or mode
-        let displayName = modeNames[mode] || t.personas.guardian;
-        let displayIcon = modeIcons[mode] || '🌊';
-
-        if (persona) {
-            displayName = modeNames[persona] || displayName;
-            displayIcon = modeIcons[persona] || displayIcon;
-        }
-
-        // Add wave name if available
-        if (waveName) {
-            displayName = `${displayName} - ${waveName}`;
+        if (selectedWave) {
+            const waveKey = `waves.${selectedWave}.name`;
+            const waveName = safeTranslate(waveKey, '');
+            if (waveName) {
+                displayName = `${displayName} - ${waveName}`;
+            }
         }
 
         // Update icon and text
@@ -398,7 +425,11 @@ const RendererModule = (function () {
         void modeIndicator.offsetWidth; // Force reflow
         modeIndicator.style.animation = 'fadeIn 0.5s ease-in';
 
-        console.log(`🎭 Mode indicator updated: ${displayName}`);
+        if (typeof Logger !== 'undefined') {
+            Logger.debug('Renderer', `Mode indicator updated: ${displayName}`);
+        } else {
+            console.log(`🎭 Mode indicator updated: ${displayName}`);
+        }
     }
 
     // ============================================

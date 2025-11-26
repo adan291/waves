@@ -9,34 +9,31 @@
    Peaceful blues and soft teals
    ============================================ */
 
+html[data-wave="calm"] .ocean-background,
 body[data-wave="calm"] .ocean-background {
     background: linear-gradient(135deg,
-            #0a1a2e 0%,
-            /* Deep peaceful blue */
-            #16213e 15%,
-            /* Night blue */
-            #1a3a52 30%,
-            /* Ocean blue */
-            #2e5266 45%,
-            /* Teal blue */
-            #3d7ea6 60%,
-            /* Calm blue */
-            #4a9aba 75%,
-            /* Soft teal */
-            #6fb3d2 90%,
-            /* Light teal */
-            #87ceeb 100%
-            /* Sky blue */
+            #001d3d 0%,
+            #48cae4 100%
         );
     background-size: 400% 400%;
-    animation: waveGradient 18s ease-in-out infinite;
+    animation: waveGradient 60s ease-in-out infinite;
 }
 
+html[data-wave="calm"],
 body[data-wave="calm"] {
     --text-primary: #e0f7fa;
     --text-secondary: #b3e5fc;
 }
 
+html[data-wave="calm"][data-theme="light"] .ocean-background,
+body[data-wave="calm"][data-theme="light"] .ocean-background {
+    background: linear-gradient(135deg,
+            #90e0ef 0%,
+            #0096c7 100%
+        );
+}
+
+html[data-wave="calm"][data-theme="light"],
 body[data-wave="calm"][data-theme="light"] {
     --text-primary: #01579b;
     --text-secondary: #0277bd;
@@ -47,34 +44,31 @@ body[data-wave="calm"][data-theme="light"] {
    Deep purples and mysterious blues
    ============================================ */
 
+html[data-wave="deep"] .ocean-background,
 body[data-wave="deep"] .ocean-background {
     background: linear-gradient(135deg,
-            #0d0221 0%,
-            /* Deep purple night */
-            #1a0b2e 15%,
-            /* Dark purple */
-            #2d1b4e 30%,
-            /* Purple blue */
-            #3e2a5f 45%,
-            /* Deep violet */
-            #4a3a6f 60%,
-            /* Mystic purple */
-            #5b4a7f 75%,
-            /* Medium purple */
-            #7b68a6 90%,
-            /* Light purple */
-            #9b88cc 100%
-            /* Soft lavender */
+            #1a0b2e 0%,
+            #b185db 100%
         );
     background-size: 400% 400%;
-    animation: waveGradient 20s ease-in-out infinite;
+    animation: waveGradient 60s ease-in-out infinite;
 }
 
+html[data-wave="deep"],
 body[data-wave="deep"] {
     --text-primary: #f0e6ff;
     --text-secondary: #d4c5f0;
 }
 
+html[data-wave="deep"][data-theme="light"] .ocean-background,
+body[data-wave="deep"][data-theme="light"] .ocean-background {
+    background: linear-gradient(135deg,
+            #c77dff 0%,
+            #3c096c 100%
+        );
+}
+
+html[data-wave="deep"][data-theme="light"],
 body[data-wave="deep"][data-theme="light"] {
     --text-primary: #1a0d4d;
     --text-secondary: #2d1b69;
@@ -85,34 +79,31 @@ body[data-wave="deep"][data-theme="light"] {
    Vibrant oranges and energetic yellows
    ============================================ */
 
+html[data-wave="energetic"] .ocean-background,
 body[data-wave="energetic"] .ocean-background {
     background: linear-gradient(135deg,
-            #1a0f0a 0%,
-            /* Deep warm night */
-            #2d1810 15%,
-            /* Dark brown */
-            #4a2615 30%,
-            /* Deep orange */
-            #6b3a1e 45%,
-            /* Burnt orange */
-            #8b4e2a 60%,
-            /* Warm orange */
-            #b8763e 75%,
-            /* Golden orange */
-            #d4a05a 90%,
-            /* Light gold */
-            #f0c674 100%
-            /* Warm yellow */
+            #370617 0%,
+            #fb8500 100%
         );
     background-size: 400% 400%;
-    animation: waveGradient 15s ease-in-out infinite;
+    animation: waveGradient 50s ease-in-out infinite;
 }
 
+html[data-wave="energetic"],
 body[data-wave="energetic"] {
     --text-primary: #fff8e7;
     --text-secondary: #ffe4b3;
 }
 
+html[data-wave="energetic"][data-theme="light"] .ocean-background,
+body[data-wave="energetic"][data-theme="light"] .ocean-background {
+    background: linear-gradient(135deg,
+            #ffbe98 0%,
+            #9d0208 100%
+        );
+}
+
+html[data-wave="energetic"][data-theme="light"],
 body[data-wave="energetic"][data-theme="light"] {
     --text-primary: #4a2615;
     --text-secondary: #6b3a1e;
@@ -123,34 +114,31 @@ body[data-wave="energetic"][data-theme="light"] {
    Soft greens and healing aquas
    ============================================ */
 
+html[data-wave="healing"] .ocean-background,
 body[data-wave="healing"] .ocean-background {
     background: linear-gradient(135deg,
-            #0a1f1a 0%,
-            /* Deep healing green */
-            #153428 15%,
-            /* Dark teal green */
-            #1f4a3a 30%,
-            /* Forest teal */
-            #2a5f4d 45%,
-            /* Deep aqua */
-            #3d7a66 60%,
-            /* Healing green */
-            #52a088 75%,
-            /* Soft aqua */
-            #6fc5a8 90%,
-            /* Light aqua */
-            #8de4c8 100%
-            /* Mint green */
+            #1b4332 0%,
+            #95d5b2 100%
         );
     background-size: 400% 400%;
-    animation: waveGradient 22s ease-in-out infinite;
+    animation: waveGradient 60s ease-in-out infinite;
 }
 
+html[data-wave="healing"],
 body[data-wave="healing"] {
     --text-primary: #e8f8f3;
     --text-secondary: #c8f0e3;
 }
 
+html[data-wave="healing"][data-theme="light"] .ocean-background,
+body[data-wave="healing"][data-theme="light"] .ocean-background {
+    background: linear-gradient(135deg,
+            #95d5b2 0%,
+            #2d6a4f 100%
+        );
+}
+
+html[data-wave="healing"][data-theme="light"],
 body[data-wave="healing"][data-theme="light"] {
     --text-primary: #1f4a3a;
     --text-secondary: #2a5f4d;
@@ -161,19 +149,39 @@ body[data-wave="healing"][data-theme="light"] {
    Original ocean colors
    ============================================ */
 
+html:not([data-wave]) .ocean-background,
+html[data-wave=""] .ocean-background,
 body:not([data-wave]) .ocean-background,
 body[data-wave=""] .ocean-background {
     background: linear-gradient(135deg,
-            #0a0e27 0%,
-            #1a1f3a 15%,
-            #0d2b45 30%,
-            #1e4d6b 45%,
-            #2a6f8f 60%,
-            #3d9db5 75%,
-            #5bc0de 90%,
-            #7dd3c0 100%);
+            #03045e 0%,
+            /* Deep navy */
+            #023e8a 20%,
+            /* Dark blue */
+            #0077b6 40%,
+            /* Ocean blue */
+            #0096c7 60%,
+            /* Bright blue */
+            #00b4d8 80%,
+            /* Cyan */
+            #48cae4 100%
+            /* Light cyan */
+        );
     background-size: 400% 400%;
     animation: waveGradient 15s ease-in-out infinite;
+}
+
+/* DEFAULT (Light theme - no wave selected) */
+html:not([data-wave])[data-theme="light"] .ocean-background,
+html[data-wave=""][data-theme="light"] .ocean-background,
+body:not([data-wave])[data-theme="light"] .ocean-background,
+body[data-wave=""][data-theme="light"] .ocean-background {
+    background: linear-gradient(135deg,
+            #90e0ef 0%,
+            #0096c7 100%
+        );
+    background-size: 400% 400%;
+    animation: waveGradient 60s ease-in-out infinite;
 }
 
 /* ============================================
@@ -227,6 +235,8 @@ body[data-wave=""] .ocean-background {
 }
 
 /* Theme-specific wave opacity adjustments */
+html[data-theme="light"] .ocean-background::before,
+html[data-theme="light"] .ocean-background::after,
 body[data-theme="light"] .ocean-background::before,
 body[data-theme="light"] .ocean-background::after {
     filter: invert(1);

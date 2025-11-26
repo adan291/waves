@@ -177,6 +177,9 @@ const translations = {
             howItWorks: '¿Cómo funciona?',
             startJourney: 'Comenzar Viaje',
             selectWave: 'Selecciona tu Ola',
+            titleMain: 'Whispers of the Wave - Inicio',
+            titleSelection: 'Whispers of the Wave - Selecciona tu Ola',
+            titleConversation: 'Whispers of the Wave - Conversación',
             tutorial: {
                 step1: 'Elige tu ola según lo que necesites explorar',
                 step2: 'Comparte tus pensamientos libremente',
@@ -357,6 +360,9 @@ const translations = {
             howItWorks: 'How it works?',
             startJourney: 'Start Journey',
             selectWave: 'Select your Wave',
+            titleMain: 'Whispers of the Wave - Home',
+            titleSelection: 'Whispers of the Wave - Select your Wave',
+            titleConversation: 'Whispers of the Wave - Conversation',
             tutorial: {
                 step1: 'Choose your wave based on what you need to explore',
                 step2: 'Share your thoughts freely',
@@ -537,6 +543,9 @@ const translations = {
             howItWorks: 'Cum funcționează?',
             startJourney: 'Începe Călătoria',
             selectWave: 'Selectează Valul Tău',
+            titleMain: 'Whispers of the Wave - Acasă',
+            titleSelection: 'Whispers of the Wave - Selectează Valul Tău',
+            titleConversation: 'Whispers of the Wave - Conversație',
             tutorial: {
                 step1: 'Alege valul tău în funcție de ce trebuie să explorezi',
                 step2: 'Împărtășește gândurile tale liber',

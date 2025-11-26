@@ -146,13 +146,20 @@ const OceanStateUI = {
     }
 };
 
-// Auto-initialize when DOM is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
+// Auto-initialize when DOM is ready (only on main app page)
+function autoInit() {
+    // Only initialize if we're on the main app page (has message display)
+    const isMainApp = document.getElementById('messageDisplay') !== null;
+    
+    if (isMainApp) {
         OceanStateUI.init();
-    });
+    }
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', autoInit);
 } else {
-    OceanStateUI.init();
+    autoInit();
 }
 
 // Expose for debugging

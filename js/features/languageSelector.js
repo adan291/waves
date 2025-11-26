@@ -43,13 +43,22 @@ const LanguageSelector = (() => {
     let currentLanguage = 'es';
     
     /**
+     * Validate if language code is supported
+     * @param {string} langCode - Language code to validate
+     * @returns {boolean} True if language is supported
+     */
+    function isValidLanguage(langCode) {
+        return langCode && LANGUAGES.hasOwnProperty(langCode);
+    }
+    
+    /**
      * Initialize language selector
      */
     function init() {
         // Load saved language
         try {
             const savedLanguage = localStorage.getItem(STORAGE_KEY);
-            if (savedLanguage && LANGUAGES[savedLanguage]) {
+            if (isValidLanguage(savedLanguage)) {
                 currentLanguage = savedLanguage;
             } else if (savedLanguage) {
                 console.warn(`⚠️ Invalid saved language "${savedLanguage}", using default`);
@@ -99,12 +108,13 @@ const LanguageSelector = (() => {
     
     /**
      * Change language
-     * @param {string} langCode - Language code (es, en, fr, de)
+     * @param {string} langCode - Language code (es, en, ro)
+     * @returns {boolean} True if language was changed successfully
      */
     function changeLanguage(langCode) {
-        if (!LANGUAGES[langCode]) {
-            console.warn('Invalid language code:', langCode);
-            return;
+        if (!isValidLanguage(langCode)) {
+            console.warn('⚠️ Invalid language code:', langCode);
+            return false;
         }
         
         currentLanguage = langCode;
@@ -145,12 +155,20 @@ const LanguageSelector = (() => {
     
     /**
      * Update input placeholder based on language
+     * Uses i18n system if available, falls back to hardcoded values
      * @param {string} langCode - Language code
      */
     function updatePlaceholder(langCode) {
         const userInput = document.getElementById('userInput');
         if (!userInput) return;
         
+        // Use i18n system if available
+        if (typeof i18n !== 'undefined') {
+            userInput.placeholder = i18n.t('ui.placeholder');
+            return;
+        }
+        
+        // Fallback to hardcoded placeholders if i18n not loaded
         const placeholders = {
             es: 'Comparte tus pensamientos...',
             en: 'Share your thoughts...',

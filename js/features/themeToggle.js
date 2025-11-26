@@ -131,7 +131,16 @@ const ThemeToggle = (() => {
         const toggleBtn = document.getElementById('themeToggle');
         
         if (!toggleBtn) {
-            console.warn('⚠️ Theme toggle button not found');
+            console.warn('⚠️ Theme toggle button not found - will retry');
+            // Retry after a short delay in case DOM isn't fully ready
+            setTimeout(() => {
+                const retryBtn = document.getElementById('themeToggle');
+                if (retryBtn) {
+                    retryBtn.onclick = toggle;
+                    updateUI(currentTheme);
+                    console.log('✅ Theme toggle button found on retry');
+                }
+            }, 100);
             return;
         }
         
@@ -140,6 +149,8 @@ const ThemeToggle = (() => {
         
         // Add click handler
         toggleBtn.onclick = toggle;
+        
+        console.log('✅ Theme toggle button initialized');
     }
     
     // Update UI elements for theme
@@ -162,8 +173,13 @@ const ThemeToggle = (() => {
     
     // Toggle between themes
     function toggle() {
+        console.log('🎨 Toggle called, current theme:', currentTheme, 'isApplying:', isApplyingTheme);
+        
         // Prevent rapid toggling
-        if (isApplyingTheme) return;
+        if (isApplyingTheme) {
+            console.warn('⚠️ Theme toggle blocked - already applying');
+            return;
+        }
         
         const oldTheme = currentTheme;
         currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
@@ -214,6 +230,11 @@ const ThemeToggle = (() => {
         document.dispatchEvent(new CustomEvent('theme:changed', {
             detail: { theme: themeName }
         }));
+        
+        // Update splash screen icon if it exists
+        if (typeof window.SplashScreen !== 'undefined' && window.SplashScreen.updateSplashThemeIcon) {
+            window.SplashScreen.updateSplashThemeIcon();
+        }
         
         // Small delay to let other systems update, then restart animation
         // This prevents race conditions where multiple systems try to restart animation

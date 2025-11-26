@@ -1,5 +1,24 @@
-```javascript
+/**
+ * ReportGenerator Module
+ * Generates comprehensive journey reports with metrics, insights, and recommendations
+ * 
+ * @module ReportGenerator
+ */
+
+// Configuration constants
+const REPORT_CONFIG = {
+    IMPROVEMENT_THRESHOLD: 20,
+    EXPERT_LEVEL_THRESHOLD: 4,
+    ACHIEVEMENT_MILESTONE: 50,
+    MAX_PEAKS_VALLEYS: 3,
+    DEFAULT_LANGUAGE: 'es'
+};
+
 const ReportGenerator = {
+    /**
+     * Generate complete journey report
+     * @returns {Object} Complete report with all sections
+     */
     generate() {
         const report = {
             metadata: this.generateMetadata(),
@@ -13,6 +32,19 @@ const ReportGenerator = {
         };
         return report;
     },
+    /**
+     * Get current language from storage
+     * @private
+     * @returns {string} Language code
+     */
+    _getLanguage() {
+        return localStorage.getItem('whispers-language') || REPORT_CONFIG.DEFAULT_LANGUAGE;
+    },
+
+    /**
+     * Generate report metadata
+     * @returns {Object} Metadata object
+     */
     generateMetadata() {
         const selectedWave = localStorage.getItem('whispers-selected-wave');
         const waveData = typeof SplashScreen !== 'undefined' ?
@@ -21,7 +53,7 @@ const ReportGenerator = {
         return {
             generatedAt: new Date().toISOString(),
             appVersion: '1.0.0',
-            language: localStorage.getItem('whispers-language') || 'es',
+            language: this._getLanguage(),
             selectedWave: {
                 id: selectedWave,
                 name: waveData?.name || 'Unknown',
@@ -69,31 +101,35 @@ clarity: entry.clarity,
 emotionalAwareness: entry.emotionalAwareness,
 message: entry.message
 }));
- // Find peaks and valleys
-const peaks = [];
-const valleys = [];
-        expressionHistory.forEach((entry,index) => {
-if(index === 0 || index === expressionHistory.length - 1)return;
+        // Find peaks and valleys
+        const peaks = [];
+        const valleys = [];
+        expressionHistory.forEach((entry, index) => {
+            if (index === 0 || index === expressionHistory.length - 1) return;
+            
             const prev = expressionHistory[index - 1].overall;
-const curr = entry.overall;
-const next = expressionHistory[index + 1].overall;
-            if(curr > prev && curr > next){
-peaks.push({index: index + 1,score: curr,message: entry.message});
-}else if(curr < prev && curr < next){
-valleys.push({index: index + 1,score: curr,message: entry.message});
-}
-});
+            const curr = entry.overall;
+            const next = expressionHistory[index + 1].overall;
+            
+            if (curr > prev && curr > next) {
+                peaks.push({ index: index + 1, score: curr, message: entry.message });
+            } else if (curr < prev && curr < next) {
+                valleys.push({ index: index + 1, score: curr, message: entry.message });
+            }
+        });
+
         const startState = this.classifyEmotionalState(expressionHistory[0].overall);
-const endState = this.classifyEmotionalState(expressionHistory[expressionHistory.length - 1].overall);
-const progression = expressionHistory[expressionHistory.length - 1].overall - expressionHistory[0].overall;
-        return{
-timeline,
-startState,
-endState,
-progression: Math.round(progression),
-peaks: peaks.slice(0,3), // Top 3 peaks
-valleys: valleys.slice(0,3) // Top 3 valleys
-};
+        const endState = this.classifyEmotionalState(expressionHistory[expressionHistory.length - 1].overall);
+        const progression = expressionHistory[expressionHistory.length - 1].overall - expressionHistory[0].overall;
+
+        return {
+            timeline,
+            startState,
+            endState,
+            progression: Math.round(progression),
+            peaks: peaks.slice(0, REPORT_CONFIG.MAX_PEAKS_VALLEYS),
+            valleys: valleys.slice(0, REPORT_CONFIG.MAX_PEAKS_VALLEYS)
+        };
 },
     generateExpressionMetrics(){
 if(typeof ExpressionAnalyzer === 'undefined'){
@@ -204,14 +240,20 @@ unlockedAt: a.unlockedAt
 }))
 };
 },
+    /**
+     * Generate insights based on user progress
+     * @returns {Array<Object>} Array of insight objects
+     */
     generateInsights() {
-        const lang = localStorage.getItem('whispers-language') || 'es';
+        const lang = this._getLanguage();
         const insights = [];
- // Expression insights
-if(typeof ExpressionAnalyzer !== 'undefined'){
-const trend = ExpressionAnalyzer.getImprovementTrend();
+
+        // Expression insights
+        if (typeof ExpressionAnalyzer !== 'undefined') {
+            const trend = ExpressionAnalyzer.getImprovementTrend();
             const level = ExpressionAnalyzer.getCurrentLevel();
-            if(trend.improvement > 20){
+            
+            if (trend.improvement > REPORT_CONFIG.IMPROVEMENT_THRESHOLD) {
                 insights.push({
                     type: 'positive',
                     category: 'expression',
@@ -220,125 +262,162 @@ const trend = ExpressionAnalyzer.getImprovementTrend();
                         `You've significantly improved your expression by ${trend.improvement} points. Excellent progress!`
                 });
             }
-            if(level.level >= 4){
-insights.push({
-type: 'achievement',
-category: 'expression',
-text: lang === 'es' ?
-`Alcanzaste el nivel "${level.name}". Tu capacidad de expresión es excepcional.` :
-`You reached "${level.nameEn}" level. Your expression ability is exceptional.`
-});
-}
-}
- // Ocean insights
-if(typeof OceanDynamics !== 'undefined'){
-const currentState = OceanDynamics.getCurrentState();
-            if(currentState.id === 'resolved'){
-insights.push({
-type: 'positive',
-category: 'ocean',
-text: lang === 'es' ?
-'Alcanzaste un estado de resolución y paz interior. Has completado un viaje significativo.' :
-'You reached a state of resolution and inner peace. You\'ve completed a significant journey.'
-});
-}
-}
- // Achievement insights
-if(typeof AchievementSystem !== 'undefined'){
-const stats = AchievementSystem.getStatistics();
-            if(stats.percentage >= 50){
-insights.push({
-type: 'achievement',
-category: 'achievements',
-text: lang === 'es' ?
-`Has desbloqueado ${stats.percentage}% de los logros. ¡Vas por buen camino ! ` :
-`You've unlocked ${stats.percentage}% of achievements. You're on the right track ! `
-});
-}
-}
-        return insights;
-},
-    generateRecommendations() {
-        const lang = localStorage.getItem('whispers-language') || 'es';
-        const recommendations = [];
- // Expression recommendations
-if(typeof ExpressionAnalyzer !== 'undefined'){
-const report = ExpressionAnalyzer.getProgressReport();
-            if(report && report.metrics.clarity.current < 60){
-recommendations.push({
-category: 'expression',
-priority: 'high',
-text: lang === 'es' ?
-'Intenta ser más específico sobre lo que sientes. Usa frases como "me siento..." en lugar de "creo que..."' :
-'Try to be more specific about what you feel. Use phrases like "I feel..." instead of "I think..."'
-});
-}
-            if(report && report.metrics.emotionalAwareness.current < 60){
-recommendations.push({
-category: 'expression',
-priority: 'medium',
-text: lang === 'es' ?
-'Practica identificar y nombrar tus emociones. Esto te ayudará a procesarlas mejor.' :
-'Practice identifying and naming your emotions. This will help you process them better.'
-});
-}
-}
- // Ocean recommendations
-if(typeof OceanDynamics !== 'undefined'){
-const currentState = OceanDynamics.getCurrentState();
-            if(currentState.id === 'confused' || currentState.id === 'anxious'){
-recommendations.push({
-category: 'ocean',
-priority: 'high',
-text: lang === 'es' ?
-'Tómate un momento para respirar profundamente. La claridad vendrá con calma.' :
-'Take a moment to breathe deeply. Clarity will come with calmness.'
-});
-}
-}
- // General recommendations
-recommendations.push({
-category: 'general',
-priority: 'low',
-text: lang === 'es' ?
-'Continúa tu viaje. Cada conversación es una oportunidad de crecimiento.' :
-'Continue your journey. Every conversation is an opportunity for growth.'
-});
-        return recommendations;
-},
-    classifyEmotionalState(score){
-if(score >= 80)return 'resolved';
-if(score >= 60)return 'clarity';
-if(score >= 40)return 'processing';
-if(score >= 20)return 'anxious';
-return 'confused';
-},
-    formatDuration(ms){
-const seconds = Math.floor(ms / 1000);
-const minutes = Math.floor(seconds / 60);
-const hours = Math.floor(minutes / 60);
-const days = Math.floor(hours / 24);
-        if(days > 0)return `${days}d ${hours % 24}h`;
-if(hours > 0)return `${hours}h ${minutes % 60}m`;
-if(minutes > 0)return `${minutes}m ${seconds % 60}s`;
-return `${seconds}s`;
-},
-    exportJSON(report){
-return JSON.stringify(report,null,2);
-},
-    downloadJSON(report){
-        // HistoryExport is designed for conversation history, not summary reports.
-        // However, if HistoryExport exposes a generic file download utility, we can use it.
-        // Assuming HistoryExport.downloadFile exists for generic file downloads.
-        const json = this.exportJSON(report);
-        const filename = `whispers-journey-${Date.now()}.json`;
-        const mimeType = 'application/json';
+            
+            if (level.level >= REPORT_CONFIG.EXPERT_LEVEL_THRESHOLD) {
+                insights.push({
+                    type: 'achievement',
+                    category: 'expression',
+                    text: lang === 'es' ?
+                        `Alcanzaste el nivel "${level.name}". Tu capacidad de expresión es excepcional.` :
+                        `You reached "${level.nameEn}" level. Your expression ability is exceptional.`
+                });
+            }
+        }
 
+        // Ocean insights
+        if (typeof OceanDynamics !== 'undefined') {
+            const currentState = OceanDynamics.getCurrentState();
+            if (currentState.id === 'resolved') {
+                insights.push({
+                    type: 'positive',
+                    category: 'ocean',
+                    text: lang === 'es' ?
+                        'Alcanzaste un estado de resolución y paz interior. Has completado un viaje significativo.' :
+                        'You reached a state of resolution and inner peace. You\'ve completed a significant journey.'
+                });
+            }
+        }
+
+        // Achievement insights
+        if (typeof AchievementSystem !== 'undefined') {
+            const stats = AchievementSystem.getStatistics();
+            if (stats.percentage >= REPORT_CONFIG.ACHIEVEMENT_MILESTONE) {
+                insights.push({
+                    type: 'achievement',
+                    category: 'achievements',
+                    text: lang === 'es' ?
+                        `Has desbloqueado ${stats.percentage}% de los logros. ¡Vas por buen camino!` :
+                        `You've unlocked ${stats.percentage}% of achievements. You're on the right track!`
+                });
+            }
+        }
+
+        return insights;
+    },
+    /**
+     * Generate personalized recommendations
+     * @returns {Array<Object>} Array of recommendation objects
+     */
+    generateRecommendations() {
+        const lang = this._getLanguage();
+        const recommendations = [];
+
+        // Expression recommendations
+        if (typeof ExpressionAnalyzer !== 'undefined') {
+            const report = ExpressionAnalyzer.getProgressReport();
+            
+            if (report && report.metrics.clarity.current < 60) {
+                recommendations.push({
+                    category: 'expression',
+                    priority: 'high',
+                    text: lang === 'es' ?
+                        'Intenta ser más específico sobre lo que sientes. Usa frases como "me siento..." en lugar de "creo que..."' :
+                        'Try to be more specific about what you feel. Use phrases like "I feel..." instead of "I think..."'
+                });
+            }
+            
+            if (report && report.metrics.emotionalAwareness.current < 60) {
+                recommendations.push({
+                    category: 'expression',
+                    priority: 'medium',
+                    text: lang === 'es' ?
+                        'Practica identificar y nombrar tus emociones. Esto te ayudará a procesarlas mejor.' :
+                        'Practice identifying and naming your emotions. This will help you process them better.'
+                });
+            }
+        }
+
+        // Ocean recommendations
+        if (typeof OceanDynamics !== 'undefined') {
+            const currentState = OceanDynamics.getCurrentState();
+            if (currentState.id === 'confused' || currentState.id === 'anxious') {
+                recommendations.push({
+                    category: 'ocean',
+                    priority: 'high',
+                    text: lang === 'es' ?
+                        'Tómate un momento para respirar profundamente. La claridad vendrá con calma.' :
+                        'Take a moment to breathe deeply. Clarity will come with calmness.'
+                });
+            }
+        }
+
+        // General recommendations
+        recommendations.push({
+            category: 'general',
+            priority: 'low',
+            text: lang === 'es' ?
+                'Continúa tu viaje. Cada conversación es una oportunidad de crecimiento.' :
+                'Continue your journey. Every conversation is an opportunity for growth.'
+        });
+
+        return recommendations;
+    },
+    /**
+     * Classify emotional state based on score
+     * @param {number} score - Emotional score (0-100)
+     * @returns {string} State classification
+     */
+    classifyEmotionalState(score) {
+        if (score >= 80) return 'resolved';
+        if (score >= 60) return 'clarity';
+        if (score >= 40) return 'processing';
+        if (score >= 20) return 'anxious';
+        return 'confused';
+    },
+
+    /**
+     * Format duration in human-readable format
+     * @param {number} ms - Duration in milliseconds
+     * @returns {string} Formatted duration string
+     */
+    formatDuration(ms) {
+        // Input validation
+        if (typeof ms !== 'number' || ms < 0 || !isFinite(ms)) {
+            return '0s';
+        }
+
+        const seconds = Math.floor(ms / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(minutes / 60);
+        const days = Math.floor(hours / 24);
+
+        if (days > 0) return `${days}d ${hours % 24}h`;
+        if (hours > 0) return `${hours}h ${minutes % 60}m`;
+        if (minutes > 0) return `${minutes}m ${seconds % 60}s`;
+        return `${seconds}s`;
+    },
+    /**
+     * Export report as JSON string
+     * @param {Object} report - Report object
+     * @returns {string} JSON string
+     */
+    exportJSON(report) {
+        return JSON.stringify(report, null, 2);
+    },
+
+    /**
+     * Download file using available method
+     * @private
+     * @param {string} filename - File name
+     * @param {string} content - File content
+     * @param {string} mimeType - MIME type
+     */
+    _downloadFile(filename, content, mimeType) {
         if (typeof HistoryExport !== 'undefined' && typeof HistoryExport.downloadFile === 'function') {
-            HistoryExport.downloadFile(filename, json, mimeType);
+            HistoryExport.downloadFile(filename, content, mimeType);
         } else {
-            // Fallback to direct Blob download if HistoryExport.downloadFile is not available
-            const blob = new Blob([json], {type: mimeType});
+            // Fallback to direct Blob download
+            const blob = new Blob([content], { type: mimeType });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -348,6 +427,17 @@ return JSON.stringify(report,null,2);
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
         }
+    },
+
+    /**
+     * Download report as JSON file
+     * @param {Object} report - Report object
+     */
+    downloadJSON(report) {
+        const json = this.exportJSON(report);
+        const filename = `whispers-journey-${Date.now()}.json`;
+        const mimeType = 'application/json';
+        this._downloadFile(filename, json, mimeType);
     },
     exportText(report){
 const lang = report.metadata.language;
@@ -367,85 +457,82 @@ text += (lang === 'es' ? report.metadata.selectedWave.name : report.metadata.sel
 text += '───────────────────────────────────────────────────────\n';
 text += lang === 'es' ? 'RESUMEN\n' : 'SUMMARY\n';
 text += '───────────────────────────────────────────────────────\n';
-text += lang === 'es' ? 'Mensajes Totales: ' : 'Total Messages: ';
-text += report.summary.totalMessages + '\n';
-text += lang === 'es' ? 'Duración: ' : 'Duration: ';
-text += report.summary.durationFormatted + '\n';
-text += lang === 'es' ? 'Logros Desbloqueados: ' : 'Achievements Unlocked: ';\ntext += `${report.summary.achievementsUnlocked} / ${report.summary.achievementsTotal}(${report.summary.completionPercentage}%)\n\n`;
- // Expression Metrics
-if(report.expressionMetrics){
-text += '───────────────────────────────────────────────────────\n';
-text += lang === 'es' ? 'MÉTRICAS DE EXPRESIÓN\n' : 'EXPRESSION METRICS\n';
-text += '───────────────────────────────────────────────────────\n';
-text += lang === 'es' ? 'Nivel Actual: ' : 'Current Level: ';\ntext += (lang === 'es' ? report.expressionMetrics.currentLevel.name : report.expressionMetrics.currentLevel.nameEn) + '\n';
-text += lang === 'es' ? 'Mejora Total: ' : 'Total Improvement: ';\ntext += `${report.expressionMetrics.improvement > 0 ? ' + ' : ''}${report.expressionMetrics.improvement}\n\n`;
+        text += lang === 'es' ? 'Mensajes Totales: ' : 'Total Messages: ';
+        text += report.summary.totalMessages + '\n';
+        text += lang === 'es' ? 'Duración: ' : 'Duration: ';
+        text += report.summary.durationFormatted + '\n';
+        text += lang === 'es' ? 'Logros Desbloqueados: ' : 'Achievements Unlocked: ';
+        text += `${report.summary.achievementsUnlocked} / ${report.summary.achievementsTotal} (${report.summary.completionPercentage}%)\n\n`;
+
+        // Expression Metrics
+        if (report.expressionMetrics) {
+            text += '───────────────────────────────────────────────────────\n';
+            text += lang === 'es' ? 'MÉTRICAS DE EXPRESIÓN\n' : 'EXPRESSION METRICS\n';
+            text += '───────────────────────────────────────────────────────\n';
+            text += lang === 'es' ? 'Nivel Actual: ' : 'Current Level: ';
+            text += (lang === 'es' ? report.expressionMetrics.currentLevel.name : report.expressionMetrics.currentLevel.nameEn) + '\n';
+            text += lang === 'es' ? 'Mejora Total: ' : 'Total Improvement: ';
+            text += `${report.expressionMetrics.improvement > 0 ? '+' : ''}${report.expressionMetrics.improvement}\n\n`;
             text += lang === 'es' ? 'Promedios:\n' : 'Averages:\n';
-text += `  ${lang === 'es' ? 'Claridad' : 'Clarity'}: ${report.expressionMetrics.averageScores.clarity}%\n`;
-text += `  ${lang === 'es' ? 'Especificidad' : 'Specificity'}: ${report.expressionMetrics.averageScores.specificity}%\n`;
-text += `  ${lang === 'es' ? 'Conciencia Emocional' : 'Emotional Awareness'}: ${report.expressionMetrics.averageScores.emotionalAwareness}%\n`;
-text += `  ${lang === 'es' ? 'General' : 'Overall'}: ${report.expressionMetrics.averageScores.overall}\n\n`;
-}
- // Ocean States
-if(report.oceanStates){
-text += '───────────────────────────────────────────────────────\n';
-text += lang === 'es' ? 'ESTADOS DEL OCÉANO\n' : 'OCEAN STATES\n';
-text += '───────────────────────────────────────────────────────\n';
-text += lang === 'es' ? 'Estado Actual: ' : 'Current State: ';\ntext += (lang === 'es' ? report.oceanStates.currentState.name : report.oceanStates.currentState.nameEn) + '\n';
-text += lang === 'es' ? 'Estados Experimentados: ' : 'States Experienced: ';\ntext += report.oceanStates.totalStatesExperienced + '\n';
-text += lang === 'es' ? 'Progreso: ' : 'Progress: ';\ntext += report.oceanStates.progressionPercentage + '%\n\n';
-}
- // Insights
-if(report.insights.length > 0){
-text += '───────────────────────────────────────────────────────\n';
-text += lang === 'es' ? 'INSIGHTS\n' : 'INSIGHTS\n';
-text += '───────────────────────────────────────────────────────\n';
-report.insights.forEach((insight,i) => {
-text += `${i + 1}. ${insight.text}\n`;
-});
-text += '\n';
-}
- // Recommendations
-if(report.recommendations.length > 0){
-text += '───────────────────────────────────────────────────────\n';
-text += lang === 'es' ? 'RECOMENDACIONES\n' : 'RECOMMENDATIONS\n';
-text += '───────────────────────────────────────────────────────\n';
-report.recommendations.forEach((rec,i) => {
-text += `${i + 1}. ${rec.text}\n`;
-});
-text += '\n';
-}
- // Footer
-text += '═══════════════════════════════════════════════════════\n';
-text += lang === 'es' ?
-'  Gracias por tu viaje en Whispers of the Wave\n' :
-'  Thank you for your journey in Whispers of the Wave\n';
-text += '═══════════════════════════════════════════════════════\n';
+            text += `  ${lang === 'es' ? 'Claridad' : 'Clarity'}: ${report.expressionMetrics.averageScores.clarity}%\n`;
+            text += `  ${lang === 'es' ? 'Especificidad' : 'Specificity'}: ${report.expressionMetrics.averageScores.specificity}%\n`;
+            text += `  ${lang === 'es' ? 'Conciencia Emocional' : 'Emotional Awareness'}: ${report.expressionMetrics.averageScores.emotionalAwareness}%\n`;
+            text += `  ${lang === 'es' ? 'General' : 'Overall'}: ${report.expressionMetrics.averageScores.overall}\n\n`;
+        }
+
+        // Ocean States
+        if (report.oceanStates) {
+            text += '───────────────────────────────────────────────────────\n';
+            text += lang === 'es' ? 'ESTADOS DEL OCÉANO\n' : 'OCEAN STATES\n';
+            text += '───────────────────────────────────────────────────────\n';
+            text += lang === 'es' ? 'Estado Actual: ' : 'Current State: ';
+            text += (lang === 'es' ? report.oceanStates.currentState.name : report.oceanStates.currentState.nameEn) + '\n';
+            text += lang === 'es' ? 'Estados Experimentados: ' : 'States Experienced: ';
+            text += report.oceanStates.totalStatesExperienced + '\n';
+            text += lang === 'es' ? 'Progreso: ' : 'Progress: ';
+            text += report.oceanStates.progressionPercentage + '%\n\n';
+        }
+        // Insights
+        if (report.insights.length > 0) {
+            text += '───────────────────────────────────────────────────────\n';
+            text += lang === 'es' ? 'INSIGHTS\n' : 'INSIGHTS\n';
+            text += '───────────────────────────────────────────────────────\n';
+            report.insights.forEach((insight, i) => {
+                text += `${i + 1}. ${insight.text}\n`;
+            });
+            text += '\n';
+        }
+
+        // Recommendations
+        if (report.recommendations.length > 0) {
+            text += '───────────────────────────────────────────────────────\n';
+            text += lang === 'es' ? 'RECOMENDACIONES\n' : 'RECOMMENDATIONS\n';
+            text += '───────────────────────────────────────────────────────\n';
+            report.recommendations.forEach((rec, i) => {
+                text += `${i + 1}. ${rec.text}\n`;
+            });
+            text += '\n';
+        }
+
+        // Footer
+        text += '═══════════════════════════════════════════════════════\n';
+        text += lang === 'es' ?
+            '  Gracias por tu viaje en Whispers of the Wave\n' :
+            '  Thank you for your journey in Whispers of the Wave\n';
+        text += '═══════════════════════════════════════════════════════\n';
+
         return text;
 },
-    downloadText(report){
-        // HistoryExport is designed for conversation history, not summary reports.
-        // However, if HistoryExport exposes a generic file download utility, we can use it.
-        // Assuming HistoryExport.downloadFile exists for generic file downloads.
+    /**
+     * Download report as text file
+     * @param {Object} report - Report object
+     */
+    downloadText(report) {
         const text = this.exportText(report);
         const filename = `whispers-journey-${Date.now()}.txt`;
         const mimeType = 'text/plain;charset=utf-8';
-
-        if (typeof HistoryExport !== 'undefined' && typeof HistoryExport.downloadFile === 'function') {
-            HistoryExport.downloadFile(filename, text, mimeType);
-        } else {
-            // Fallback to direct Blob download if HistoryExport.downloadFile is not available
-            const blob = new Blob([text], {type: mimeType});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
+        this._downloadFile(filename, text, mimeType);
     }
 };
- // Expose for use
+// Expose for use
 window.ReportGenerator = ReportGenerator;
-```

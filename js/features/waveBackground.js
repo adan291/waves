@@ -7,6 +7,9 @@ const WaveBackground = (() => {
     'use strict';
     
     let isInitialized = false;
+    
+    // Valid wave IDs
+    const VALID_WAVES = ['calm', 'deep', 'energetic', 'healing'];
 
     /**
      * Initialize wave background system
@@ -56,6 +59,7 @@ const WaveBackground = (() => {
             // Only update the data-wave attribute, don't restart animation
             const currentWave = localStorage.getItem('whispers-selected-wave');
             if (currentWave) {
+                document.documentElement.setAttribute('data-wave', currentWave);
                 document.body.setAttribute('data-wave', currentWave);
             }
         });
@@ -77,11 +81,30 @@ const WaveBackground = (() => {
         // Get wave from parameter or localStorage
         const wave = waveId || localStorage.getItem('whispers-selected-wave') || '';
         
-        // Apply data-wave attribute to body
+        // Validate wave ID
+        if (wave && !_isValidWave(wave)) {
+            console.warn(`⚠️ Invalid wave ID: ${wave}`);
+            return;
+        }
+        
+        // Check if already applied by inline script (only check html, as body is synced here)
+        const currentWave = document.documentElement.getAttribute('data-wave');
+        if (currentWave === wave && !restartAnimation) {
+            // Sync body with html if needed (inline script only sets html)
+            if (wave && document.body.getAttribute('data-wave') !== wave) {
+                document.body.setAttribute('data-wave', wave);
+            }
+            console.log('🌊 Wave already applied by inline script');
+            return;
+        }
+        
+        // Apply data-wave attribute to both html and body
         if (wave) {
+            document.documentElement.setAttribute('data-wave', wave);
             document.body.setAttribute('data-wave', wave);
             console.log(`🌊 Wave background applied: ${wave}`);
         } else {
+            document.documentElement.removeAttribute('data-wave');
             document.body.removeAttribute('data-wave');
             console.log('🌊 Using default ocean background');
         }
@@ -124,7 +147,18 @@ const WaveBackground = (() => {
      * @returns {string} Current wave ID
      */
     function getCurrentWave() {
-        return document.body.getAttribute('data-wave') || '';
+        return document.documentElement.getAttribute('data-wave') || 
+               document.body.getAttribute('data-wave') || '';
+    }
+
+    /**
+     * Validate wave ID
+     * @private
+     * @param {string} waveId - Wave ID to validate
+     * @returns {boolean} True if valid
+     */
+    function _isValidWave(waveId) {
+        return VALID_WAVES.includes(waveId);
     }
 
     /**
