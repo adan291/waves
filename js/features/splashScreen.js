@@ -154,6 +154,10 @@ const SplashScreen = {
                     <h2 class="wave-selection-title">${i18nInstance.t('splash.selectWave')}</h2>
                     <p class="wave-selection-subtitle">${i18nInstance.t('splash.subtitle')}</p>
                     <div class="wave-cards" id="waveCards"></div>
+                    <button class="reset-btn-splash" id="resetAppBtn" title="${i18nInstance.t('controls.reset')}">
+                        <span>🔄</span>
+                        <span>${i18nInstance.t('controls.reset')}</span>
+                    </button>
                 </div>
             </div>
         `;
@@ -197,6 +201,24 @@ const SplashScreen = {
         const continueBtn = document.getElementById('continueFromHowBtn');
         if (continueBtn) {
             continueBtn.addEventListener('click', () => this.showWaveSelection());
+        }
+
+        // Reset button
+        const resetBtn = document.getElementById('resetAppBtn');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => {
+                const lang = typeof i18n !== 'undefined' ? i18n.getCurrentLanguage() : 'en';
+                const confirmMsg = lang === 'es' 
+                    ? '¿Reiniciar la aplicación? Esto borrará todos los datos.'
+                    : lang === 'ro'
+                    ? 'Resetează aplicația? Aceasta va șterge toate datele.'
+                    : 'Reset app? This will clear all data.';
+                
+                if (confirm(confirmMsg)) {
+                    localStorage.clear();
+                    location.reload();
+                }
+            });
         }
     },
 
