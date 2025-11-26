@@ -1,0 +1,28 @@
+{
+  "enabled": true,
+  "name": "Design Pattern Guardian",
+  "description": "Monitors code files to ensure they follow best design patterns and structural conventions appropriate for their programming language",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "**/*.js",
+      "**/*.ts",
+      "**/*.jsx",
+      "**/*.tsx",
+      "**/*.py",
+      "**/*.java",
+      "**/*.cpp",
+      "**/*.cs",
+      "**/*.go",
+      "**/*.rb",
+      "**/*.php",
+      "**/*.swift",
+      "**/*.kt"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Analyze the modified code files and ensure they follow the best design patterns and structural conventions for their specific programming language. Check for: 1) Appropriate use of design patterns (Singleton, Factory, Observer, etc.), 2) Proper code organization and separation of concerns, 3) SOLID principles adherence, 4) Language-specific idioms and best practices, 5) Clean architecture principles. Provide specific recommendations to improve the design and structure if needed."
+  }
+}

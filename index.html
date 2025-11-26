@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Whispers of the Wave - Una experiencia conversacional inmersiva con IA">
+    <title>Whispers of the Wave</title>
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/core.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/waves.css">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="assets/icon-512.png">
+
+    <!-- 
+        ═══════════════════════════════════════════════════════════
+        SETUP INSTRUCTIONS
+        ═══════════════════════════════════════════════════════════
+        
+        To use this application, you need a Gemini API key:
+        
+        1. Visit: https://makersuite.google.com/app/apikey
+        2. Sign in with your Google account
+        3. Create a new API key
+        4. Open js/services/geminiService.js
+        5. Replace 'YOUR_API_KEY_HERE' with your actual API key
+        
+        Example:
+        apiKey: 'AIzaSyD...' // Your actual key here
+        
+        ═══════════════════════════════════════════════════════════
+    -->
+
+    <!-- Theme initialization script - MUST run before body renders -->
+    <script>
+        (function () {
+            // Get saved theme or default to 'dark'
+            const STORAGE_KEY = 'whispers-theme';
+            let theme = 'dark'; // Default theme
+
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved && (saved === 'dark' || saved === 'light')) {
+                    theme = saved;
+                }
+            } catch (e) {
+                // localStorage not available, use default
+            }
+
+            // Apply theme attribute to html element IMMEDIATELY before body renders
+            // This prevents flash of wrong theme
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+</head>
+
+<body>
+    <!-- Animated ocean background layer -->
+    <div class="ocean-background"></div>
+
+    <!-- Fixed Controls - Top Left -->
+    <div class="fixed-controls-left">
+        <button id="backToStartBtn" class="back-btn" aria-label="Cambiar de ola" title="Volver a la selección de olas">
+            <span>🔄</span>
+            <span data-i18n="ui.changeWave">Cambiar de Ola</span>
+        </button>
+    </div>
+
+    <!-- Fixed Controls - Top Right -->
+    <div class="fixed-controls-right">
+        <!-- TTS Toggle -->
+        <button id="ttsToggle" class="control-btn-inline" aria-label="Toggle Text-to-Speech"
+            title="Activar/Desactivar lectura automática">
+            <span class="tts-icon">🔊</span>
+        </button>
+
+        <!-- Language Selector -->
+        <select id="languageSelector" class="control-btn-inline language-selector" aria-label="Seleccionar idioma"
+            title="Cambiar idioma">
+            <option value="es">ES</option>
+            <option value="en">EN</option>
+            <option value="fr">FR</option>
+            <option value="de">DE</option>
+        </select>
+
+        <!-- Theme Toggle -->
+        <button id="themeToggle" class="control-btn-inline" aria-label="Toggle theme" title="Cambiar tema">
+            <span id="themeIcon">☀️</span>
+        </button>
+
+        <!-- Achievements Button -->
+        <button id="achievementsBtn" class="control-btn-inline" aria-label="Ver logros" title="Ver logros"
+            onclick="AchievementUI.showGallery()">
+            <span class="achievement-icon">🏆</span>
+            <span class="achievement-count" id="achievementCount">0/0</span>
+        </button>
+
+        <!-- Report Button -->
+        <button id="reportBtn" class="control-btn-inline" aria-label="Ver informe" title="Ver informe de viaje"
+            onclick="ReportUI.show()">
+            <span class="report-icon">📊</span>
+        </button>
+    </div>
+
+    <!-- Main container -->
+    <div class="container">
+        <!-- Mode indicator - Only title -->
+        <div id="modeIndicator" class="mode-indicator" aria-live="polite">
+            <span class="mode-icon">🌊</span>
+            <span id="modeText" class="mode-text">El Guardián de la Ola</span>
+        </div>
+
+        <!-- Message display area (scrollable) -->
+        <div id="messageDisplay" class="message-display" role="log" aria-live="polite"
+            aria-label="Conversation history">
+            <div class="welcome-message">
+                <p class="whisper" data-i18n="ui.welcome">Bienvenido al océano de pensamientos...</p>
+                <p class="wave-reflection" data-i18n="ui.welcomeMessage">Comparte lo que llevas dentro, y las olas
+                    reflejarán tu verdad.</p>
+            </div>
+
+            <!-- Suggestions container inside conversation flow -->
+            <div id="suggestionsContainer"></div>
+        </div>
+
+        <!-- Input container (fixed at bottom) -->
+        <div class="input-container">
+            <button id="speechToTextBtn" class="voice-btn" aria-label="Voice input" data-i18n-title="controls.speak"
+                title="Hablar">
+                🎤
+            </button>
+            <input type="text" id="userInput" class="user-input" data-i18n-placeholder="ui.placeholder"
+                placeholder="Comparte tus pensamientos..." autocomplete="off" aria-label="Message input" />
+            <button id="sendBtn" class="send-btn" aria-label="Send message" data-i18n-title="ui.send" title="Enviar">
+                ➤
+            </button>
+        </div>
+    </div>
+
+    <!-- TTS Status Indicator -->
+    <div id="ttsStatus" class="tts-status-indicator hidden">
+        <span class="tts-status-icon">🎵</span>
+        <span class="tts-status-text">Generando audio<span class="loading-dots"></span></span>
+    </div>
+
+    <!-- Local Configuration (optional, gitignored) -->
+    <script src="js/config.local.js"></script>
+
+    <!-- Core Infrastructure (load first) -->
+    <script src="js/utils/debounce.js"></script>
+    <script src="js/core/logger.js"></script>
+    <script src="js/core/cache.js"></script>
+    <script src="js/core/performance.js"></script>
+    <script src="js/core/storageOptimizer.js"></script>
+    <script src="js/core/lazyLoader.js"></script>
+
+    <!-- Performance Configuration -->
+    <script src="js/config.performance.js"></script>
+
+    <!-- i18n System -->
+    <script src="js/i18n/translations.js"></script>
+    <script src="js/i18n/i18n-ui.js"></script>
+
+    <!-- Core Modules -->
+    <script src="js/core/state.js"></script>
+    <script src="js/core/events.js"></script>
+    <script src="js/core/errorHandler.js"></script>
+    <script src="js/core/journeyCompletion.js"></script>
+    <script src="js/core/appFacade.js"></script>
+    <script src="js/core/inputValidator.js"></script>
+    <script src="js/core/htmlSanitizer.js"></script>
+    <script src="js/core/eventBus.js"></script>
+
+    <!-- Services -->
+    <script src="js/services/geminiService.js"></script>
+    <script src="js/services/audioService.js"></script>
+
+    <!-- Engine -->
+    <script src="js/engine/parser.js"></script>
+    <script src="js/engine/personas.js"></script>
+    <script src="js/engine/emotional.js"></script>
+    <script src="js/engine/narrative.js"></script>
+    <script src="js/engine/life_questions.js"></script>
+    <script src="js/engine/oceanDynamics.js"></script>
+    <script src="js/engine/expressionAnalyzer.js"></script>
+    <script src="js/engine/achievementSystem.js"></script>
+    <!-- script src="js/engine/reportGenerator.js"></script> -->
+
+    <!-- Prompts -->
+    <script src="js/prompts/adaptivePrompts.js"></script>
+
+    <!-- Adaptive Assistance System -->
+    <script src="js/core/stateClassifier.js"></script>
+    <script src="js/core/responsePatterns.js"></script>
+    <script src="js/core/responseValidator.js"></script>
+    <script src="js/core/conversationEnhancer.js"></script>
+    <script src="js/core/adaptiveAssistance.js"></script>
+
+    <!-- UI -->
+    <script src="js/ui/modal.js"></script>
+    <script src="js/ui/renderer.js"></script>
+    <script src="js/ui/controls.js"></script>
+    <script src="js/ui/suggestions.js"></script>
+    <script src="js/ui/oceanStateUI.js"></script>
+    <script src="js/ui/expressionMetricsUI.js"></script>
+    <script src="js/ui/achievementUI.js"></script>
+    <script src="js/ui/reportUI.js"></script>
+    <script src="js/ui/toastNotifications.js"></script>
+    <script src="js/ui/statsUI.js"></script>
+
+    <!-- Core Infrastructure (load first) -->
+    <script src="js/core/lazyLoadManager.js"></script>
+
+    <!-- Features (critical only) -->
+    <script src="js/features/splashScreen.js"></script>
+    <script src="js/features/waveBackground.js"></script>
+    <script src="js/features/languageSelector.js"></script>
+    <script src="js/features/themeToggle.js"></script>
+    <script src="js/features/integration.js"></script>
+
+    <!-- Non-critical features loaded on demand:
+         - conversationTags.js (lazy loaded)
+         - historyExport.js (lazy loaded)
+         - quickReactions.js (lazy loaded)
+         - keyboardShortcuts.js (lazy loaded)
+         - speechToText.js (lazy loaded)
+         - historySearch.js (lazy loaded)
+    -->
+
+    <!-- Lazy Load Non-Critical Features -->
+    <script>
+        // Load non-critical features after app initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            // Delay lazy loading to avoid blocking initial render
+            setTimeout(() => {
+                LazyLoadManager.loadModules([
+                    { path: 'js/features/conversationTags.js', name: 'conversationTags' },
+                    { path: 'js/features/historyExport.js', name: 'historyExport' },
+                    { path: 'js/features/quickReactions.js', name: 'quickReactions' },
+                    { path: 'js/features/keyboardShortcuts.js', name: 'keyboardShortcuts' },
+                    { path: 'js/features/speechToText.js', name: 'speechToText' },
+                    { path: 'js/features/historySearch.js', name: 'historySearch' }
+                ]).catch(error => {
+                    console.warn('Some non-critical features failed to load:', error);
+                });
+            }, 1000); // Load after 1 second
+        });
+    </script>
+
+    <!-- Main Application -->
+    <script src="js/main.js"></script>
+</body>
+
+</html>

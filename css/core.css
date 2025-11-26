@@ -1,0 +1,542 @@
+/* ===================================
+   CORE STYLES - Base and Layout
+   Foundation for all components
+   =================================== */
+
+/* CSS Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    color: #e0f7fa;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ===================================
+   CSS VARIABLES - Theme System
+   =================================== */
+
+:root {
+    /* Colors - Dark Theme */
+    --bg-gradient-start: #0a0e27;
+    --bg-gradient-end: #7dd3c0;
+    --text-primary: #e0f7fa;
+    --text-secondary: #b3e5fc;
+    --accent-color: #7dd3c0;
+    --accent-light: #80deea;
+    --accent-dark: #40e0d0;
+    --border-color: rgba(128, 222, 234, 0.4);
+    --bg-overlay: rgba(10, 17, 40, 0.95);
+    --bg-card: rgba(10, 75, 94, 0.6);
+    
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    
+    /* Border Radius */
+    --radius-sm: 4px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --radius-full: 50%;
+    
+    /* Transitions */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+    
+    /* Z-index */
+    --z-base: 1;
+    --z-fixed: 100;
+    --z-modal: 10000;
+}
+
+/* Light Theme Variables */
+body[data-theme="light"] {
+    --bg-gradient-start: #e3f2fd;
+    --bg-gradient-end: #90caf9;
+    --text-primary: #01579b;
+    --text-secondary: #0277bd;
+    --accent-color: #0288d1;
+    --accent-light: #0297d1;
+    --accent-dark: #0277bd;
+    --border-color: rgba(1, 87, 155, 0.3);
+    --bg-overlay: rgba(255, 255, 255, 0.95);
+    --bg-card: rgba(255, 255, 255, 0.8);
+}
+
+/* ===================================
+   OCEAN BACKGROUND LAYER
+   =================================== */
+
+.ocean-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, 
+        #0a0e27 0%,
+        #1a1f3a 15%,
+        #0d2b45 30%,
+        #1e4d6b 45%,
+        #2a6f8f 60%,
+        #3d9db5 75%,
+        #5bc0de 90%,
+        #7dd3c0 100%
+    );
+    background-size: 400% 400%;
+    animation: waveGradient 15s ease-in-out infinite;
+    z-index: 0;
+    will-change: background;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    pointer-events: none;
+}
+
+/* ===================================
+   MAIN CONTAINER
+   =================================== */
+
+.container {
+    width: 90%;
+    max-width: 800px;
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 1;
+}
+
+/* ===================================
+   FIXED CONTROLS
+   =================================== */
+
+.fixed-controls-left {
+    position: fixed;
+    top: 1.5rem;
+    left: 1.5rem;
+    z-index: 100;
+    display: flex;
+    gap: 0.5rem;
+    animation: fadeIn 0.5s ease-in;
+}
+
+.fixed-controls-right {
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 100;
+    display: flex;
+    gap: 0.5rem;
+    animation: fadeIn 0.5s ease-in;
+}
+
+.control-btn-inline {
+    background: rgba(128, 222, 234, 0.2);
+    border: 2px solid rgba(128, 222, 234, 0.4);
+    border-radius: 12px;
+    padding: 0.5rem 0.75rem;
+    color: #80deea;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    white-space: nowrap;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.control-btn-inline:hover {
+    background: rgba(128, 222, 234, 0.3);
+    border-color: rgba(128, 222, 234, 0.6);
+    transform: translateY(-2px);
+}
+
+.control-btn-inline:active {
+    transform: translateY(0);
+}
+
+/* Language Selector */
+.language-selector {
+    background: rgba(128, 222, 234, 0.2);
+    border: 2px solid rgba(128, 222, 234, 0.4);
+    border-radius: 12px;
+    padding: 0.5rem 0.75rem;
+    color: #80deea;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    height: 40px;
+    outline: none;
+}
+
+.language-selector:hover {
+    background: rgba(128, 222, 234, 0.3);
+    border-color: rgba(128, 222, 234, 0.6);
+    transform: translateY(-2px);
+}
+
+.language-selector option {
+    background: rgba(10, 17, 40, 0.95);
+    color: #80deea;
+}
+
+/* Button Icons */
+.tts-icon,
+.achievement-icon,
+.report-icon {
+    font-size: 1.1rem;
+}
+
+.achievement-count {
+    font-size: 0.75rem;
+    opacity: 0.9;
+}
+
+/* ===================================
+   MODE INDICATOR
+   =================================== */
+
+.mode-indicator {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.9rem;
+    background: rgba(10, 17, 40, 0.6);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    margin: 0 auto 0.75rem auto;
+    border: 1px solid rgba(64, 224, 208, 0.3);
+    animation: fadeIn 0.5s ease-in;
+    width: fit-content;
+}
+
+.mode-icon {
+    font-size: 1rem;
+}
+
+.mode-text {
+    font-size: 0.8rem;
+    color: #7dd3c0;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+
+/* ===================================
+   MESSAGE DISPLAY AREA
+   =================================== */
+
+.message-display {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 2rem;
+    margin-bottom: 1rem;
+    scroll-behavior: smooth;
+}
+
+/* Custom Scrollbar */
+.message-display::-webkit-scrollbar {
+    width: 8px;
+}
+
+.message-display::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+.message-display::-webkit-scrollbar-thumb {
+    background: rgba(135, 206, 235, 0.3);
+    border-radius: 10px;
+}
+
+.message-display::-webkit-scrollbar-thumb:hover {
+    background: rgba(135, 206, 235, 0.5);
+}
+
+/* ===================================
+   INPUT CONTAINER
+   =================================== */
+
+.input-container {
+    position: relative;
+    padding: 1rem 2rem 2rem 2rem;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.user-input {
+    flex: 1;
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    background: rgba(10, 75, 94, 0.8);
+    border: 2px solid rgba(128, 222, 234, 0.5);
+    border-radius: 25px;
+    color: #ffffff;
+    outline: none;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.user-input::placeholder {
+    color: rgba(224, 247, 250, 0.6);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.user-input:focus {
+    border-color: rgba(128, 222, 234, 0.8);
+    background: rgba(10, 75, 94, 0.9);
+    box-shadow: 0 0 25px rgba(128, 222, 234, 0.4), 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Voice and Send Buttons */
+.voice-btn,
+.send-btn {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
+    border-radius: 50%;
+    border: 2px solid rgba(128, 222, 234, 0.5);
+    background: rgba(10, 75, 94, 0.8);
+    color: #80deea;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.voice-btn:hover,
+.send-btn:hover {
+    background: rgba(128, 222, 234, 0.3);
+    border-color: rgba(128, 222, 234, 0.8);
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(128, 222, 234, 0.4);
+}
+
+.voice-btn:active,
+.send-btn:active {
+    transform: scale(0.95);
+}
+
+.voice-btn.recording {
+    background: rgba(244, 67, 54, 0.3);
+    border-color: #f44336;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* ===================================
+   BACK BUTTON
+   =================================== */
+
+.back-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(128, 222, 234, 0.2);
+    border: 2px solid rgba(128, 222, 234, 0.4);
+    border-radius: 12px;
+    color: #80deea;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    white-space: nowrap;
+    height: 40px;
+}
+
+.back-btn:hover {
+    background: #40e0d0;
+    color: #0a1128;
+    border-color: #40e0d0;
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(64, 224, 208, 0.4);
+}
+
+.back-btn:active {
+    transform: scale(0.98);
+}
+
+/* ===================================
+   LIGHT THEME OVERRIDES
+   =================================== */
+
+body[data-theme="light"] {
+    color: #263238;
+}
+
+
+
+body[data-theme="light"] .control-btn-inline {
+    background: rgba(255, 255, 255, 0.8);
+    border-color: rgba(1, 87, 155, 0.3);
+    color: #01579b;
+}
+
+body[data-theme="light"] .control-btn-inline:hover {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(1, 87, 155, 0.5);
+    color: #0277bd;
+}
+
+body[data-theme="light"] .mode-indicator {
+    background: rgba(255, 255, 255, 0.85);
+    border-color: rgba(1, 87, 155, 0.4);
+}
+
+body[data-theme="light"] .mode-text {
+    color: #01579b;
+}
+
+body[data-theme="light"] .user-input {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(1, 87, 155, 0.2);
+    color: #263238;
+}
+
+body[data-theme="light"] .user-input::placeholder {
+    color: #78909c;
+}
+
+body[data-theme="light"] .user-input:focus {
+    background: #ffffff;
+    border-color: #0288d1;
+}
+
+body[data-theme="light"] .back-btn {
+    background: rgba(255, 255, 255, 0.85);
+    border-color: rgba(2, 136, 209, 0.4);
+    color: #01579b;
+}
+
+body[data-theme="light"] .back-btn:hover {
+    background: rgba(255, 255, 255, 1);
+    border-color: #0288d1;
+    box-shadow: 0 6px 16px rgba(2, 136, 209, 0.3);
+}
+
+/* ===================================
+   LIGHT THEME OVERRIDES
+   =================================== */
+
+body[data-theme="light"] {
+    color: #263238;
+}
+
+
+
+body[data-theme="light"] .control-btn-inline {
+    background: rgba(255, 255, 255, 0.8);
+    border-color: rgba(1, 87, 155, 0.3);
+    color: #01579b;
+}
+
+body[data-theme="light"] .control-btn-inline:hover {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(1, 87, 155, 0.5);
+    color: #0277bd;
+}
+
+body[data-theme="light"] .mode-indicator {
+    background: rgba(255, 255, 255, 0.85);
+    border-color: rgba(1, 87, 155, 0.4);
+}
+
+body[data-theme="light"] .mode-text {
+    color: #01579b;
+}
+
+body[data-theme="light"] .user-input {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(1, 87, 155, 0.2);
+    color: #263238;
+}
+
+body[data-theme="light"] .user-input::placeholder {
+    color: #78909c;
+}
+
+body[data-theme="light"] .user-input:focus {
+    background: #ffffff;
+    border-color: #0288d1;
+}
+
+body[data-theme="light"] .back-btn {
+    background: rgba(255, 255, 255, 0.85);
+    border-color: rgba(2, 136, 209, 0.4);
+    color: #01579b;
+}
+
+body[data-theme="light"] .back-btn:hover {
+    background: rgba(255, 255, 255, 1);
+    border-color: #0288d1;
+    box-shadow: 0 6px 16px rgba(2, 136, 209, 0.3);
+}
+
+body[data-theme="light"] .message-display::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+body[data-theme="light"] .message-display::-webkit-scrollbar-thumb {
+    background: rgba(1, 87, 155, 0.3);
+}
+
+body[data-theme="light"] .message-display::-webkit-scrollbar-thumb:hover {
+    background: rgba(1, 87, 155, 0.5);
+}
+
+/* ===================================
+   UTILITY CLASSES
+   =================================== */
+
+.hidden {
+    display: none !important;
+}
+
+.visible {
+    display: block !important;
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+.fade-out {
+    animation: fadeOut 0.5s ease-out;
+}

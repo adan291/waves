@@ -1,0 +1,31 @@
+[
+  {
+    "id": "whispers-of-the-wave",
+    "title": "Whispers of the Wave",
+    "path": "../whispers-of-the-wave",
+    "status": "active",
+    "owner": "team",
+    "created_at": "2025-11-15",
+    "files": {
+      "requirements": "requirements.md",
+      "design": "design.md",
+      "tasks": "tasks.md",
+      "roadmap": "ROADMAP.md"
+    },
+    "description": "Spec principal del proyecto narrativo y emocional."
+  },
+  {
+    "id": "kiro-adaptive-assistance",
+    "title": "Kiro Adaptive Assistance",
+    "path": "../kiro-adaptive-assistance",
+    "status": "active",
+    "owner": "team",
+    "created_at": "2025-11-15",
+    "files": {
+      "requirements": "requirements.md",
+      "design": "design.md",
+      "tasks": "tasks.md"
+    },
+    "description": "Spec que define la adaptación de Kiro a estados del usuario."
+  }
+]

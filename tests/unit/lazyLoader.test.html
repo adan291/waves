@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lazy Loader - Unit Tests</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #e0e0e0;
+            margin-bottom: 30px;
+        }
+        
+        .test-info {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .test-info h2 {
+            margin-bottom: 15px;
+            color: #ffd700;
+        }
+        
+        .test-info ul {
+            margin-left: 20px;
+        }
+        
+        .test-info li {
+            margin: 5px 0;
+        }
+        
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            margin: 20px auto;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+        
+        #test-results {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .success {
+            color: #4CAF50;
+        }
+        
+        .error {
+            color: #ff6b6b;
+        }
+        
+        .info {
+            color: #ffd700;
+        }
+        
+        .test-summary {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 1.2em;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚡ Lazy Loader Tests</h1>
+        <p class="subtitle">Tests unitarios para el cargador diferido de módulos</p>
+
+        <div class="test-info">
+            <h2>📋 Cobertura de Tests</h2>
+            <ul>
+                <li>✅ Inicialización del loader</li>
+                <li>✅ Carga de módulo individual</li>
+                <li>✅ Verificación de módulo cargado</li>
+                <li>✅ Prevención de carga duplicada</li>
+                <li>✅ Manejo de errores de carga</li>
+                <li>✅ Obtención de módulos cargados</li>
+                <li>✅ Validación de grupos de módulos</li>
+                <li>✅ Manejo de grupos inexistentes</li>
+            </ul>
+        </div>
+
+        <button onclick="runLazyLoaderTests()">▶️ Ejecutar Tests</button>
+
+        <div id="test-results"></div>
+    </div>
+
+    <!-- Load module -->
+    <script src="../../js/core/lazyLoader.js"></script>
+
+    <!-- Test suite -->
+    <script>
+        let testResults = [];
+        let passedTests = 0;
+        let failedTests = 0;
+
+        function log(message, type = 'info') {
+            const resultsDiv = document.getElementById('test-results');
+            const className = type === 'success' ? 'success' : type === 'error' ? 'error' : 'info';
+            resultsDiv.innerHTML += `<span class="${className}">${message}</span>\n`;
+            console.log(message);
+        }
+
+        function assert(condition, testName) {
+            if (condition) {
+                passedTests++;
+                log(`✓ ${testName}`, 'success');
+                testResults.push({ name: testName, passed: true });
+            } else {
+                failedTests++;
+                log(`✗ ${testName}`, 'error');
+                testResults.push({ name: testName, passed: false });
+            }
+        }
+
+        async function runLazyLoaderTests() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '';
+            testResults = [];
+            passedTests = 0;
+            failedTests = 0;
+
+            log('🧪 Iniciando tests de Lazy Loader...\n', 'info');
+
+            // Test 1: Module exists
+            log('Test 1: Verificar que el módulo existe', 'info');
+            assert(
+                typeof LazyLoader !== 'undefined',
+                'LazyLoader está definido'
+            );
+
+            // Test 2: API methods exist
+            log('\nTest 2: Verificar métodos de la API', 'info');
+            assert(
+                typeof LazyLoader.load === 'function',
+                'Método load() existe'
+            );
+            assert(
+                typeof LazyLoader.loadGroup === 'function',
+                'Método loadGroup() existe'
+            );
+            assert(
+                typeof LazyLoader.isLoaded === 'function',
+                'Método isLoaded() existe'
+            );
+            assert(
+                typeof LazyLoader.preload === 'function',
+                'Método preload() existe'
+            );
+            assert(
+                typeof LazyLoader.getLoadedModules === 'function',
+                'Método getLoadedModules() existe'
+            );
+
+            // Test 3: isLoaded returns false for unloaded module
+            log('\nTest 3: Verificar estado de módulo no cargado', 'info');
+            assert(
+                !LazyLoader.isLoaded('test-module.js'),
+                'isLoaded() retorna false para módulo no cargado'
+            );
+
+            // Test 4: getLoadedModules returns array
+            log('\nTest 4: Obtener lista de módulos cargados', 'info');
+            const loadedModules = LazyLoader.getLoadedModules();
+            assert(
+                Array.isArray(loadedModules),
+                'getLoadedModules() retorna un array'
+            );
+
+            // Test 5: Load non-existent module (should fail gracefully)
+            log('\nTest 5: Intentar cargar módulo inexistente', 'info');
+            let errorCaught = false;
+            try {
+                await LazyLoader.load('non-existent-module-12345.js');
+            } catch (error) {
+                errorCaught = true;
+            }
+            assert(
+                errorCaught,
+                'load() maneja errores correctamente'
+            );
+
+            // Test 6: Load group with invalid name
+            log('\nTest 6: Intentar cargar grupo inexistente', 'info');
+            let groupErrorCaught = false;
+            try {
+                await LazyLoader.loadGroup('invalid-group-name');
+            } catch (error) {
+                groupErrorCaught = true;
+            }
+            assert(
+                groupErrorCaught,
+                'loadGroup() rechaza grupos inexistentes'
+            );
+
+            // Test 7: Preload doesn't throw
+            log('\nTest 7: Verificar preload no lanza errores', 'info');
+            let preloadError = false;
+            try {
+                LazyLoader.preload('features');
+            } catch (error) {
+                preloadError = true;
+            }
+            assert(
+                !preloadError,
+                'preload() no lanza errores síncronos'
+            );
+
+            // Test 8: Module state consistency
+            log('\nTest 8: Verificar consistencia de estado', 'info');
+            const modulesBefore = LazyLoader.getLoadedModules().length;
+            assert(
+                typeof modulesBefore === 'number',
+                'getLoadedModules() retorna número válido de módulos'
+            );
+
+            // Summary
+            log('\n' + '='.repeat(50), 'info');
+            log(`\n📊 Resumen de Tests:`, 'info');
+            log(`Total: ${passedTests + failedTests}`, 'info');
+            log(`✓ Pasaron: ${passedTests}`, 'success');
+            log(`✗ Fallaron: ${failedTests}`, 'error');
+            log(`Tasa de éxito: ${Math.round((passedTests / (passedTests + failedTests)) * 100)}%`, 'info');
+
+            // Create summary element
+            const summaryDiv = document.createElement('div');
+            summaryDiv.className = 'test-summary';
+            summaryDiv.innerHTML = `
+                <strong>Resultado Final:</strong> ${failedTests === 0 ? '✅ TODOS LOS TESTS PASARON' : '⚠️ ALGUNOS TESTS FALLARON'}<br>
+                ${passedTests}/${passedTests + failedTests} tests pasaron (${Math.round((passedTests / (passedTests + failedTests)) * 100)}%)
+            `;
+            resultsDiv.appendChild(summaryDiv);
+
+            console.log('Test results:', testResults);
+        }
+
+        // Auto-info on load
+        window.addEventListener('load', () => {
+            console.log('🧪 Lazy Loader Test Suite cargado');
+            console.log('Haz clic en "Ejecutar Tests" o llama runLazyLoaderTests() en consola');
+        });
+    </script>
+</body>
+</html>

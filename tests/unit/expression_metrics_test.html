@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expression Metrics Test - Whispers of the Wave</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        body {
+            padding: 2rem;
+        }
+
+        .test-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        .test-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .test-header h1 {
+            color: #80deea;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .test-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .test-section {
+            background: rgba(10, 75, 94, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(128, 222, 234, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+        }
+
+        .test-section h2 {
+            color: #7dd3c0;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .test-input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(10, 75, 94, 0.4);
+            border: 2px solid rgba(128, 222, 234, 0.3);
+            border-radius: 12px;
+            color: #e0f7fa;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 100px;
+            margin-bottom: 1rem;
+        }
+
+        .test-input::placeholder {
+            color: rgba(224, 247, 250, 0.5);
+        }
+
+        .test-btn {
+            padding: 0.875rem 1.75rem;
+            background: linear-gradient(135deg, #4fc3f7, #7dd3c0);
+            border: none;
+            border-radius: 15px;
+            color: #0a1128;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            width: 100%;
+        }
+
+        .test-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(79, 195, 247, 0.4);
+        }
+
+        .test-messages {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .test-message-btn {
+            padding: 1rem;
+            background: rgba(10, 75, 94, 0.4);
+            border: 1px solid rgba(128, 222, 234, 0.3);
+            border-radius: 12px;
+            color: #b3e5fc;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+
+        .test-message-btn:hover {
+            background: rgba(10, 75, 94, 0.6);
+            border-color: rgba(128, 222, 234, 0.5);
+            transform: translateX(5px);
+        }
+
+        .test-message-btn .score-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            background: rgba(125, 211, 192, 0.2);
+            border-radius: 8px;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+            color: #7dd3c0;
+        }
+
+        .results-display {
+            background: rgba(10, 75, 94, 0.4);
+            border: 1px solid rgba(128, 222, 234, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(128, 222, 234, 0.1);
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            color: #b3e5fc;
+            font-size: 0.95rem;
+        }
+
+        .result-value {
+            color: #7dd3c0;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .control-btn {
+            padding: 0.75rem 1.5rem;
+            background: rgba(79, 195, 247, 0.2);
+            border: 2px solid rgba(79, 195, 247, 0.4);
+            border-radius: 12px;
+            color: #4fc3f7;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .control-btn:hover {
+            background: rgba(79, 195, 247, 0.3);
+            border-color: #4fc3f7;
+        }
+
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            padding: 1rem;
+            background: rgba(10, 75, 94, 0.3);
+            border-radius: 10px;
+            margin-bottom: 0.75rem;
+        }
+
+        .history-item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .history-item-score {
+            color: #7dd3c0;
+            font-weight: 600;
+        }
+
+        .history-item-time {
+            color: #80deea;
+            font-size: 0.85rem;
+        }
+
+        .history-item-text {
+            color: #b3e5fc;
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        @media (max-width: 1024px) {
+            .test-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Ocean background -->
+    <div class="ocean-background"></div>
+
+    <div class="test-container">
+        <div class="test-header">
+            <h1>📊 Expression Metrics Test</h1>
+            <p style="color: #b3e5fc; font-size: 1.1rem;">Prueba el sistema de análisis de expresión</p>
+        </div>
+
+        <div class="test-grid">
+            <!-- Input Section -->
+            <div class="test-section">
+                <h2>✍️ Analizar Mensaje</h2>
+                <textarea 
+                    id="testInput" 
+                    class="test-input" 
+                    placeholder="Escribe un mensaje para analizar su claridad, especificidad y conciencia emocional..."
+                ></textarea>
+                <button class="test-btn" onclick="analyzeMessage()">Analizar</button>
+                
+                <div id="results" class="results-display" style="display: none;">
+                    <div class="result-item">
+                        <span class="result-label">Claridad</span>
+                        <span class="result-value" id="clarityValue">0%</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Especificidad</span>
+                        <span class="result-value" id="specificityValue">0%</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Conciencia Emocional</span>
+                        <span class="result-value" id="emotionalValue">0%</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Puntuación General</span>
+                        <span class="result-value" id="overallValue" style="font-size: 1.5rem;">0</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Nivel</span>
+                        <span class="result-value" id="levelValue">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Example Messages -->
+            <div class="test-section">
+                <h2>💬 Mensajes de Ejemplo</h2>
+                <p style="color: #b3e5fc; margin-bottom: 1rem; font-size: 0.9rem;">
+                    Click para analizar diferentes tipos de expresión
+                </p>
+                <div class="test-messages" id="exampleMessages"></div>
+            </div>
+        </div>
+
+        <!-- History Section -->
+        <div class="test-section">
+            <h2>📈 Historial y Progreso</h2>
+            <div class="controls">
+                <button class="control-btn" onclick="showTrend()">📊 Ver Tendencia</button>
+                <button class="control-btn" onclick="showReport()">📄 Reporte Completo</button>
+                <button class="control-btn" onclick="clearHistory()">🗑️ Limpiar Historial</button>
+                <button class="control-btn" onclick="simulateConversation()">🎭 Simular Conversación</button>
+            </div>
+            <div id="historyList" class="history-list" style="margin-top: 1.5rem;"></div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/engine/expressionAnalyzer.js"></script>
+    <script src="../js/ui/expressionMetricsUI.js"></script>
+
+    <script>
+        // Example messages with different quality levels
+        const exampleMessages = [
+            // Low clarity
+            { text: "No sé, todo está mal", expected: 'low' },
+            { text: "Algo me pasa pero no sé qué", expected: 'low' },
+            { text: "Quizás debería hacer algo", expected: 'low' },
+            
+            // Medium clarity
+            { text: "¿Por qué me siento así cuando pienso en el trabajo?", expected: 'medium' },
+            { text: "Creo que necesito cambiar algunas cosas en mi vida", expected: 'medium' },
+            { text: "Me preocupa el futuro pero no sé cómo manejarlo", expected: 'medium' },
+            
+            // High clarity
+            { text: "Me siento ansioso específicamente cuando tengo que hablar en público porque temo ser juzgado", expected: 'high' },
+            { text: "Necesito establecer límites claros en mi trabajo para proteger mi salud mental", expected: 'high' },
+            { text: "Reconozco que mi frustración viene de expectativas poco realistas que me pongo a mí mismo", expected: 'high' },
+            
+            // Very high clarity
+            { text: "Siento una profunda tristeza cuando recuerdo esa situación, específicamente porque no pude expresar lo que realmente sentía en ese momento. Ahora entiendo que necesito trabajar en mi comunicación emocional", expected: 'very_high' }
+        ];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderExampleMessages();
+            updateHistoryDisplay();
+        });
+
+        // Render example messages
+        function renderExampleMessages() {
+            const container = document.getElementById('exampleMessages');
+            
+            exampleMessages.forEach((example, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'test-message-btn';
+                btn.innerHTML = `
+                    "${example.text}"
+                    <span class="score-badge">${example.expected}</span>
+                `;
+                btn.onclick = () => {
+                    document.getElementById('testInput').value = example.text;
+                    analyzeMessage();
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        // Analyze message
+        function analyzeMessage() {
+            const input = document.getElementById('testInput');
+            const message = input.value.trim();
+            
+            if (!message) {
+                alert('Por favor escribe un mensaje');
+                return;
+            }
+
+            const metrics = ExpressionAnalyzer.analyze(message, 'es');
+            displayResults(metrics);
+            updateHistoryDisplay();
+            
+            // Update UI component
+            ExpressionMetricsUI.update(metrics);
+        }
+
+        // Display results
+        function displayResults(metrics) {
+            const results = document.getElementById('results');
+            results.style.display = 'block';
+            
+            document.getElementById('clarityValue').textContent = Math.round(metrics.clarity) + '%';
+            document.getElementById('specificityValue').textContent = Math.round(metrics.specificity) + '%';
+            document.getElementById('emotionalValue').textContent = Math.round(metrics.emotionalAwareness) + '%';
+            document.getElementById('overallValue').textContent = metrics.overall;
+            
+            const level = ExpressionAnalyzer.getCurrentLevel();
+            document.getElementById('levelValue').textContent = level.name;
+            
+            // Color code overall score
+            const overallEl = document.getElementById('overallValue');
+            if (metrics.overall >= 80) {
+                overallEl.style.color = '#a8e6cf';
+            } else if (metrics.overall >= 60) {
+                overallEl.style.color = '#7dd3c0';
+            } else if (metrics.overall >= 40) {
+                overallEl.style.color = '#4fc3f7';
+            } else if (metrics.overall >= 20) {
+                overallEl.style.color = '#ffa502';
+            } else {
+                overallEl.style.color = '#ff6b6b';
+            }
+        }
+
+        // Update history display
+        function updateHistoryDisplay() {
+            const container = document.getElementById('historyList');
+            const history = ExpressionAnalyzer.getHistory();
+            
+            if (history.length === 0) {
+                container.innerHTML = '<p style="color: #b3e5fc; text-align: center; padding: 2rem;">No hay mensajes analizados aún</p>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            // Show last 10 messages
+            history.slice(-10).reverse().forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                div.innerHTML = `
+                    <div class="history-item-header">
+                        <span class="history-item-score">Score: ${item.overall}</span>
+                        <span class="history-item-time">${new Date(item.timestamp).toLocaleTimeString()}</span>
+                    </div>
+                    <div class="history-item-text">"${item.message}"</div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Show trend
+        function showTrend() {
+            const trend = ExpressionAnalyzer.getImprovementTrend();
+            
+            if (trend.trend === 'insufficient_data') {
+                alert(trend.message);
+                return;
+            }
+            
+            const message = `
+📊 Análisis de Tendencia
+
+${trend.message}
+
+Primer mensaje: ${trend.firstScore}
+Mensajes recientes: ${trend.recentScore}
+Mejora: ${trend.improvement > 0 ? '+' : ''}${trend.improvement}
+
+Total de mensajes: ${trend.messageCount}
+            `;
+            
+            alert(message);
+        }
+
+        // Show report
+        function showReport() {
+            ExpressionMetricsUI.showReport();
+        }
+
+        // Clear history
+        function clearHistory() {
+            if (confirm('¿Seguro que quieres limpiar el historial?')) {
+                ExpressionAnalyzer.clearHistory();
+                updateHistoryDisplay();
+                document.getElementById('results').style.display = 'none';
+                alert('Historial limpiado');
+            }
+        }
+
+        // Simulate conversation
+        function simulateConversation() {
+            const messages = [
+                "No sé qué hacer",
+                "Todo me confunde",
+                "¿Por qué me siento así?",
+                "Quizás debería intentar algo diferente",
+                "Creo que empiezo a entender",
+                "Me siento más claro ahora",
+                "Sé exactamente lo que necesito hacer",
+                "Gracias, esto me ha ayudado mucho"
+            ];
+            
+            let index = 0;
+            const interval = setInterval(() => {
+                if (index >= messages.length) {
+                    clearInterval(interval);
+                    showReport();
+                    return;
+                }
+                
+                document.getElementById('testInput').value = messages[index];
+                analyzeMessage();
+                index++;
+            }, 1500);
+        }
+    </script>
+</body>
+</html>

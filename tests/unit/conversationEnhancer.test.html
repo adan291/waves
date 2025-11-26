@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversation Enhancer - Unit Tests</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #e0e0e0;
+            margin-bottom: 30px;
+        }
+        
+        .test-info {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .test-info h2 {
+            margin-bottom: 15px;
+            color: #ffd700;
+        }
+        
+        .test-info ul {
+            margin-left: 20px;
+        }
+        
+        .test-info li {
+            margin: 5px 0;
+        }
+        
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            margin: 20px auto;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+        
+        #test-results {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .success {
+            color: #4CAF50;
+        }
+        
+        .error {
+            color: #ff6b6b;
+        }
+        
+        .info {
+            color: #ffd700;
+        }
+        
+        .test-summary {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 1.2em;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💬 Conversation Enhancer Tests</h1>
+        <p class="subtitle">Tests unitarios para mejora de conversaciones</p>
+
+        <div class="test-info">
+            <h2>📋 Cobertura de Tests</h2>
+            <ul>
+                <li>✅ Análisis de contexto</li>
+                <li>✅ Detección de palabras emocionales</li>
+                <li>✅ Cálculo de intensidad emocional</li>
+                <li>✅ Análisis de continuidad de tópicos</li>
+                <li>✅ Extracción de tópicos</li>
+                <li>✅ Generación de mejoras de contexto</li>
+                <li>✅ Mejora de respuestas</li>
+                <li>✅ Evaluación de necesidades de soporte</li>
+                <li>✅ Manejo de errores</li>
+                <li>✅ Casos edge</li>
+            </ul>
+        </div>
+
+        <button onclick="runConversationEnhancerTests()">▶️ Ejecutar Tests</button>
+
+        <div id="test-results"></div>
+    </div>
+
+    <!-- Load module -->
+    <script src="../../js/core/conversationEnhancer.js"></script>
+
+    <!-- Test suite -->
+    <script>
+        let testResults = [];
+        let passedTests = 0;
+        let failedTests = 0;
+
+        function log(message, type = 'info') {
+            const resultsDiv = document.getElementById('test-results');
+            const className = type === 'success' ? 'success' : type === 'error' ? 'error' : 'info';
+            resultsDiv.innerHTML += `<span class="${className}">${message}</span>\n`;
+            console.log(message);
+        }
+
+        function assert(condition, testName) {
+            if (condition) {
+                passedTests++;
+                log(`✓ ${testName}`, 'success');
+                testResults.push({ name: testName, passed: true });
+            } else {
+                failedTests++;
+                log(`✗ ${testName}`, 'error');
+                testResults.push({ name: testName, passed: false });
+            }
+        }
+
+        function runConversationEnhancerTests() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '';
+            testResults = [];
+            passedTests = 0;
+            failedTests = 0;
+
+            log('🧪 Iniciando tests de Conversation Enhancer...\n', 'info');
+
+            // Test 1: Module exists
+            log('Test 1: Verificar que el módulo existe', 'info');
+            assert(
+                typeof ConversationEnhancer !== 'undefined',
+                'ConversationEnhancer está definido'
+            );
+            assert(
+                typeof ConversationEnhancer.analyzeContext === 'function',
+                'Método analyzeContext existe'
+            );
+
+            // Test 2: Basic context analysis
+            log('\nTest 2: Análisis básico de contexto', 'info');
+            const context = ConversationEnhancer.analyzeContext('Hola, ¿cómo estás?');
+            assert(
+                context !== null && typeof context === 'object',
+                'analyzeContext retorna un objeto'
+            );
+            assert(
+                typeof context.messageLength === 'number',
+                'Contexto incluye messageLength'
+            );
+            assert(
+                typeof context.hasQuestion === 'boolean',
+                'Contexto incluye hasQuestion'
+            );
+
+            // Test 3: Question detection
+            log('\nTest 3: Detección de preguntas', 'info');
+            const questionContext = ConversationEnhancer.analyzeContext('¿Qué debo hacer?');
+            assert(
+                questionContext.hasQuestion === true,
+                'Detecta preguntas correctamente'
+            );
+            const noQuestionContext = ConversationEnhancer.analyzeContext('Estoy bien');
+            assert(
+                noQuestionContext.hasQuestion === false,
+                'No detecta preguntas donde no las hay'
+            );
+
+            // Test 4: Emotional words detection
+            log('\nTest 4: Detección de palabras emocionales', 'info');
+            const emotionalMessage = 'Me siento muy triste y solo';
+            const emotionalContext = ConversationEnhancer.analyzeContext(emotionalMessage);
+            assert(
+                emotionalContext.hasEmotionalWords !== undefined,
+                'Detecta palabras emocionales'
+            );
+            assert(
+                emotionalContext.hasEmotionalWords.negative.length > 0,
+                'Detecta emociones negativas'
+            );
+
+            // Test 5: Emotional intensity calculation
+            log('\nTest 5: Cálculo de intensidad emocional', 'info');
+            const intensityContext = ConversationEnhancer.analyzeContext('¡¡¡ESTO ES TERRIBLE!!!');
+            assert(
+                typeof intensityContext.emotionalIntensity === 'number',
+                'Calcula intensidad emocional'
+            );
+            assert(
+                intensityContext.emotionalIntensity >= 0 && intensityContext.emotionalIntensity <= 1,
+                'Intensidad está entre 0 y 1'
+            );
+            assert(
+                intensityContext.emotionalIntensity > 0.5,
+                'Intensidad alta para mensaje con exclamaciones'
+            );
+
+            // Test 6: Topic continuity
+            log('\nTest 6: Análisis de continuidad de tópicos', 'info');
+            const history = [
+                { content: 'Estoy pensando en cambiar de trabajo' }
+            ];
+            const continuityContext = ConversationEnhancer.analyzeContext(
+                'El trabajo actual no me satisface',
+                history
+            );
+            assert(
+                typeof continuityContext.topicContinuity === 'number',
+                'Calcula continuidad de tópicos'
+            );
+            assert(
+                continuityContext.topicContinuity >= 0 && continuityContext.topicContinuity <= 1,
+                'Continuidad está entre 0 y 1'
+            );
+
+            // Test 7: Topic extraction
+            log('\nTest 7: Extracción de tópicos', 'info');
+            const topicHistory = [
+                { content: 'Tengo problemas en mi trabajo' },
+                { content: 'Mi familia no me entiende' }
+            ];
+            const topicContext = ConversationEnhancer.analyzeContext('Sigo pensando en eso', topicHistory);
+            assert(
+                Array.isArray(topicContext.previousTopics),
+                'previousTopics es un array'
+            );
+            assert(
+                topicContext.previousTopics.length > 0,
+                'Extrae tópicos del historial'
+            );
+
+            // Test 8: Context enhancement generation
+            log('\nTest 8: Generación de mejoras de contexto', 'info');
+            const enhancementContext = {
+                hasEmotionalWords: { negative: ['triste'], positive: [], intense: [] },
+                emotionalIntensity: 0.8,
+                topicContinuity: 0.6,
+                conversationDepth: 7,
+                hasQuestion: true
+            };
+            const enhancement = ConversationEnhancer.generateContextEnhancement(enhancementContext);
+            assert(
+                typeof enhancement === 'string',
+                'Genera enhancement como string'
+            );
+            assert(
+                enhancement.length > 0,
+                'Enhancement no está vacío'
+            );
+
+            // Test 9: Response improvement
+            log('\nTest 9: Mejora de respuestas', 'info');
+            const originalResponse = {
+                whisper: 'Entiendo',
+                reflection: '¿Qué piensas'
+            };
+            const improvedContext = {
+                hasEmotionalWords: { negative: ['triste'], positive: [], intense: [] },
+                conversationDepth: 3
+            };
+            const improved = ConversationEnhancer.improveResponse(originalResponse, improvedContext);
+            assert(
+                improved !== null && typeof improved === 'object',
+                'Retorna objeto mejorado'
+            );
+            assert(
+                improved.whisper.length > 0,
+                'Whisper mejorado no está vacío'
+            );
+            assert(
+                improved.whisper.match(/[.!?]$/),
+                'Whisper termina con puntuación'
+            );
+
+            // Test 10: Support needs assessment
+            log('\nTest 10: Evaluación de necesidades de soporte', 'info');
+            const criticalMessage = 'Necesito ayuda urgente';
+            const assessment = ConversationEnhancer.assessSupportNeeds(criticalMessage);
+            assert(
+                assessment !== null && typeof assessment === 'object',
+                'Retorna evaluación de soporte'
+            );
+            assert(
+                typeof assessment.needsEmotionalSupport === 'boolean',
+                'Incluye needsEmotionalSupport'
+            );
+            assert(
+                typeof assessment.severity === 'string',
+                'Incluye nivel de severidad'
+            );
+
+            // Test 11: Error handling
+            log('\nTest 11: Manejo de errores', 'info');
+            const errorContext = ConversationEnhancer.analyzeContext('Test', null);
+            assert(
+                errorContext !== null,
+                'No falla con historial null'
+            );
+            const emptyImproved = ConversationEnhancer.improveResponse(null, {});
+            assert(
+                emptyImproved === null,
+                'Maneja respuesta null correctamente'
+            );
+
+            // Summary
+            log('\n' + '='.repeat(50), 'info');
+            log(`\n📊 Resumen de Tests:`, 'info');
+            log(`Total: ${passedTests + failedTests}`, 'info');
+            log(`✓ Pasaron: ${passedTests}`, 'success');
+            log(`✗ Fallaron: ${failedTests}`, 'error');
+            log(`Tasa de éxito: ${Math.round((passedTests / (passedTests + failedTests)) * 100)}%`, 'info');
+
+            // Create summary element
+            const summaryDiv = document.createElement('div');
+            summaryDiv.className = 'test-summary';
+            summaryDiv.innerHTML = `
+                <strong>Resultado Final:</strong> ${failedTests === 0 ? '✅ TODOS LOS TESTS PASARON' : '⚠️ ALGUNOS TESTS FALLARON'}<br>
+                ${passedTests}/${passedTests + failedTests} tests pasaron (${Math.round((passedTests / (passedTests + failedTests)) * 100)}%)
+            `;
+            resultsDiv.appendChild(summaryDiv);
+
+            console.log('Test results:', testResults);
+        }
+
+        // Auto-info on load
+        window.addEventListener('load', () => {
+            console.log('🧪 Conversation Enhancer Test Suite cargado');
+            console.log('Haz clic en "Ejecutar Tests" o llama runConversationEnhancerTests() en consola');
+        });
+    </script>
+</body>
+</html>

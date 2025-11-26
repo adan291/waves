@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversation Improvements Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f5f5f5;
+            border-left: 4px solid #667eea;
+            border-radius: 5px;
+        }
+        
+        .test-title {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            border-left: 3px solid #ccc;
+        }
+        
+        .test-result.pass {
+            border-left-color: #4caf50;
+            background: #f1f8f4;
+        }
+        
+        .test-result.fail {
+            border-left-color: #f44336;
+            background: #fef5f5;
+        }
+        
+        .test-result.info {
+            border-left-color: #2196f3;
+            background: #f3f7ff;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        
+        button:hover {
+            background: #764ba2;
+        }
+        
+        .code-block {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .status-badge.ready {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .status-badge.loading {
+            background: #ff9800;
+            color: white;
+        }
+        
+        .status-badge.error {
+            background: #f44336;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌊 Conversation Improvements Test Suite</h1>
+        
+        <div class="test-section">
+            <div class="test-title">Module Status</div>
+            <div id="moduleStatus"></div>
+        </div>
+        
+        <div class="test-section">
+            <div class="test-title">Test Controls</div>
+            <button onclick="runAllTests()">Run All Tests</button>
+            <button onclick="testResponseValidator()">Test Response Validator</button>
+            <button onclick="testConversationEnhancer()">Test Conversation Enhancer</button>
+            <button onclick="testErrorHandling()">Test Error Handling</button>
+            <button onclick="clearResults()">Clear Results</button>
+        </div>
+        
+        <div id="testResults"></div>
+    </div>
+
+    <!-- Load required modules -->
+    <script src="../js/core/responseValidator.js"></script>
+    <script src="../js/core/conversationEnhancer.js"></script>
+
+    <script>
+        const resultsDiv = document.getElementById('testResults');
+        const statusDiv = document.getElementById('moduleStatus');
+
+        /**
+         * Check module status
+         */
+        function checkModuleStatus() {
+            const modules = {
+                'ResponseValidator': typeof ResponseValidator !== 'undefined',
+                'ConversationEnhancer': typeof ConversationEnhancer !== 'undefined'
+            };
+
+            let html = '';
+            for (const [name, loaded] of Object.entries(modules)) {
+                const badge = loaded ? 'ready' : 'error';
+                const status = loaded ? '✅ Loaded' : '❌ Not Loaded';
+                html += `<div class="test-result ${badge}"><strong>${name}:</strong> ${status}</div>`;
+            }
+
+            statusDiv.innerHTML = html;
+            return Object.values(modules).every(v => v);
+        }
+
+        /**
+         * Add test result to display
+         */
+        function addResult(title, passed, details = '') {
+            const resultClass = passed ? 'pass' : 'fail';
+            const icon = passed ? '✅' : '❌';
+            
+            const html = `
+                <div class="test-result ${resultClass}">
+                    <strong>${icon} ${title}</strong>
+                    ${details ? `<div class="code-block">${details}</div>` : ''}
+                </div>
+            `;
+            
+            resultsDiv.innerHTML += html;
+        }
+
+        /**
+         * Test Response Validator
+         */
+        function testResponseValidator() {
+            if (typeof ResponseValidator === 'undefined') {
+                addResult('Response Validator', false, 'Module not loaded');
+                return;
+            }
+
+            resultsDiv.innerHTML += '<div class="test-section"><div class="test-title">Response Validator Tests</div>';
+
+            // Test 1: Valid response
+            const validResponse = {
+                whisper: '🔊 El océano reflexiona sobre tus palabras.',
+                reflection: '¿Qué resuena en ti?'
+            };
+            const result1 = ResponseValidator.validate(validResponse);
+            addResult('Valid Response Validation', result1.valid, JSON.stringify(result1, null, 2));
+
+            // Test 2: Missing whisper
+            const invalidResponse1 = {
+                reflection: '¿Qué resuena en ti?'
+            };
+            const result2 = ResponseValidator.validate(invalidResponse1);
+            addResult('Missing Whisper Detection', !result2.valid, JSON.stringify(result2, null, 2));
+
+            // Test 3: Empty fields
+            const invalidResponse2 = {
+                whisper: '',
+                reflection: ''
+            };
+            const result3 = ResponseValidator.validate(invalidResponse2);
+            addResult('Empty Fields Detection', !result3.valid, JSON.stringify(result3, null, 2));
+
+            // Test 4: Sanitization
+            const dirtyResponse = {
+                whisper: 'Texto con {"json": "incrustado"}',
+                reflection: 'ERROR: Algo salió mal'
+            };
+            const sanitized = ResponseValidator.sanitize(dirtyResponse);
+            addResult('Response Sanitization', 
+                !sanitized.whisper.includes('{') && !sanitized.reflection.includes('ERROR'),
+                JSON.stringify(sanitized, null, 2)
+            );
+
+            // Test 5: Repair
+            const incompleteResponse = {
+                whisper: 'Texto incompleto',
+                reflection: ''
+            };
+            const repaired = ResponseValidator.repair(incompleteResponse);
+            addResult('Response Repair', 
+                repaired.whisper.length > 0 && repaired.reflection.length > 0,
+                JSON.stringify(repaired, null, 2)
+            );
+
+            resultsDiv.innerHTML += '</div>';
+        }
+
+        /**
+         * Test Conversation Enhancer
+         */
+        function testConversationEnhancer() {
+            if (typeof ConversationEnhancer === 'undefined') {
+                addResult('Conversation Enhancer', false, 'Module not loaded');
+                return;
+            }
+
+            resultsDiv.innerHTML += '<div class="test-section"><div class="test-title">Conversation Enhancer Tests</div>';
+
+            // Test 1: Context Analysis
+            const message = '¿Cómo puedo decidir entre dos carreras? Tengo mucho miedo de equivocarme.';
+            const context = ConversationEnhancer.analyzeContext(message, []);
+            addResult('Context Analysis', 
+                context.hasQuestion && context.hasEmotionalWords.negative.length > 0,
+                JSON.stringify(context, null, 2)
+            );
+
+            // Test 2: Emotional Words Detection
+            const emotionalMessage = 'Me siento triste y solo, pero tengo esperanza';
+            const emotions = ConversationEnhancer.detectEmotionalWords(emotionalMessage);
+            addResult('Emotional Words Detection',
+                emotions.negative.length > 0 && emotions.positive.length > 0,
+                JSON.stringify(emotions, null, 2)
+            );
+
+            // Test 3: Emotional Intensity
+            const intenseMessage = '¡¡¡ESTO ES TERRIBLE!!! ¿¿¿QUÉ HAGO???';
+            const intensity = ConversationEnhancer.calculateEmotionalIntensity(intenseMessage);
+            addResult('Emotional Intensity Calculation',
+                intensity > 0.7,
+                `Intensity: ${intensity.toFixed(2)}`
+            );
+
+            // Test 4: Support Needs Assessment
+            const supportMessage = 'No puedo más, necesito ayuda urgente';
+            const support = ConversationEnhancer.assessSupportNeeds(supportMessage);
+            addResult('Support Needs Assessment',
+                support.needsEmotionalSupport,
+                JSON.stringify(support, null, 2)
+            );
+
+            // Test 5: Response Improvement
+            const response = {
+                whisper: 'Algo de texto',
+                reflection: 'Una pregunta'
+            };
+            const enhancedContext = {
+                hasEmotionalWords: { negative: ['triste'], positive: [], intense: [] },
+                conversationDepth: 3
+            };
+            const improved = ConversationEnhancer.improveResponse(response, enhancedContext);
+            addResult('Response Improvement',
+                improved.whisper.includes('válid') || improved.reflection.includes('?'),
+                JSON.stringify(improved, null, 2)
+            );
+
+            resultsDiv.innerHTML += '</div>';
+        }
+
+        /**
+         * Test Error Handling
+         */
+        function testErrorHandling() {
+            resultsDiv.innerHTML += '<div class="test-section"><div class="test-title">Error Handling Tests</div>';
+
+            // Test 1: Null response handling
+            try {
+                if (typeof ResponseValidator !== 'undefined') {
+                    const result = ResponseValidator.validate(null);
+                    addResult('Null Response Handling', !result.valid, JSON.stringify(result, null, 2));
+                }
+            } catch (error) {
+                addResult('Null Response Handling', false, error.message);
+            }
+
+            // Test 2: Invalid type handling
+            try {
+                if (typeof ResponseValidator !== 'undefined') {
+                    const result = ResponseValidator.validate('string instead of object');
+                    addResult('Invalid Type Handling', !result.valid, JSON.stringify(result, null, 2));
+                }
+            } catch (error) {
+                addResult('Invalid Type Handling', false, error.message);
+            }
+
+            // Test 3: Malformed JSON handling
+            try {
+                if (typeof ConversationEnhancer !== 'undefined') {
+                    const context = ConversationEnhancer.analyzeContext('', []);
+                    addResult('Malformed Input Handling', context !== null, JSON.stringify(context, null, 2));
+                }
+            } catch (error) {
+                addResult('Malformed Input Handling', false, error.message);
+            }
+
+            resultsDiv.innerHTML += '</div>';
+        }
+
+        /**
+         * Run all tests
+         */
+        function runAllTests() {
+            clearResults();
+            testResponseValidator();
+            testConversationEnhancer();
+            testErrorHandling();
+        }
+
+        /**
+         * Clear results
+         */
+        function clearResults() {
+            resultsDiv.innerHTML = '';
+        }
+
+        // Initialize on load
+        window.addEventListener('load', () => {
+            checkModuleStatus();
+        });
+    </script>
+</body>
+</html>

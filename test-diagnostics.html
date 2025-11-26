@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnóstico Automático - Whispers of the Wave</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0a1128 0%, #001f54 100%);
+            color: #e0f7fa;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+        
+        h1 {
+            color: #40e0d0;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+        
+        .subtitle {
+            color: #87ceeb;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .test-section {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 4px solid #40e0d0;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        
+        .test-section h2 {
+            color: #7dd3c0;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .test-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin: 8px 0;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+        }
+        
+        .status {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        
+        .status.pass {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .status.fail {
+            background: #f44336;
+            color: white;
+        }
+        
+        .status.pending {
+            background: #ff9800;
+            color: white;
+        }
+        
+        .test-name {
+            flex: 1;
+            font-size: 1em;
+        }
+        
+        .test-detail {
+            font-size: 0.9em;
+            color: #87ceeb;
+            margin-left: 45px;
+            margin-top: 5px;
+        }
+        
+        .summary {
+            background: linear-gradient(135deg, rgba(64, 224, 208, 0.1) 0%, rgba(125, 211, 192, 0.1) 100%);
+            border: 2px solid #40e0d0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+        
+        .summary h2 {
+            color: #40e0d0;
+            margin-bottom: 15px;
+        }
+        
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .stat {
+            text-align: center;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+        }
+        
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #40e0d0;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            color: #87ceeb;
+            margin-top: 5px;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #40e0d0 0%, #7dd3c0 100%);
+            color: #0a1128;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .error-details {
+            background: rgba(244, 67, 54, 0.1);
+            border-left: 4px solid #f44336;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #ff8a80;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Diagnóstico Automático</h1>
+        <p class="subtitle">Whispers of the Wave - Validación de Sistema</p>
+        
+        <div id="results"></div>
+        
+        <div class="summary" id="summary" style="display: none;">
+            <h2>📊 Resumen</h2>
+            <div class="summary-stats">
+                <div class="stat">
+                    <div class="stat-value" id="passCount">0</div>
+                    <div class="stat-label">Pasaron</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="failCount">0</div>
+                    <div class="stat-label">Fallaron</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="totalCount">0</div>
+                    <div class="stat-label">Total</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="percentage">0%</div>
+                    <div class="stat-label">Éxito</div>
+                </div>
+            </div>
+        </div>
+        
+        <button onclick="runDiagnostics()">▶️ Ejecutar Diagnóstico</button>
+    </div>
+
+    <script>
+        const tests = [
+            {
+                section: "Módulos JavaScript",
+                items: [
+                    { name: "I18n (Traducciones)", check: () => typeof I18n !== 'undefined' },
+                    { name: "AchievementSystem (Logros)", check: () => typeof AchievementSystem !== 'undefined' },
+                    { name: "SplashScreen", check: () => typeof SplashScreen !== 'undefined' },
+                    { name: "StateClassifier", check: () => typeof StateClassifier !== 'undefined' },
+                    { name: "ResponsePatterns", check: () => typeof ResponsePatterns !== 'undefined' }
+                ]
+            },
+            {
+                section: "Sistema de Traducciones",
+                items: [
+                    { name: "Idioma actual definido", check: () => I18n && I18n.currentLanguage !== undefined },
+                    { name: "Traducciones ES cargadas", check: () => I18n && I18n.translations && I18n.translations.es !== undefined },
+                    { name: "Traducciones EN cargadas", check: () => I18n && I18n.translations && I18n.translations.en !== undefined },
+                    { name: "Función t() disponible", check: () => I18n && typeof I18n.t === 'function' }
+                ]
+            },
+            {
+                section: "Sistema de Logros",
+                items: [
+                    { name: "Logros definidos", check: () => AchievementSystem && AchievementSystem.achievements && AchievementSystem.achievements.length > 0 },
+                    { name: "Método getUnlockedAchievements", check: () => AchievementSystem && typeof AchievementSystem.getUnlockedAchievements === 'function' },
+                    { name: "Método checkAchievements", check: () => AchievementSystem && typeof AchievementSystem.checkAchievements === 'function' },
+                    { name: "localStorage funcional", check: () => {
+                        try {
+                            localStorage.setItem('test', 'test');
+                            localStorage.removeItem('test');
+                            return true;
+                        } catch (e) {
+                            return false;
+                        }
+                    }}
+                ]
+            },
+            {
+                section: "Elementos DOM",
+                items: [
+                    { name: "message-display existe", check: () => document.getElementById('message-display') !== null },
+                    { name: "user-input existe", check: () => document.getElementById('user-input') !== null },
+                    { name: "send-button existe", check: () => document.getElementById('send-button') !== null },
+                    { name: "ocean-background existe", check: () => document.querySelector('.ocean-background') !== null }
+                ]
+            },
+            {
+                section: "Estilos CSS",
+                items: [
+                    { name: "core.css cargado", check: () => {
+                        const sheets = Array.from(document.styleSheets);
+                        return sheets.some(sheet => sheet.href && sheet.href.includes('core.css'));
+                    }},
+                    { name: "components.css cargado", check: () => {
+                        const sheets = Array.from(document.styleSheets);
+                        return sheets.some(sheet => sheet.href && sheet.href.includes('components.css'));
+                    }},
+                    { name: "animations.css cargado", check: () => {
+                        const sheets = Array.from(document.styleSheets);
+                        return sheets.some(sheet => sheet.href && sheet.href.includes('animations.css'));
+                    }}
+                ]
+            }
+        ];
+
+        function runDiagnostics() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+            
+            let passCount = 0;
+            let failCount = 0;
+            let totalCount = 0;
+            
+            tests.forEach(section => {
+                const sectionDiv = document.createElement('div');
+                sectionDiv.className = 'test-section';
+                
+                const sectionTitle = document.createElement('h2');
+                sectionTitle.textContent = section.section;
+                sectionDiv.appendChild(sectionTitle);
+                
+                section.items.forEach(item => {
+                    totalCount++;
+                    const testDiv = document.createElement('div');
+                    testDiv.className = 'test-item';
+                    
+                    let passed = false;
+                    let error = null;
+                    
+                    try {
+                        passed = item.check();
+                    } catch (e) {
+                        error = e.message;
+                    }
+                    
+                    if (passed) passCount++;
+                    else failCount++;
+                    
+                    const statusDiv = document.createElement('div');
+                    statusDiv.className = `status ${passed ? 'pass' : 'fail'}`;
+                    statusDiv.textContent = passed ? '✓' : '✗';
+                    
+                    const nameDiv = document.createElement('div');
+                    nameDiv.className = 'test-name';
+                    nameDiv.textContent = item.name;
+                    
+                    testDiv.appendChild(statusDiv);
+                    testDiv.appendChild(nameDiv);
+                    
+                    if (error) {
+                        const errorDiv = document.createElement('div');
+                        errorDiv.className = 'error-details';
+                        errorDiv.textContent = `Error: ${error}`;
+                        testDiv.appendChild(errorDiv);
+                    }
+                    
+                    sectionDiv.appendChild(testDiv);
+                });
+                
+                resultsDiv.appendChild(sectionDiv);
+            });
+            
+            // Update summary
+            document.getElementById('passCount').textContent = passCount;
+            document.getElementById('failCount').textContent = failCount;
+            document.getElementById('totalCount').textContent = totalCount;
+            document.getElementById('percentage').textContent = Math.round((passCount / totalCount) * 100) + '%';
+            document.getElementById('summary').style.display = 'block';
+        }
+        
+        // Auto-run on load
+        window.addEventListener('load', () => {
+            setTimeout(runDiagnostics, 500);
+        });
+    </script>
+    
+    <!-- Load all modules for testing -->
+    <script src="js/i18n/translations.js"></script>
+    <script src="js/engine/achievementSystem.js"></script>
+    <script src="js/features/splashScreen.js"></script>
+    <script src="js/core/stateClassifier.js"></script>
+    <script src="js/core/responsePatterns.js"></script>
+</body>
+</html>

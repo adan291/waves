@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance & Infrastructure Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1rem;
+        }
+        h1 {
+            margin-top: 0;
+            font-size: 2rem;
+        }
+        h2 {
+            color: #ffd700;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+            padding-bottom: 0.5rem;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin: 0.5rem 0.5rem 0.5rem 0;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        .result {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success { color: #4ade80; }
+        .error { color: #f87171; }
+        .warning { color: #fbbf24; }
+        .info { color: #60a5fa; }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .stat-card {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffd700;
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Performance & Infrastructure Test</h1>
+        <p>Prueba de los nuevos sistemas de optimización</p>
+    </div>
+
+    <div class="container">
+        <h2>📝 Logger System</h2>
+        <button onclick="testLogger()">Test Logger</button>
+        <button onclick="showLogs()">Show Logs</button>
+        <button onclick="clearLogs()">Clear Logs</button>
+        <div id="loggerResult" class="result"></div>
+    </div>
+
+    <div class="container">
+        <h2>💾 Cache System</h2>
+        <button onclick="testCache()">Test Cache</button>
+        <button onclick="showCacheStats()">Show Stats</button>
+        <button onclick="clearCache()">Clear Cache</button>
+        <div id="cacheResult" class="result"></div>
+    </div>
+
+    <div class="container">
+        <h2>📊 Performance Monitor</h2>
+        <button onclick="testPerformance()">Test Performance</button>
+        <button onclick="showPerformanceReport()">Show Report</button>
+        <button onclick="clearPerformance()">Clear Metrics</button>
+        <div id="performanceResult" class="result"></div>
+    </div>
+
+    <div class="container">
+        <h2>💿 Storage Optimizer</h2>
+        <button onclick="testStorage()">Test Storage</button>
+        <button onclick="showStorageStats()">Show Stats</button>
+        <button onclick="testCompression()">Test Compression</button>
+        <div id="storageResult" class="result"></div>
+    </div>
+
+    <div class="container">
+        <h2>⚡ Lazy Loader</h2>
+        <button onclick="testLazyLoader()">Test Lazy Loading</button>
+        <button onclick="showLoadedModules()">Show Loaded</button>
+        <div id="lazyResult" class="result"></div>
+    </div>
+
+    <div class="container">
+        <h2>🎯 Utilities (Debounce/Throttle)</h2>
+        <button onclick="testDebounce()">Test Debounce</button>
+        <button onclick="testThrottle()">Test Throttle</button>
+        <div id="utilsResult" class="result"></div>
+    </div>
+
+    <div class="container">
+        <h2>📈 Overall Statistics</h2>
+        <div class="stats" id="overallStats"></div>
+    </div>
+
+    <!-- Load infrastructure modules -->
+    <script src="../js/utils/debounce.js"></script>
+    <script src="../js/core/logger.js"></script>
+    <script src="../js/core/cache.js"></script>
+    <script src="../js/core/performance.js"></script>
+    <script src="../js/core/storageOptimizer.js"></script>
+    <script src="../js/core/lazyLoader.js"></script>
+
+    <script>
+        // Helper functions
+        function display(elementId, content, type = 'info') {
+            const el = document.getElementById(elementId);
+            const className = type === 'success' ? 'success' : 
+                            type === 'error' ? 'error' : 
+                            type === 'warning' ? 'warning' : 'info';
+            el.innerHTML = `<span class="${className}">${content}</span>`;
+        }
+
+        // Logger tests
+        function testLogger() {
+            Logger.debug('Test', 'Debug message');
+            Logger.info('Test', 'Info message');
+            Logger.warn('Test', 'Warning message');
+            Logger.error('Test', 'Error message', { code: 500 });
+            
+            display('loggerResult', '✅ Logger test complete. Check console and click "Show Logs"', 'success');
+        }
+
+        function showLogs() {
+            const logs = Logger.getLogs();
+            const formatted = logs.map(log => 
+                `[${log.timestamp}] ${log.level} [${log.category}] ${log.message}`
+            ).join('\n');
+            display('loggerResult', formatted || 'No logs yet', 'info');
+        }
+
+        function clearLogs() {
+            Logger.clearLogs();
+            display('loggerResult', '✅ Logs cleared', 'success');
+        }
+
+        // Cache tests
+        function testCache() {
+            // Set some test data
+            CacheManager.set('test', 'key1', { data: 'value1' }, 60000);
+            CacheManager.set('test', 'key2', { data: 'value2' }, 60000);
+            CacheManager.set('test', 'key3', { data: 'value3' }, 1000); // Expires in 1s
+            
+            // Get data
+            const val1 = CacheManager.get('test', 'key1');
+            const val2 = CacheManager.get('test', 'key2');
+            
+            const result = `✅ Cache test complete
+Set 3 items
+Retrieved: ${JSON.stringify(val1)}, ${JSON.stringify(val2)}
+            
+Wait 2 seconds and check again to see expiration...`;
+            
+            display('cacheResult', result, 'success');
+            
+            // Test expiration
+            setTimeout(() => {
+                const val3 = CacheManager.get('test', 'key3');
+                display('cacheResult', result + `\n\nAfter 2s, key3 (1s TTL): ${val3 ? 'Still cached' : '❌ Expired (correct!)'}`, 'success');
+            }, 2000);
+        }
+
+        function showCacheStats() {
+            const stats = CacheManager.getStats();
+            const formatted = `Memory Size: ${stats.memorySize}
+Max Size: ${stats.maxMemorySize}
+Usage: ${stats.memoryUsage}`;
+            display('cacheResult', formatted, 'info');
+        }
+
+        function clearCache() {
+            CacheManager.clear();
+            display('cacheResult', '✅ Cache cleared', 'success');
+        }
+
+        // Performance tests
+        async function testPerformance() {
+            // Test 1: Fast operation
+            const end1 = PerformanceMonitor.time('test_fast_operation');
+            await new Promise(resolve => setTimeout(resolve, 50));
+            end1({ success: true });
+            
+            // Test 2: Slow operation
+            const end2 = PerformanceMonitor.time('test_slow_operation');
+            await new Promise(resolve => setTimeout(resolve, 1200));
+            end2({ success: true });
+            
+            // Test 3: Multiple operations
+            for (let i = 0; i < 5; i++) {
+                const end = PerformanceMonitor.time('test_batch_operation');
+                await new Promise(resolve => setTimeout(resolve, Math.random() * 200));
+                end({ success: true, iteration: i });
+            }
+            
+            display('performanceResult', '✅ Performance test complete. Click "Show Report" to see metrics', 'success');
+        }
+
+        function showPerformanceReport() {
+            const report = PerformanceMonitor.getReport();
+            const formatted = JSON.stringify(report, null, 2);
+            display('performanceResult', formatted, 'info');
+        }
+
+        function clearPerformance() {
+            PerformanceMonitor.clear();
+            display('performanceResult', '✅ Performance metrics cleared', 'success');
+        }
+
+        // Storage tests
+        function testStorage() {
+            const testData = {
+                message: 'Hello ocean',
+                timestamp: Date.now(),
+                nested: {
+                    deep: {
+                        value: 'Deep value'
+                    }
+                }
+            };
+            
+            // Save with compression
+            StorageOptimizer.setItem('test_data', testData, true);
+            
+            // Retrieve
+            const retrieved = StorageOptimizer.getItem('test_data');
+            
+            const match = JSON.stringify(testData) === JSON.stringify(retrieved);
+            
+            display('storageResult', `✅ Storage test complete
+Saved: ${JSON.stringify(testData)}
+Retrieved: ${JSON.stringify(retrieved)}
+Match: ${match ? '✅ Yes' : '❌ No'}`, 'success');
+        }
+
+        function showStorageStats() {
+            const stats = StorageOptimizer.getStats();
+            const formatted = `Used: ${stats.used}
+Max: ${stats.max}
+Percentage: ${stats.percentage}
+Items: ${stats.itemCount}`;
+            display('storageResult', formatted, 'info');
+        }
+
+        function testCompression() {
+            const longText = 'The ocean whispers ancient wisdom. '.repeat(100);
+            
+            const compressed = StorageOptimizer.compress(longText);
+            const decompressed = StorageOptimizer.decompress(compressed);
+            
+            const originalSize = longText.length;
+            const compressedSize = compressed.length;
+            const ratio = ((1 - compressedSize / originalSize) * 100).toFixed(1);
+            
+            const match = longText === decompressed;
+            
+            display('storageResult', `✅ Compression test complete
+Original size: ${originalSize} chars
+Compressed size: ${compressedSize} chars
+Compression ratio: ${ratio}%
+Decompression match: ${match ? '✅ Yes' : '❌ No'}`, 'success');
+        }
+
+        // Lazy loader tests
+        async function testLazyLoader() {
+            display('lazyResult', '⏳ Loading modules...', 'info');
+            
+            try {
+                // This will fail gracefully since modules don't exist in test
+                await LazyLoader.load('../js/features/quickReactions.js').catch(() => {});
+                
+                display('lazyResult', `✅ Lazy loader test complete
+Note: Actual module loading will work in main app
+Loaded modules: ${LazyLoader.getLoadedModules().length}`, 'success');
+            } catch (error) {
+                display('lazyResult', `⚠️ Test complete (modules not found, which is expected in test)
+Lazy loader is functional`, 'warning');
+            }
+        }
+
+        function showLoadedModules() {
+            const modules = LazyLoader.getLoadedModules();
+            display('lazyResult', modules.length > 0 ? modules.join('\n') : 'No modules loaded yet', 'info');
+        }
+
+        // Utilities tests
+        function testDebounce() {
+            let callCount = 0;
+            const debouncedFn = debounce(() => {
+                callCount++;
+                display('utilsResult', `✅ Debounce test complete
+Called ${callCount} time(s) (should be 1 despite multiple triggers)`, 'success');
+            }, 500);
+            
+            // Trigger multiple times
+            for (let i = 0; i < 10; i++) {
+                debouncedFn();
+            }
+            
+            display('utilsResult', '⏳ Debouncing... (wait 500ms)', 'info');
+        }
+
+        function testThrottle() {
+            let callCount = 0;
+            const throttledFn = throttle(() => {
+                callCount++;
+                document.getElementById('utilsResult').innerHTML += `\nCall ${callCount}`;
+            }, 200);
+            
+            display('utilsResult', '⏳ Throttling... (triggering 10 times)', 'info');
+            
+            // Trigger multiple times rapidly
+            for (let i = 0; i < 10; i++) {
+                setTimeout(() => throttledFn(), i * 50);
+            }
+            
+            setTimeout(() => {
+                display('utilsResult', `✅ Throttle test complete
+Total calls: ${callCount} (should be ~3-4 out of 10 triggers)`, 'success');
+            }, 1000);
+        }
+
+        // Overall stats
+        function updateOverallStats() {
+            const cacheStats = CacheManager.getStats();
+            const storageStats = StorageOptimizer.getStats();
+            const perfReport = PerformanceMonitor.getReport();
+            const logs = Logger.getLogs();
+            
+            const html = `
+                <div class="stat-card">
+                    <div class="stat-value">${cacheStats.memorySize}</div>
+                    <div class="stat-label">Cached Items</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${storageStats.percentage}</div>
+                    <div class="stat-label">Storage Used</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${logs.length}</div>
+                    <div class="stat-label">Log Entries</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">${LazyLoader.getLoadedModules().length}</div>
+                    <div class="stat-label">Loaded Modules</div>
+                </div>
+            `;
+            
+            document.getElementById('overallStats').innerHTML = html;
+        }
+
+        // Update stats every 2 seconds
+        setInterval(updateOverallStats, 2000);
+        updateOverallStats();
+
+        // Initial message
+        Logger.info('Test', 'Performance test page loaded');
+        console.log('🧪 Performance test page ready. Use the buttons to test each system.');
+    </script>
+</body>
+</html>

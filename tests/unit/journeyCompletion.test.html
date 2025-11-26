@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Journey Completion - Unit Tests</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #e0e0e0;
+            margin-bottom: 30px;
+        }
+        
+        .test-info {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .test-info h2 {
+            margin-bottom: 15px;
+            color: #ffd700;
+        }
+        
+        .test-info ul {
+            margin-left: 20px;
+        }
+        
+        .test-info li {
+            margin: 5px 0;
+        }
+        
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            margin: 20px auto;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+        
+        #test-results {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .success {
+            color: #4CAF50;
+        }
+        
+        .error {
+            color: #ff6b6b;
+        }
+        
+        .info {
+            color: #ffd700;
+        }
+        
+        .test-summary {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 1.2em;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Journey Completion Tests</h1>
+        <p class="subtitle">Tests unitarios para detección de cierre de conversación</p>
+
+        <div class="test-info">
+            <h2>📋 Cobertura de Tests</h2>
+            <ul>
+                <li>✅ Inicialización y singleton</li>
+                <li>✅ Análisis de mensajes</li>
+                <li>✅ Detección de indicadores de cierre</li>
+                <li>✅ Cálculo de score de completitud</li>
+                <li>✅ Actualización de etapas del viaje</li>
+                <li>✅ Determinación de tipo de cierre</li>
+                <li>✅ Generación de prompts de cierre</li>
+                <li>✅ Reset del estado</li>
+                <li>✅ Obtención de estado actual</li>
+                <li>✅ Manejo de contexto</li>
+            </ul>
+        </div>
+
+        <button onclick="runJourneyCompletionTests()">▶️ Ejecutar Tests</button>
+
+        <div id="test-results"></div>
+    </div>
+
+    <!-- Load module -->
+    <script src="../../js/core/journeyCompletion.js"></script>
+
+    <!-- Test suite -->
+    <script>
+        let testResults = [];
+        let passedTests = 0;
+        let failedTests = 0;
+
+        function log(message, type = 'info') {
+            const resultsDiv = document.getElementById('test-results');
+            const className = type === 'success' ? 'success' : type === 'error' ? 'error' : 'info';
+            resultsDiv.innerHTML += `<span class="${className}">${message}</span>\n`;
+            console.log(message);
+        }
+
+        function assert(condition, testName) {
+            if (condition) {
+                passedTests++;
+                log(`✓ ${testName}`, 'success');
+                testResults.push({ name: testName, passed: true });
+            } else {
+                failedTests++;
+                log(`✗ ${testName}`, 'error');
+                testResults.push({ name: testName, passed: false });
+            }
+        }
+
+        function runJourneyCompletionTests() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '';
+            testResults = [];
+            passedTests = 0;
+            failedTests = 0;
+
+            log('🧪 Iniciando tests de Journey Completion...\n', 'info');
+
+            // Test 1: Module exists
+            log('Test 1: Verificar que el módulo existe', 'info');
+            assert(
+                typeof JourneyCompletion !== 'undefined',
+                'JourneyCompletion está definido'
+            );
+            assert(
+                typeof JOURNEY_STAGES !== 'undefined',
+                'JOURNEY_STAGES está definido'
+            );
+
+            // Test 2: Singleton pattern
+            log('\nTest 2: Patrón singleton', 'info');
+            const instance1 = JourneyCompletion.getInstance();
+            const instance2 = JourneyCompletion.getInstance();
+            assert(
+                instance1 === instance2,
+                'getInstance() retorna la misma instancia'
+            );
+
+            // Test 3: Initial state
+            log('\nTest 3: Estado inicial', 'info');
+            const journey = new JourneyCompletion();
+            journey.reset();
+            const status = journey.getStatus();
+            assert(
+                status.stage === 'beginning',
+                'Etapa inicial es "beginning"'
+            );
+            assert(
+                status.messageCount === 0,
+                'Contador de mensajes inicia en 0'
+            );
+            assert(
+                status.completionScore === 0,
+                'Score de completitud inicia en 0'
+            );
+
+            // Test 4: Message analysis
+            log('\nTest 4: Análisis de mensajes', 'info');
+            journey.reset();
+            const analysis = journey.analyzeCompletion('Hola, ¿cómo estás?');
+            assert(
+                analysis.messageCount === 1,
+                'Contador de mensajes se incrementa'
+            );
+            assert(
+                analysis.stage !== undefined,
+                'Análisis incluye etapa'
+            );
+            assert(
+                typeof analysis.completionScore === 'number',
+                'Análisis incluye score numérico'
+            );
+
+            // Test 5: Completion indicators detection
+            log('\nTest 5: Detección de indicadores de cierre', 'info');
+            journey.reset();
+            const clarityMessage = 'Ahora entiendo lo que debo hacer, gracias';
+            const clarityAnalysis = journey.analyzeCompletion(clarityMessage);
+            assert(
+                clarityAnalysis.indicators.length > 0,
+                'Detecta indicadores de claridad'
+            );
+            assert(
+                clarityAnalysis.indicators.includes('CLARITY_ACHIEVED'),
+                'Detecta CLARITY_ACHIEVED'
+            );
+
+            // Test 6: Action indicators
+            log('\nTest 6: Detección de indicadores de acción', 'info');
+            journey.reset();
+            const actionMessage = 'Voy a intentarlo mañana';
+            const actionAnalysis = journey.analyzeCompletion(actionMessage);
+            assert(
+                actionAnalysis.indicators.includes('ACTION_READY'),
+                'Detecta ACTION_READY'
+            );
+
+            // Test 7: Stage progression
+            log('\nTest 7: Progresión de etapas', 'info');
+            journey.reset();
+            // Beginning stage (0-2 messages)
+            journey.analyzeCompletion('Mensaje 1');
+            assert(
+                journey.currentStage === 'beginning',
+                'Etapa "beginning" en mensaje 1'
+            );
+            
+            // Exploring stage (3-5 messages)
+            journey.analyzeCompletion('Mensaje 2');
+            journey.analyzeCompletion('Mensaje 3');
+            assert(
+                journey.currentStage === 'exploring',
+                'Etapa "exploring" en mensaje 3'
+            );
+
+            // Test 8: Completion score calculation
+            log('\nTest 8: Cálculo de score de completitud', 'info');
+            journey.reset();
+            const context = {
+                oceanState: 'resolved',
+                expressionMetrics: {
+                    clarity: 80,
+                    specificity: 70,
+                    emotionalAwareness: 90
+                }
+            };
+            const scoreAnalysis = journey.analyzeCompletion('Gracias por todo', context);
+            assert(
+                scoreAnalysis.completionScore > 0,
+                'Score de completitud es mayor a 0'
+            );
+            assert(
+                scoreAnalysis.completionScore <= 100,
+                'Score de completitud no excede 100'
+            );
+
+            // Test 9: Closure type determination
+            log('\nTest 9: Determinación de tipo de cierre', 'info');
+            journey.reset();
+            const closureAnalysis = journey.analyzeCompletion('Ahora veo claro, gracias');
+            assert(
+                closureAnalysis.closureType !== undefined,
+                'Determina tipo de cierre'
+            );
+            assert(
+                closureAnalysis.closureType === 'clarity_celebration',
+                'Tipo de cierre correcto para claridad'
+            );
+
+            // Test 10: Closure prompt generation
+            log('\nTest 10: Generación de prompts de cierre', 'info');
+            const prompt = journey.getClosurePrompt('clarity_celebration');
+            assert(
+                prompt && prompt.length > 0,
+                'Genera prompt de cierre'
+            );
+            assert(
+                prompt.includes('JOURNEY COMPLETION'),
+                'Prompt incluye encabezado'
+            );
+
+            // Summary
+            log('\n' + '='.repeat(50), 'info');
+            log(`\n📊 Resumen de Tests:`, 'info');
+            log(`Total: ${passedTests + failedTests}`, 'info');
+            log(`✓ Pasaron: ${passedTests}`, 'success');
+            log(`✗ Fallaron: ${failedTests}`, 'error');
+            log(`Tasa de éxito: ${Math.round((passedTests / (passedTests + failedTests)) * 100)}%`, 'info');
+
+            // Create summary element
+            const summaryDiv = document.createElement('div');
+            summaryDiv.className = 'test-summary';
+            summaryDiv.innerHTML = `
+                <strong>Resultado Final:</strong> ${failedTests === 0 ? '✅ TODOS LOS TESTS PASARON' : '⚠️ ALGUNOS TESTS FALLARON'}<br>
+                ${passedTests}/${passedTests + failedTests} tests pasaron (${Math.round((passedTests / (passedTests + failedTests)) * 100)}%)
+            `;
+            resultsDiv.appendChild(summaryDiv);
+
+            console.log('Test results:', testResults);
+        }
+
+        // Auto-info on load
+        window.addEventListener('load', () => {
+            console.log('🧪 Journey Completion Test Suite cargado');
+            console.log('Haz clic en "Ejecutar Tests" o llama runJourneyCompletionTests() en consola');
+        });
+    </script>
+</body>
+</html>

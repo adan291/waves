@@ -1,0 +1,29 @@
+# Local configuration (contains API keys)
+js/config.local.js
+*.local.js
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
+logs/
+logs/*.log
+
+# Temporary files
+*.tmp
+.cache/

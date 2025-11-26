@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whispers of the Wave - Visión de Producción</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0a1128 0%, #001f54 25%, #1a4d6d 50%, #40e0d0 75%, #7dd3c0 100%);
+            background-size: 400% 400%;
+            animation: waveGradient 15s ease-in-out infinite;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        @keyframes waveGradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+            font-style: italic;
+        }
+        
+        .mockup-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .mockup-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .mockup-card h2 {
+            color: #7dd3c0;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .mockup-card h3 {
+            color: #80deea;
+            margin: 1rem 0 0.5rem 0;
+            font-size: 1.1rem;
+        }
+        
+        .mockup-card p, .mockup-card li {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+        }
+        
+        .mockup-card ul {
+            list-style: none;
+            padding-left: 1rem;
+        }
+        
+        .mockup-card li::before {
+            content: "✓ ";
+            color: #7dd3c0;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+        
+        .feature-badge {
+            display: inline-block;
+            background: rgba(125, 211, 192, 0.2);
+            color: #7dd3c0;
+            padding: 0.3rem 0.8rem;
+            border-radius: 1rem;
+            font-size: 0.85rem;
+            margin: 0.2rem;
+            border: 1px solid rgba(125, 211, 192, 0.3);
+        }
+        
+        .pricing-card {
+            background: linear-gradient(135deg, rgba(100, 200, 255, 0.1), rgba(125, 211, 192, 0.1));
+            border: 2px solid rgba(125, 211, 192, 0.3);
+        }
+        
+        .pricing-card .price {
+            font-size: 2.5rem;
+            color: #7dd3c0;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+        
+        .pricing-card .price span {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #40e0d0, #7dd3c0);
+            color: #0a1128;
+            padding: 1rem 2rem;
+            border-radius: 2rem;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 1rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(64, 224, 208, 0.3);
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(64, 224, 208, 0.5);
+        }
+        
+        .timeline {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+        }
+        
+        .timeline-item {
+            padding: 0.5rem 0;
+            border-left: 3px solid #7dd3c0;
+            padding-left: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .timeline-item h4 {
+            color: #7dd3c0;
+            margin-bottom: 0.3rem;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .comparison-table th {
+            background: rgba(125, 211, 192, 0.2);
+            color: #7dd3c0;
+            font-weight: bold;
+        }
+        
+        .comparison-table td {
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .check {
+            color: #7dd3c0;
+            font-weight: bold;
+        }
+        
+        .cross {
+            color: #ff6b6b;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .stat-card {
+            background: rgba(125, 211, 192, 0.1);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            border: 1px solid rgba(125, 211, 192, 0.2);
+        }
+        
+        .stat-card .number {
+            font-size: 2rem;
+            color: #7dd3c0;
+            font-weight: bold;
+        }
+        
+        .stat-card .label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌊 Whispers of the Wave</h1>
+        <p class="subtitle">Visión de Producción - La Aplicación al 100%</p>
+        
+        <!-- Features Grid -->
+        <div class="mockup-grid">
+            <!-- Core Features -->
+            <div class="mockup-card">
+                <h2>🎭 Características Principales</h2>
+                <h3>Dual Personality AI</h3>
+                <ul>
+                    <li>Whispers Mode (Poético y empático)</li>
+                    <li>Kiro Mode (Analítico y estructurado)</li>
+                    <li>Auto-switch inteligente</li>
+                    <li>Indicador visual del modo activo</li>
+                </ul>
+                
+                <h3>Text-to-Speech Premium</h3>
+                <ul>
+                    <li>4 voces naturales (Kore, Aoede, Charon, Fenrir)</li>
+                    <li>Control de velocidad y volumen</li>
+                    <li>Auto-reproducción opcional</li>
+                    <li>Botón de reproducción por mensaje</li>
+                </ul>
+                
+                <h3>Preguntas Contextuales</h3>
+                <ul>
+                    <li>Sugerencias iniciales personalizadas</li>
+                    <li>Preguntas que evolucionan con la conversación</li>
+                    <li>Basadas en historial del usuario</li>
+                </ul>
+            </div>
+            
+            <!-- User Experience -->
+            <div class="mockup-card">
+                <h2>✨ Experiencia de Usuario</h2>
+                <h3>Interfaz Inmersiva</h3>
+                <ul>
+                    <li>Animación de océano en tiempo real</li>
+                    <li>4 temas visuales (Oscuro, Claro, Atardecer, Noche)</li>
+                    <li>Transiciones suaves y fluidas</li>
+                    <li>Diseño responsive (móvil, tablet, desktop)</li>
+                </ul>
+                
+                <h3>Gestión de Conversaciones</h3>
+                <ul>
+                    <li>Guardar y organizar conversaciones</li>
+                    <li>Exportar a PDF/Markdown</li>
+                    <li>Buscar en historial</li>
+                    <li>Etiquetar por tema</li>
+                    <li>Marcar como "Resuelta"</li>
+                </ul>
+                
+                <h3>Personalización</h3>
+                <ul>
+                    <li>Preferencias de voz y audio</li>
+                    <li>Comportamiento de IA ajustable</li>
+                    <li>Idioma y región</li>
+                    <li>Control de privacidad</li>
+                </ul>
+            </div>
+            
+            <!-- Technical Excellence -->
+            <div class="mockup-card">
+                <h2>⚡ Excelencia Técnica</h2>
+                <h3>Arquitectura Robusta</h3>
+                <ul>
+                    <li>Backend Node.js/Express escalable</li>
+                    <li>PostgreSQL para datos estructurados</li>
+                    <li>Redis para caching y performance</li>
+                    <li>S3/CloudFlare para almacenamiento</li>
+                </ul>
+                
+                <h3>Seguridad Enterprise</h3>
+                <ul>
+                    <li>HTTPS obligatorio</li>
+                    <li>Encriptación end-to-end</li>
+                    <li>Rate limiting por usuario</li>
+                    <li>Content moderation</li>
+                    <li>Logs de auditoría</li>
+                </ul>
+                
+                <h3>Performance</h3>
+                <ul>
+                    <li>CDN global (CloudFlare)</li>
+                    <li>Caching agresivo</li>
+                    <li>Code splitting y lazy loading</li>
+                    <li>PWA con Service Worker</li>
+                    <li>Tiempo de respuesta < 2s</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Pricing -->
+        <h2 style="color: white; text-align: center; margin: 3rem 0 2rem 0;">💰 Planes y Precios</h2>
+        <div class="mockup-grid">
+            <div class="mockup-card pricing-card">
+                <h2>🌊 Plan Gratuito</h2>
+                <div class="price">$0<span>/mes</span></div>
+                <ul>
+                    <li>20 mensajes por día</li>
+                    <li>Ambos modos (Whispers + Kiro)</li>
+                    <li>TTS básico (1 voz)</li>
+                    <li>Historial de 7 días</li>
+                    <li>Preguntas sugeridas</li>
+                </ul>
+                <a href="#" class="cta-button">Comenzar Gratis</a>
+            </div>
+            
+            <div class="mockup-card pricing-card" style="border-color: #7dd3c0; border-width: 3px;">
+                <h2>⭐ Plan Pro</h2>
+                <div class="price">$9.99<span>/mes</span></div>
+                <span class="feature-badge">Más Popular</span>
+                <ul>
+                    <li>Mensajes ilimitados</li>
+                    <li>TTS premium (4 voces)</li>
+                    <li>Historial ilimitado</li>
+                    <li>Exportar conversaciones</li>
+                    <li>Prioridad en respuestas</li>
+                    <li>Sin anuncios</li>
+                    <li>Temas personalizados</li>
+                </ul>
+                <a href="#" class="cta-button">Actualizar a Pro</a>
+            </div>
+            
+            <div class="mockup-card pricing-card">
+                <h2>👥 Plan Team</h2>
+                <div class="price">$29.99<span>/mes</span></div>
+                <ul>
+                    <li>Todo de Plan Pro</li>
+                    <li>5 usuarios incluidos</li>
+                    <li>Conversaciones compartidas</li>
+                    <li>Dashboard de equipo</li>
+                    <li>Integraciones (Slack, etc.)</li>
+                    <li>Soporte prioritario</li>
+                    <li>API access</li>
+                </ul>
+                <a href="#" class="cta-button">Contactar Ventas</a>
+            </div>
+        </div>
+        
+        <!-- Roadmap -->
+        <div class="mockup-card" style="margin-top: 2rem;">
+            <h2>🗺️ Roadmap 2025</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h4>Q1 2025 - Lanzamiento MVP</h4>
+                    <p>✓ Dual personality AI • ✓ TTS básico • ✓ Historial • ✓ Preguntas contextuales</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Q2 2025 - Expansión Móvil</h4>
+                    <p>App móvil (iOS/Android) • Modo offline • Widgets • Integraciones (Notion, etc.)</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Q3 2025 - Features Avanzadas</h4>
+                    <p>Conversaciones de voz (STT) • Modo grupo/familia • Journaling guiado • Análisis emocional</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Q4 2025 - Ecosistema</h4>
+                    <p>API pública • Plugins de terceros • Modo terapeuta certificado • Comunidad</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Comparison -->
+        <div class="mockup-card" style="margin-top: 2rem;">
+            <h2>🎯 Comparación con Competencia</h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Whispers</th>
+                        <th>ChatGPT</th>
+                        <th>Replika</th>
+                        <th>Woebot</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Dual Personality</td>
+                        <td class="check">✓</td>
+                        <td class="cross">✗</td>
+                        <td class="cross">✗</td>
+                        <td class="cross">✗</td>
+                    </tr>
+                    <tr>
+                        <td>Respuestas Poéticas</td>
+                        <td class="check">✓</td>
+                        <td class="cross">✗</td>
+                        <td>⚠️</td>
+                        <td class="cross">✗</td>
+                    </tr>
+                    <tr>
+                        <td>Soporte de Decisiones</td>
+                        <td class="check">✓</td>
+                        <td>⚠️</td>
+                        <td class="cross">✗</td>
+                        <td class="cross">✗</td>
+                    </tr>
+                    <tr>
+                        <td>TTS Premium</td>
+                        <td class="check">✓</td>
+                        <td>⚠️</td>
+                        <td class="check">✓</td>
+                        <td class="cross">✗</td>
+                    </tr>
+                    <tr>
+                        <td>Preguntas Contextuales</td>
+                        <td class="check">✓</td>
+                        <td class="cross">✗</td>
+                        <td>⚠️</td>
+                        <td class="check">✓</td>
+                    </tr>
+                    <tr>
+                        <td>Two-Phase AI</td>
+                        <td class="check">✓</td>
+                        <td class="cross">✗</td>
+                        <td class="cross">✗</td>
+                        <td class="cross">✗</td>
+                    </tr>
+                    <tr>
+                        <td>Enfoque en Privacidad</td>
+                        <td class="check">✓</td>
+                        <td>⚠️</td>
+                        <td>⚠️</td>
+                        <td class="check">✓</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Projections -->
+        <div class="mockup-card" style="margin-top: 2rem;">
+            <h2>📈 Proyecciones Año 1</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="number">30K</div>
+                    <div class="label">Usuarios al final del año</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">25%</div>
+                    <div class="label">Tasa de conversión Pro</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">$400K</div>
+                    <div class="label">ARR (Annual Recurring Revenue)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">85%</div>
+                    <div class="label">Retención D30</div>
+                </div>
+            </div>
+            
+            <h3 style="margin-top: 2rem;">Crecimiento Mensual</h3>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h4>Mes 1-3: Lanzamiento</h4>
+                    <p>1,000 usuarios • 10% Pro • $1,000/mes</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Mes 4-6: Crecimiento Inicial</h4>
+                    <p>5,000 usuarios • 15% Pro • $7,500/mes</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Mes 7-9: Aceleración</h4>
+                    <p>15,000 usuarios • 20% Pro • $30,000/mes</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Mes 10-12: Consolidación</h4>
+                    <p>30,000 usuarios • 25% Pro • $75,000/mes</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- CTA Final -->
+        <div class="mockup-card" style="margin-top: 2rem; text-align: center; background: linear-gradient(135deg, rgba(64, 224, 208, 0.2), rgba(125, 211, 192, 0.2));">
+            <h2>🚀 ¿Listo para Lanzar?</h2>
+            <p style="font-size: 1.2rem; margin: 1rem 0;">Whispers of the Wave está listo para cambiar cómo las personas reflexionan y toman decisiones.</p>
+            <div style="margin-top: 2rem;">
+                <a href="#" class="cta-button" style="margin: 0.5rem;">Ver Demo Completa</a>
+                <a href="#" class="cta-button" style="margin: 0.5rem;">Descargar Pitch Deck</a>
+                <a href="#" class="cta-button" style="margin: 0.5rem;">Contactar Equipo</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

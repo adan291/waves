@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Sugerencias Fijas</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/themes.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+        }
+        
+        .test-controls {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 200;
+            background: rgba(10, 17, 40, 0.9);
+            padding: 1rem;
+            border-radius: 15px;
+            border: 2px solid rgba(125, 211, 192, 0.5);
+        }
+        
+        body[data-theme="light"] .test-controls {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: rgba(2, 119, 189, 0.5);
+        }
+        
+        .test-controls h3 {
+            color: #7dd3c0;
+            margin: 0 0 1rem 0;
+            font-size: 1rem;
+        }
+        
+        body[data-theme="light"] .test-controls h3 {
+            color: #0277bd;
+        }
+        
+        .test-btn {
+            display: block;
+            width: 100%;
+            margin: 0.5rem 0;
+            padding: 0.5rem 1rem;
+            background: rgba(125, 211, 192, 0.2);
+            border: 1px solid rgba(125, 211, 192, 0.5);
+            border-radius: 10px;
+            color: #e0f7fa;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        
+        .test-btn:hover {
+            background: rgba(125, 211, 192, 0.4);
+        }
+        
+        body[data-theme="light"] .test-btn {
+            background: rgba(2, 119, 189, 0.15);
+            border-color: rgba(2, 119, 189, 0.4);
+            color: #01579b;
+        }
+        
+        body[data-theme="light"] .test-btn:hover {
+            background: rgba(2, 119, 189, 0.3);
+        }
+        
+        .message-display {
+            padding-bottom: 200px; /* Space for suggestions */
+        }
+        
+        .test-message {
+            background: rgba(10, 75, 94, 0.6);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 12px;
+            border-left: 3px solid rgba(128, 222, 234, 0.5);
+        }
+        
+        body[data-theme="light"] .test-message {
+            background: rgba(255, 255, 255, 0.7);
+            border-left-color: rgba(2, 119, 189, 0.5);
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <div class="ocean-background"></div>
+    
+    <div class="test-controls">
+        <h3>🧪 Test de Sugerencias</h3>
+        <button class="test-btn" onclick="changeState('confused')">😕 Confusión</button>
+        <button class="test-btn" onclick="changeState('anxious')">😰 Ansiedad</button>
+        <button class="test-btn" onclick="changeState('processing')">🤔 Procesando</button>
+        <button class="test-btn" onclick="changeState('clarity')">💡 Claridad</button>
+        <button class="test-btn" onclick="changeState('resolved')">✨ Resuelto</button>
+        <button class="test-btn" onclick="toggleTheme()">🌓 Cambiar Tema</button>
+    </div>
+    
+    <div class="container">
+        <div class="mode-indicator">
+            <span class="mode-icon">🌊</span>
+            <span class="mode-text">Test de Sugerencias Fijas</span>
+        </div>
+        
+        <div id="messageDisplay" class="message-display">
+            <div class="test-message">
+                <p style="color: #b3e5fc; font-style: italic;">
+                    Las sugerencias ahora están en una posición fija debajo, 
+                    fuera del flujo de conversación.
+                </p>
+                <p style="color: #e0f7fa; margin-top: 0.5rem;">
+                    Cambia el estado usando los botones de la izquierda para ver 
+                    cómo las sugerencias se actualizan automáticamente.
+                </p>
+            </div>
+        </div>
+        
+        <!-- Fixed Suggestions Panel -->
+        <div id="suggestionsPanel" class="suggestions-panel">
+            <div id="suggestionsContainer" class="suggestions-panel-content"></div>
+        </div>
+        
+        <div class="input-container">
+            <button class="voice-btn">🎤</button>
+            <input type="text" id="userInput" class="user-input" placeholder="Las sugerencias aparecen aquí arriba...">
+            <button class="send-btn">➤</button>
+        </div>
+    </div>
+    
+    <script src="../js/ui/suggestions.js"></script>
+    <script>
+        let currentTheme = 'dark';
+        let currentState = 'confused';
+        
+        // Initialize with confused state
+        setTimeout(() => {
+            const container = document.getElementById('suggestionsContainer');
+            if (container && typeof SuggestionsModule !== 'undefined') {
+                SuggestionsModule.displayContextual('confused', container);
+            }
+        }, 100);
+        
+        function changeState(state) {
+            currentState = state;
+            const container = document.getElementById('suggestionsContainer');
+            
+            if (container && typeof SuggestionsModule !== 'undefined') {
+                SuggestionsModule.displayContextual(state, container);
+                console.log('🌊 Estado cambiado a:', state);
+                
+                // Add visual feedback
+                const messageDisplay = document.getElementById('messageDisplay');
+                const stateNames = {
+                    confused: 'Confusión',
+                    anxious: 'Ansiedad',
+                    processing: 'Procesando',
+                    clarity: 'Claridad',
+                    resolved: 'Resuelto'
+                };
+                
+                const feedback = document.createElement('div');
+                feedback.className = 'test-message';
+                feedback.style.animation = 'fadeIn 0.5s ease-in';
+                feedback.innerHTML = `
+                    <p style="color: #80deea; font-weight: 600;">
+                        Estado actualizado: ${stateNames[state]}
+                    </p>
+                    <p style="color: #b3e5fc; font-size: 0.85rem; margin-top: 0.5rem;">
+                        Las sugerencias se han actualizado automáticamente.
+                    </p>
+                `;
+                
+                messageDisplay.appendChild(feedback);
+                messageDisplay.scrollTop = messageDisplay.scrollHeight;
+            }
+        }
+        
+        function toggleTheme() {
+            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', currentTheme);
+            console.log('🎨 Tema cambiado a:', currentTheme);
+        }
+        
+        // Listen for suggestion clicks
+        document.addEventListener('suggestionSelected', (event) => {
+            console.log('💭 Sugerencia seleccionada:', event.detail.text);
+            
+            const messageDisplay = document.getElementById('messageDisplay');
+            const message = document.createElement('div');
+            message.className = 'test-message';
+            message.style.animation = 'fadeIn 0.5s ease-in';
+            message.innerHTML = `
+                <p style="color: #e0f7fa;">
+                    <strong>Sugerencia seleccionada:</strong><br>
+                    "${event.detail.text}"
+                </p>
+            `;
+            
+            messageDisplay.appendChild(message);
+            messageDisplay.scrollTop = messageDisplay.scrollHeight;
+        });
+        
+        console.log('🧪 Test de sugerencias fijas iniciado');
+    </script>
+</body>
+</html>

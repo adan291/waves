@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResponsePatterns Unit Tests</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            margin: 20px auto;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        #test-results {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .success {
+            color: #4CAF50;
+        }
+        .error {
+            color: #ff6b6b;
+        }
+        .info {
+            color: #ffd700;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎨 ResponsePatterns Unit Tests</h1>
+
+    <div class="test-section">
+        <h2>Test Coverage</h2>
+        <ul>
+            <li>✅ Singleton pattern</li>
+            <li>✅ State to pattern mapping</li>
+            <li>✅ Prompt generation for all patterns</li>
+            <li>✅ Basic validation (whisper/reflection structure)</li>
+            <li>✅ Life Questioning validation (requires questions)</li>
+            <li>✅ Emotional Soothing validation (no deep questions)</li>
+            <li>✅ Decision Matrix validation (no pressure/directive)</li>
+            <li>✅ Action Roadmap validation (timeframes, actions)</li>
+            <li>✅ Reflective Mirror validation (no solutions)</li>
+            <li>✅ Neutral Chat validation (brevity)</li>
+            <li>✅ Ocean metaphor validation</li>
+            <li>✅ Edge cases</li>
+        </ul>
+    </div>
+
+    <button onclick="runResponsePatternsTests()">Run All Tests</button>
+
+    <div id="test-results"></div>
+
+    <!-- Load dependencies -->
+    <script src="../js/prompts/adaptivePrompts.js"></script>
+    <script src="../js/core/responsePatterns.js"></script>
+    
+    <!-- Load test suite -->
+    <script src="responsePatterns.test.js"></script>
+
+    <script>
+        // Auto-run tests on load
+        window.addEventListener('load', () => {
+            console.log('🧪 ResponsePatterns Test Suite Loaded');
+            console.log('Click "Run All Tests" button or call runResponsePatternsTests() in console');
+        });
+    </script>
+</body>
+</html>

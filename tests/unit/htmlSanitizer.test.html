@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Sanitizer Tests</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0a1128 0%, #001f54 100%);
+            color: #e0f7fa;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #40e0d0;
+            margin-bottom: 20px;
+        }
+        
+        .test-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .test-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin: 5px 0;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+        
+        .status {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .status.pass {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .status.fail {
+            background: #f44336;
+            color: white;
+        }
+        
+        .test-name {
+            flex: 1;
+        }
+        
+        .error-detail {
+            color: #ff8a80;
+            font-size: 0.9em;
+            margin-left: 34px;
+            margin-top: 5px;
+        }
+        
+        .summary {
+            background: linear-gradient(135deg, rgba(64, 224, 208, 0.1) 0%, rgba(125, 211, 192, 0.1) 100%);
+            border: 2px solid #40e0d0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .stat {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 6px;
+        }
+        
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #40e0d0;
+        }
+        
+        .stat-label {
+            color: #87ceeb;
+            margin-top: 5px;
+            font-size: 0.9em;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #40e0d0 0%, #7dd3c0 100%);
+            color: #0a1128;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 HTML Sanitizer Tests</h1>
+        
+        <button onclick="runTests()">▶️ Ejecutar Tests</button>
+        
+        <div class="summary" id="summary" style="display: none;">
+            <h2>📊 Resultados</h2>
+            <div class="summary-stats">
+                <div class="stat">
+                    <div class="stat-value" id="passCount">0</div>
+                    <div class="stat-label">Pasaron</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="failCount">0</div>
+                    <div class="stat-label">Fallaron</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="totalCount">0</div>
+                    <div class="stat-label">Total</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="percentage">0%</div>
+                    <div class="stat-label">Éxito</div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="results"></div>
+    </div>
+
+    <script src="../../js/core/htmlSanitizer.js"></script>
+    
+    <script>
+        // Simple test framework
+        const assert = {
+            toBe(actual, expected, message = '') {
+                if (actual !== expected) {
+                    throw new Error(`Expected ${expected}, got ${actual}. ${message}`);
+                }
+            },
+            toContain(str, substring, message = '') {
+                if (!str.includes(substring)) {
+                    throw new Error(`Expected "${str}" to contain "${substring}". ${message}`);
+                }
+            },
+            notToContain(str, substring, message = '') {
+                if (str.includes(substring)) {
+                    throw new Error(`Expected "${str}" not to contain "${substring}". ${message}`);
+                }
+            },
+            toBeTrue(actual, message = '') {
+                if (actual !== true) {
+                    throw new Error(`Expected true, got ${actual}. ${message}`);
+                }
+            }
+        };
+        
+        const tests = [
+            {
+                name: 'Elimina tags <script>',
+                test: () => {
+                    const dirty = '<p>Hello <script>alert("xss")</script></p>';
+                    const clean = HTMLSanitizer.sanitize(dirty);
+                    assert.notToContain(clean, '<script>', 'Debe eliminar tag script');
+                }
+            },
+            {
+                name: 'Elimina tags <iframe>',
+                test: () => {
+                    const dirty = '<p>Hello <iframe src="evil.com"></iframe></p>';
+                    const clean = HTMLSanitizer.sanitize(dirty);
+                    assert.notToContain(clean, '<iframe>', 'Debe eliminar tag iframe');
+                }
+            },
+            {
+                name: 'Elimina tags <object>',
+                test: () => {
+                    const dirty = '<p>Hello <object data="evil.swf"></object></p>';
+                    const clean = HTMLSanitizer.sanitize(dirty);
+                    assert.notToContain(clean, '<object>', 'Debe eliminar tag object');
+                }
+            },
+            {
+                name: 'Elimina tags <embed>',
+                test: () => {
+                    const dirty = '<p>Hello <embed src="evil.swf"></p>';
+                    const clean = HTMLSanitizer.sanitize(dirty);
+                    assert.notToContain(clean, '<embed>', 'Debe eliminar tag embed');
+                }
+            },
+            {
+                name: 'Elimina atributo onclick',
+                test: () => {
+                    const dirty = '<button onclick="alert(\'xss\')">Click</button>';
+                    const clean = HTMLSanitizer.sanitize(dirty);
+                    assert.notToContain(clean, 'onclick', 'Debe eliminar atributo onclick');
+                }
+            },
+            {
+                name: 'Elimina atributo onerror',
+                test: () => {
+                    const dirty = '<img src="x" onerror="alert(\'xss\')">';
+                    const clean = HTMLSanitizer.sanitize(dirty);
+                    assert.notToContain(clean, 'onerror', 'Debe eliminar atributo onerror');
+                }
+            },
+            {
+                name: 'Elimina atributo onload',
+                test: () => {
+                    const dirty = '<body onload="alert(\'xss\')">';
+                    const clean = HTMLSanitizer.sanitize(dirty);
+                    assert.notToContain(clean, 'onload', 'Debe eliminar atributo onload');
+                }
+            },
+            {
+                name: 'Elimina javascript: en href',
+                test: () => {
+                    const dirty = '<a href="javascript:alert(\'xss\')">Click</a>';
+                    const clean = HTMLSanitizer.sanitize(dirty);
+                    assert.notToContain(clean, 'javascript:', 'Debe eliminar javascript: en href');
+                }
+            },
+            {
+                name: 'Preserva tags seguros <p>',
+                test: () => {
+                    const safe = '<p>Hello world</p>';
+                    const clean = HTMLSanitizer.sanitize(safe);
+                    assert.toContain(clean, '<p>', 'Debe preservar tag p');
+                }
+            },
+            {
+                name: 'Preserva tags seguros <strong>',
+                test: () => {
+                    const safe = '<p>Hello <strong>world</strong></p>';
+                    const clean = HTMLSanitizer.sanitize(safe);
+                    assert.toContain(clean, '<strong>', 'Debe preservar tag strong');
+                }
+            },
+            {
+                name: 'Preserva tags seguros <em>',
+                test: () => {
+                    const safe = '<p>Hello <em>world</em></p>';
+                    const clean = HTMLSanitizer.sanitize(safe);
+                    assert.toContain(clean, '<em>', 'Debe preservar tag em');
+                }
+            },
+            {
+                name: 'Preserva links seguros',
+                test: () => {
+                    const safe = '<a href="https://example.com">Link</a>';
+                    const clean = HTMLSanitizer.sanitize(safe);
+                    assert.toContain(clean, 'href', 'Debe preservar href seguro');
+                }
+            },
+            {
+                name: 'Maneja texto sin HTML',
+                test: () => {
+                    const text = 'Hello world';
+                    const clean = HTMLSanitizer.sanitize(text);
+                    assert.toBe(clean, text, 'Texto plano debe permanecer igual');
+                }
+            },
+            {
+                name: 'Maneja string vacío',
+                test: () => {
+                    const empty = '';
+                    const clean = HTMLSanitizer.sanitize(empty);
+                    assert.toBe(clean, '', 'String vacío debe permanecer vacío');
+                }
+            },
+            {
+                name: 'Elimina múltiples ataques XSS',
+                test: () => {
+                    const dirty = '<script>alert(1)</script><img src=x onerror=alert(2)><a href="javascript:alert(3)">test</a>';
+                    const clean = HTMLSanitizer.sanitize(dirty);
+                    assert.notToContain(clean, '<script>', 'Debe eliminar todos los vectores XSS');
+                    assert.notToContain(clean, 'onerror', 'Debe eliminar todos los vectores XSS');
+                    assert.notToContain(clean, 'javascript:', 'Debe eliminar todos los vectores XSS');
+                }
+            }
+        ];
+        
+        function runTests() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+            
+            let passCount = 0;
+            let failCount = 0;
+            
+            const sectionDiv = document.createElement('div');
+            sectionDiv.className = 'test-section';
+            
+            const sectionTitle = document.createElement('h2');
+            sectionTitle.textContent = 'HTML Sanitizer Tests';
+            sectionDiv.appendChild(sectionTitle);
+            
+            tests.forEach(testCase => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'test-item';
+                
+                let passed = false;
+                let error = null;
+                
+                try {
+                    testCase.test();
+                    passed = true;
+                    passCount++;
+                } catch (e) {
+                    error = e.message;
+                    failCount++;
+                }
+                
+                const statusDiv = document.createElement('div');
+                statusDiv.className = `status ${passed ? 'pass' : 'fail'}`;
+                statusDiv.textContent = passed ? '✓' : '✗';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'test-name';
+                nameDiv.textContent = testCase.name;
+                
+                itemDiv.appendChild(statusDiv);
+                itemDiv.appendChild(nameDiv);
+                
+                if (error) {
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'error-detail';
+                    errorDiv.textContent = error;
+                    itemDiv.appendChild(errorDiv);
+                }
+                
+                sectionDiv.appendChild(itemDiv);
+            });
+            
+            resultsDiv.appendChild(sectionDiv);
+            
+            // Update summary
+            const totalCount = tests.length;
+            document.getElementById('passCount').textContent = passCount;
+            document.getElementById('failCount').textContent = failCount;
+            document.getElementById('totalCount').textContent = totalCount;
+            document.getElementById('percentage').textContent = Math.round((passCount / totalCount) * 100) + '%';
+            document.getElementById('summary').style.display = 'block';
+            
+            console.log(`✅ ${passCount} tests pasaron`);
+            console.log(`❌ ${failCount} tests fallaron`);
+            console.log(`📊 ${Math.round((passCount / totalCount) * 100)}% de éxito`);
+        }
+        
+        // Auto-run on load
+        window.addEventListener('load', () => {
+            console.log('🧪 HTML Sanitizer Tests cargados');
+            console.log('Haz clic en "Ejecutar Tests" para comenzar');
+        });
+    </script>
+</body>
+</html>
+

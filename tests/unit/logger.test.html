@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logger Tests</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0a1128 0%, #001f54 100%);
+            color: #e0f7fa;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #40e0d0;
+            margin-bottom: 20px;
+        }
+        
+        .test-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .test-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin: 5px 0;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+        
+        .status {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .status.pass {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .status.fail {
+            background: #f44336;
+            color: white;
+        }
+        
+        .test-name {
+            flex: 1;
+        }
+        
+        .error-detail {
+            color: #ff8a80;
+            font-size: 0.9em;
+            margin-left: 34px;
+            margin-top: 5px;
+        }
+        
+        .summary {
+            background: linear-gradient(135deg, rgba(64, 224, 208, 0.1) 0%, rgba(125, 211, 192, 0.1) 100%);
+            border: 2px solid #40e0d0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .stat {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 6px;
+        }
+        
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #40e0d0;
+        }
+        
+        .stat-label {
+            color: #87ceeb;
+            margin-top: 5px;
+            font-size: 0.9em;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #40e0d0 0%, #7dd3c0 100%);
+            color: #0a1128;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Logger Tests (10 tests)</h1>
+        
+        <button onclick="runTests()">▶️ Ejecutar Tests</button>
+        
+        <div class="summary" id="summary" style="display: none;">
+            <h2>📊 Resultados</h2>
+            <div class="summary-stats">
+                <div class="stat">
+                    <div class="stat-value" id="passCount">0</div>
+                    <div class="stat-label">Pasaron</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="failCount">0</div>
+                    <div class="stat-label">Fallaron</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="totalCount">0</div>
+                    <div class="stat-label">Total</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value" id="percentage">0%</div>
+                    <div class="stat-label">Éxito</div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="results"></div>
+    </div>
+
+    <script src="../../js/core/logger.js"></script>
+    
+    <script>
+        // Simple test framework
+        const assert = {
+            toBe(actual, expected, message = '') {
+                if (actual !== expected) {
+                    throw new Error(`Expected ${expected}, got ${actual}. ${message}`);
+                }
+            },
+            toBeTrue(actual, message = '') {
+                if (actual !== true) {
+                    throw new Error(`Expected true, got ${actual}. ${message}`);
+                }
+            },
+            toBeFalse(actual, message = '') {
+                if (actual !== false) {
+                    throw new Error(`Expected false, got ${actual}. ${message}`);
+                }
+            },
+            toBeGreaterThan(actual, expected, message = '') {
+                if (actual <= expected) {
+                    throw new Error(`Expected ${actual} to be greater than ${expected}. ${message}`);
+                }
+            }
+        };
+        
+        const tests = [
+            {
+                name: 'Logger está disponible',
+                test: () => {
+                    assert.toBeTrue(typeof Logger !== 'undefined', 'Logger debe estar definido');
+                    assert.toBeTrue(typeof Logger.info === 'function', 'Logger.info debe ser función');
+                }
+            },
+            {
+                name: 'Log de nivel INFO',
+                test: () => {
+                    Logger.clearLogs();
+                    Logger.info('Test', 'Mensaje de prueba');
+                    const logs = Logger.getLogs();
+                    assert.toBeGreaterThan(logs.length, 0, 'Debe haber al menos un log');
+                    assert.toBe(logs[0].level, 'INFO', 'Nivel debe ser INFO');
+                }
+            },
+            {
+                name: 'Log de nivel WARN',
+                test: () => {
+                    Logger.clearLogs();
+                    Logger.warn('Test', 'Advertencia de prueba');
+                    const logs = Logger.getLogs();
+                    assert.toBe(logs[0].level, 'WARN', 'Nivel debe ser WARN');
+                }
+            },
+            {
+                name: 'Log de nivel ERROR',
+                test: () => {
+                    Logger.clearLogs();
+                    Logger.error('Test', 'Error de prueba');
+                    const logs = Logger.getLogs();
+                    assert.toBe(logs[0].level, 'ERROR', 'Nivel debe ser ERROR');
+                }
+            },
+            {
+                name: 'Log con datos adicionales',
+                test: () => {
+                    Logger.clearLogs();
+                    const data = { user: 'test', action: 'click' };
+                    Logger.info('Test', 'Mensaje con datos', data);
+                    const logs = Logger.getLogs();
+                    assert.toBeTrue(logs[0].data !== null, 'Debe tener datos');
+                    assert.toBe(logs[0].data.user, 'test', 'Datos deben coincidir');
+                }
+            },
+            {
+                name: 'Limpiar logs',
+                test: () => {
+                    Logger.clearLogs();
+                    Logger.info('Test', 'Mensaje 1');
+                    Logger.info('Test', 'Mensaje 2');
+                    Logger.clearLogs();
+                    const logs = Logger.getLogs();
+                    assert.toBe(logs.length, 0, 'Logs deben estar vacíos');
+                }
+            },
+            {
+                name: 'Obtener logs',
+                test: () => {
+                    Logger.clearLogs();
+                    Logger.info('Test', 'Mensaje 1');
+                    Logger.info('Test', 'Mensaje 2');
+                    Logger.info('Test', 'Mensaje 3');
+                    const logs = Logger.getLogs();
+                    assert.toBe(logs.length, 3, 'Debe haber 3 logs');
+                }
+            },
+            {
+                name: 'Exportar logs como JSON',
+                test: () => {
+                    Logger.clearLogs();
+                    Logger.info('Test', 'Mensaje de prueba');
+                    const exported = Logger.export();
+                    assert.toBeTrue(typeof exported === 'string', 'Export debe retornar string');
+                    assert.toBeTrue(exported.length > 0, 'Export no debe estar vacío');
+                }
+            },
+            {
+                name: 'Cambiar nivel de log',
+                test: () => {
+                    Logger.clearLogs();
+                    Logger.setLevel('ERROR');
+                    Logger.info('Test', 'Este no debe aparecer');
+                    Logger.error('Test', 'Este sí debe aparecer');
+                    const logs = Logger.getLogs();
+                    assert.toBe(logs.length, 1, 'Solo debe haber 1 log (ERROR)');
+                    assert.toBe(logs[0].level, 'ERROR', 'Debe ser ERROR');
+                    Logger.setLevel('INFO'); // Restaurar
+                }
+            },
+            {
+                name: 'Log incluye timestamp',
+                test: () => {
+                    Logger.clearLogs();
+                    Logger.info('Test', 'Mensaje con timestamp');
+                    const logs = Logger.getLogs();
+                    assert.toBeTrue(logs[0].timestamp !== undefined, 'Debe tener timestamp');
+                    assert.toBeTrue(logs[0].timestamp.length > 0, 'Timestamp no debe estar vacío');
+                }
+            }
+        ];
+        
+        function runTests() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+            
+            let passCount = 0;
+            let failCount = 0;
+            
+            const sectionDiv = document.createElement('div');
+            sectionDiv.className = 'test-section';
+            
+            const sectionTitle = document.createElement('h2');
+            sectionTitle.textContent = 'Logger Tests';
+            sectionDiv.appendChild(sectionTitle);
+            
+            tests.forEach(testCase => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'test-item';
+                
+                let passed = false;
+                let error = null;
+                
+                try {
+                    testCase.test();
+                    passed = true;
+                    passCount++;
+                } catch (e) {
+                    error = e.message;
+                    failCount++;
+                }
+                
+                const statusDiv = document.createElement('div');
+                statusDiv.className = `status ${passed ? 'pass' : 'fail'}`;
+                statusDiv.textContent = passed ? '✓' : '✗';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'test-name';
+                nameDiv.textContent = testCase.name;
+                
+                itemDiv.appendChild(statusDiv);
+                itemDiv.appendChild(nameDiv);
+                
+                if (error) {
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'error-detail';
+                    errorDiv.textContent = error;
+                    itemDiv.appendChild(errorDiv);
+                }
+                
+                sectionDiv.appendChild(itemDiv);
+            });
+            
+            resultsDiv.appendChild(sectionDiv);
+            
+            // Update summary
+            const totalCount = tests.length;
+            document.getElementById('passCount').textContent = passCount;
+            document.getElementById('failCount').textContent = failCount;
+            document.getElementById('totalCount').textContent = totalCount;
+            document.getElementById('percentage').textContent = Math.round((passCount / totalCount) * 100) + '%';
+            document.getElementById('summary').style.display = 'block';
+            
+            console.log(`✅ ${passCount} tests pasaron`);
+            console.log(`❌ ${failCount} tests fallaron`);
+            console.log(`📊 ${Math.round((passCount / totalCount) * 100)}% de éxito`);
+        }
+        
+        // Auto-info on load
+        window.addEventListener('load', () => {
+            console.log('🧪 Logger Tests cargados');
+            console.log('Haz clic en "Ejecutar Tests" para comenzar');
+        });
+    </script>
+</body>
+</html>

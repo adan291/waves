@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StateClassifier Unit Tests</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            margin: 20px auto;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        #test-results {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .success {
+            color: #4CAF50;
+        }
+        .error {
+            color: #ff6b6b;
+        }
+        .info {
+            color: #ffd700;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 StateClassifier Unit Tests</h1>
+
+    <div class="test-section">
+        <h2>Test Coverage</h2>
+        <ul>
+            <li>✅ Positive examples for each state pattern</li>
+            <li>✅ Negative examples (should not match)</li>
+            <li>✅ Confidence scoring accuracy</li>
+            <li>✅ Priority system (EMOTIONAL_LOW precedence)</li>
+            <li>✅ Edge cases (empty, null, long messages)</li>
+            <li>✅ Classification history tracking</li>
+            <li>✅ Statistics generation</li>
+            <li>✅ Ambiguous message logging</li>
+            <li>✅ Multi-match scenario logging</li>
+        </ul>
+    </div>
+
+    <button onclick="runStateClassifierTests()">Run All Tests</button>
+
+    <div id="test-results"></div>
+
+    <!-- Load StateClassifier module -->
+    <script src="../js/core/stateClassifier.js"></script>
+    
+    <!-- Load test suite -->
+    <script src="stateClassifier.test.js"></script>
+
+    <script>
+        // Auto-run tests on load
+        window.addEventListener('load', () => {
+            console.log('🧪 StateClassifier Test Suite Loaded');
+            console.log('Click "Run All Tests" button or call runStateClassifierTests() in console');
+        });
+    </script>
+</body>
+</html>

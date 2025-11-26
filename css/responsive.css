@@ -1,0 +1,642 @@
+/* ===================================
+   RESPONSIVE IMPROVEMENTS
+   Enhanced responsive design for all components
+   =================================== */
+
+/* ===================================
+   BREAKPOINTS
+   Desktop: > 1024px
+   Tablet: 768px - 1024px
+   Mobile: 480px - 768px
+   Small Mobile: < 480px
+   =================================== */
+
+/* ===================================
+   LARGE DESKTOP (> 1200px)
+   =================================== */
+@media (min-width: 1200px) {
+    .container {
+        max-width: 900px;
+    }
+    
+    .mode-indicator {
+        padding: 0.7rem 1.5rem;
+    }
+    
+    .message-display {
+        padding: 2.5rem;
+    }
+}
+
+/* ===================================
+   TABLET (768px - 1024px)
+   =================================== */
+@media (max-width: 1024px) and (min-width: 769px) {
+    .container {
+        width: 92%;
+        max-width: 750px;
+    }
+    
+    .fixed-controls-left,
+    .fixed-controls-right {
+        top: 1.25rem;
+    }
+    
+    .fixed-controls-left {
+        left: 1.25rem;
+    }
+    
+    .fixed-controls-right {
+        right: 1.25rem;
+    }
+}
+
+/* ===================================
+   TABLET & MOBILE (< 1024px)
+   =================================== */
+@media (max-width: 1024px) {
+    /* Fixed Controls - Better spacing */
+    .fixed-controls-right {
+        flex-wrap: wrap;
+        max-width: 220px;
+        justify-content: flex-end;
+    }
+    
+    /* Ocean State Indicator - Adjust position */
+    .ocean-state-indicator {
+        bottom: 100px;
+        left: 1rem;
+        max-width: calc(100% - 2rem);
+    }
+    
+    /* Expression Metrics - Adjust position */
+    .expression-metrics {
+        top: 80px;
+        right: 1rem;
+        max-width: 200px;
+    }
+}
+
+/* ===================================
+   MOBILE (< 768px)
+   =================================== */
+@media (max-width: 768px) {
+    /* Container adjustments */
+    .container {
+        width: 100%;
+        height: 100vh;
+        border-radius: 0;
+    }
+    
+    /* Fixed Controls - Stack better */
+    .fixed-controls-left {
+        top: 0.75rem;
+        left: 0.75rem;
+    }
+    
+    .fixed-controls-right {
+        top: 0.75rem;
+        right: 0.75rem;
+        max-width: 180px;
+    }
+    
+    .control-btn-inline {
+        min-height: 38px;
+    }
+    
+    /* Mode Indicator - Compact */
+    .mode-indicator {
+        padding: 0.6rem 1rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .mode-text {
+        font-size: 0.8rem;
+    }
+    
+    .mode-icon {
+        font-size: 0.95rem;
+    }
+    
+    /* Message Display - More space */
+    .message-display {
+        padding: 1.5rem 1rem;
+    }
+    
+    .whisper {
+        font-size: 0.95rem;
+    }
+    
+    .wave-reflection {
+        font-size: 1.1rem;
+    }
+    
+    /* Input Container - Full width */
+    .input-container {
+        border-radius: 20px 20px 0 0;
+        padding: 0.6rem;
+    }
+    
+    .user-input {
+        font-size: 0.95rem;
+    }
+    
+    /* Suggestions - Compact */
+    .suggestions-container {
+        padding: 0.75rem;
+        margin: 0.75rem auto;
+    }
+    
+    .suggestion-btn {
+        font-size: 0.85rem;
+        padding: 0.5rem 0.9rem;
+    }
+    
+    /* Ocean State Indicator - Bottom */
+    .ocean-state-indicator {
+        bottom: 90px;
+        left: 0.75rem;
+        padding: 0.6rem 0.9rem;
+    }
+    
+    .ocean-state-name {
+        font-size: 0.8rem;
+    }
+    
+    .ocean-state-description {
+        font-size: 0.7rem;
+    }
+    
+    /* Expression Metrics - Compact */
+    .expression-metrics {
+        top: 70px;
+        right: 0.75rem;
+        padding: 0.6rem 0.8rem;
+        max-width: 180px;
+    }
+    
+    .metrics-title {
+        font-size: 0.7rem;
+    }
+    
+    .metric-label {
+        font-size: 0.65rem;
+    }
+    
+    .metric-value {
+        font-size: 0.75rem;
+    }
+    
+    /* Achievement Notification - Full width */
+    .achievement-notification {
+        width: calc(100% - 2rem);
+        right: 1rem;
+        padding: 0.9rem;
+    }
+    
+    .achievement-icon {
+        font-size: 2rem;
+    }
+    
+    /* Modal - Full screen on mobile */
+    .modal-container {
+        width: 95%;
+        max-width: none;
+    }
+    
+    /* Achievement Gallery - Full screen */
+    .gallery-content {
+        width: 95%;
+        max-width: none;
+        max-height: 90vh;
+    }
+    
+    .achievement-card {
+        padding: 0.9rem;
+    }
+    
+    /* Report - Full screen */
+    .report-container {
+        width: 95%;
+        max-width: none;
+        max-height: 90vh;
+    }
+    
+    .report-section {
+        padding: 0.9rem;
+    }
+}
+
+/* ===================================
+   SMALL MOBILE (< 480px)
+   =================================== */
+@media (max-width: 480px) {
+    /* Fixed Controls - Very compact */
+    .fixed-controls-left {
+        top: 0.5rem;
+        left: 0.5rem;
+    }
+    
+    .fixed-controls-right {
+        top: 0.5rem;
+        right: 0.5rem;
+        max-width: 150px;
+        gap: 0.35rem;
+    }
+    
+    .back-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+    }
+    
+    .control-btn-inline {
+        padding: 0.4rem 0.65rem;
+        font-size: 0.75rem;
+        min-height: 36px;
+    }
+    
+    /* Mode Indicator - Very compact */
+    .mode-indicator {
+        padding: 0.5rem 0.85rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .mode-text {
+        font-size: 0.75rem;
+    }
+    
+    .mode-icon {
+        font-size: 0.9rem;
+    }
+    
+    /* Message Display - Minimal padding */
+    .message-display {
+        padding: 1rem 0.75rem;
+    }
+    
+    .whisper {
+        font-size: 0.9rem;
+    }
+    
+    .wave-reflection {
+        font-size: 1rem;
+    }
+    
+    .user-message {
+        font-size: 0.9rem;
+        padding: 0.7rem 1rem;
+    }
+    
+    /* Input Container - Minimal */
+    .input-container {
+        padding: 0.5rem;
+        gap: 0.4rem;
+    }
+    
+    .user-input {
+        font-size: 0.9rem;
+        padding: 0.6rem 0.9rem;
+    }
+    
+    .voice-btn,
+    .send-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+    }
+    
+    /* Suggestions - Very compact */
+    .suggestions-container {
+        padding: 0.6rem;
+        margin: 0.5rem auto;
+    }
+    
+    .suggestions-title {
+        font-size: 0.75rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .suggestion-btn {
+        font-size: 0.8rem;
+        padding: 0.45rem 0.8rem;
+    }
+    
+    /* Ocean State Indicator - Minimal */
+    .ocean-state-indicator {
+        bottom: 80px;
+        left: 0.5rem;
+        padding: 0.5rem 0.75rem;
+        max-width: calc(100% - 1rem);
+    }
+    
+    .ocean-state-emoji {
+        font-size: 1.2rem;
+    }
+    
+    .ocean-state-name {
+        font-size: 0.75rem;
+    }
+    
+    .ocean-state-description {
+        font-size: 0.65rem;
+    }
+    
+    /* Expression Metrics - Minimal */
+    .expression-metrics {
+        top: 60px;
+        right: 0.5rem;
+        padding: 0.5rem 0.7rem;
+        max-width: 160px;
+    }
+    
+    .metrics-title {
+        font-size: 0.65rem;
+        margin-bottom: 0.4rem;
+    }
+    
+    .metric-item {
+        margin-bottom: 0.4rem;
+    }
+    
+    .metric-label {
+        font-size: 0.6rem;
+    }
+    
+    .metric-value {
+        font-size: 0.7rem;
+    }
+    
+    .metric-bar {
+        height: 3px;
+    }
+    
+    /* Achievement Notification - Full width */
+    .achievement-notification {
+        width: calc(100% - 1rem);
+        right: 0.5rem;
+        padding: 0.75rem;
+    }
+    
+    .achievement-icon {
+        font-size: 1.8rem;
+    }
+    
+    .achievement-title {
+        font-size: 0.7rem;
+    }
+    
+    .achievement-name {
+        font-size: 0.85rem;
+    }
+    
+    .achievement-description {
+        font-size: 0.75rem;
+    }
+    
+    /* Modal - Full screen */
+    .modal-container {
+        width: 100%;
+        max-width: none;
+        border-radius: 12px;
+    }
+    
+    .modal-header {
+        padding: 1rem 1.25rem;
+    }
+    
+    .modal-title {
+        font-size: 1.2rem;
+    }
+    
+    .modal-body {
+        padding: 1.25rem;
+    }
+    
+    .modal-message {
+        font-size: 0.95rem;
+    }
+    
+    .modal-footer {
+        padding: 1rem 1.25rem;
+        flex-direction: column;
+    }
+    
+    .modal-btn {
+        width: 100%;
+        min-width: auto;
+    }
+    
+    /* Achievement Gallery - Full screen */
+    .gallery-content {
+        width: 100%;
+        max-width: none;
+        max-height: 100vh;
+        border-radius: 0;
+    }
+    
+    .gallery-header {
+        padding: 1rem;
+    }
+    
+    .gallery-body {
+        padding: 0.75rem;
+    }
+    
+    .achievement-card {
+        padding: 0.75rem;
+    }
+    
+    .achievement-card-icon {
+        font-size: 2rem;
+    }
+    
+    .achievement-card-name {
+        font-size: 0.85rem;
+    }
+    
+    .achievement-card-description {
+        font-size: 0.75rem;
+    }
+    
+    /* Report - Full screen */
+    .report-container {
+        width: 100%;
+        max-width: none;
+        max-height: 100vh;
+        border-radius: 0;
+    }
+    
+    .report-header {
+        padding: 1rem;
+    }
+    
+    .report-title h2 {
+        font-size: 1.3rem;
+    }
+    
+    .report-body {
+        padding: 0.75rem;
+    }
+    
+    .report-section {
+        padding: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .report-section-title {
+        font-size: 0.95rem;
+    }
+    
+    .summary-card {
+        padding: 0.75rem;
+    }
+    
+    .summary-label {
+        font-size: 0.7rem;
+    }
+    
+    .summary-value {
+        font-size: 1.1rem;
+    }
+}
+
+/* ===================================
+   LANDSCAPE MOBILE
+   =================================== */
+@media (max-height: 600px) and (orientation: landscape) {
+    .container {
+        height: 100vh;
+    }
+    
+    .mode-indicator {
+        padding: 0.4rem 0.8rem;
+        margin-bottom: 0.4rem;
+    }
+    
+    .message-display {
+        padding: 0.75rem;
+    }
+    
+    .input-container {
+        padding: 0.4rem;
+    }
+    
+    .ocean-state-indicator {
+        bottom: 70px;
+        padding: 0.4rem 0.6rem;
+    }
+    
+    .expression-metrics {
+        top: 50px;
+        padding: 0.4rem 0.6rem;
+    }
+    
+    /* Hide some elements in landscape to save space */
+    .ocean-state-description {
+        display: none;
+    }
+    
+    .suggestions-container {
+        padding: 0.5rem;
+        margin: 0.5rem auto;
+    }
+}
+
+/* ===================================
+   VERY SMALL SCREENS (< 360px)
+   =================================== */
+@media (max-width: 360px) {
+    .fixed-controls-right {
+        max-width: 130px;
+    }
+    
+    .control-btn-inline {
+        padding: 0.35rem 0.55rem;
+        font-size: 0.7rem;
+    }
+    
+    .mode-text {
+        font-size: 0.7rem;
+    }
+    
+    .whisper {
+        font-size: 0.85rem;
+    }
+    
+    .wave-reflection {
+        font-size: 0.95rem;
+    }
+    
+    .suggestion-btn {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.7rem;
+    }
+}
+
+/* ===================================
+   TOUCH DEVICE IMPROVEMENTS
+   =================================== */
+@media (hover: none) and (pointer: coarse) {
+    /* Larger touch targets */
+    .control-btn-inline,
+    .back-btn,
+    .voice-btn,
+    .send-btn,
+    .suggestion-btn {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    /* Better spacing for touch */
+    .fixed-controls-right {
+        gap: 0.6rem;
+    }
+    
+    /* Prevent text selection on buttons */
+    button,
+    .suggestion-btn {
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+}
+
+/* ===================================
+   HIGH DPI SCREENS
+   =================================== */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    /* Sharper borders */
+    .mode-indicator,
+    .input-container,
+    .control-btn-inline,
+    .suggestion-btn {
+        border-width: 0.5px;
+    }
+}
+
+/* ===================================
+   PRINT STYLES
+   =================================== */
+@media print {
+    .fixed-controls-left,
+    .fixed-controls-right,
+    .mode-indicator,
+    .input-container,
+    .ocean-state-indicator,
+    .expression-metrics,
+    .achievement-notification {
+        display: none !important;
+    }
+    
+    .message-display {
+        padding: 1rem;
+        overflow: visible;
+    }
+    
+    .container {
+        width: 100%;
+        height: auto;
+        box-shadow: none;
+    }
+}
