@@ -95,6 +95,7 @@ const SplashScreen = {
                 <select class="splash-control-btn splash-language-selector" id="splashLanguageSelector" aria-label="Select language">
                     <option value="es" ${lang === 'es' ? 'selected' : ''}>ES</option>
                     <option value="en" ${lang === 'en' ? 'selected' : ''}>EN</option>
+                    <option value="ro" ${lang === 'ro' ? 'selected' : ''}>RO</option>
                 </select>
             </div>
 

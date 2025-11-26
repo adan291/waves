@@ -13,41 +13,19 @@ const SuggestionsModule = (function() {
     // PRIVATE CONSTANTS
     // ============================================
 
-    // Initial suggestions by wave type
-    const WAVE_SUGGESTIONS = {
-        calm: [
-            "Quiero tomarme tiempo para conocerme mejor",
-            "¿Qué es lo que realmente me hace feliz?",
-            "Necesito entender mis valores antes de decidir",
-            "Quiero explorar sin presión qué me llama"
-        ],
-        deep: [
-            "Siento que hay algo más profundo detrás de mi confusión",
-            "Tengo miedos que no logro identificar",
-            "¿Por qué me cuesta tanto decidir?",
-            "Quiero entender qué me está bloqueando"
-        ],
-        energetic: [
-            "Necesito decidir pronto entre estas opciones",
-            "Quiero un plan de acción concreto",
-            "¿Cuál es el primer paso que debo dar?",
-            "Necesito momentum para empezar"
-        ],
-        healing: [
-            "Estoy agotado de tanta presión",
-            "Necesito procesar mis emociones primero",
-            "Me siento abrumado por todas las expectativas",
-            "Quiero encontrar paz antes de decidir"
-        ],
-        default: [
-            "No sé qué estudiar",
-            "Estoy perdido con mi vida",
-            "No tengo claro mi propósito",
-            "¿Qué carrera debería elegir?",
-            "Me siento confundido",
-            "Necesito orientación"
-        ]
-    };
+    // Initial suggestions by wave type - now using i18n
+    function getWaveSuggestions() {
+        const lang = typeof i18n !== 'undefined' ? i18n.getCurrentLanguage() : 'en';
+        const t = typeof translations !== 'undefined' && translations[lang] ? translations[lang] : translations.en;
+        
+        return {
+            calm: t.suggestions.waves?.calm || [],
+            deep: t.suggestions.waves?.deep || [],
+            energetic: t.suggestions.waves?.energetic || [],
+            healing: t.suggestions.waves?.healing || [],
+            default: t.suggestions.waves?.calm || []
+        };
+    }
 
     const CONTEXTUAL_SUGGESTIONS = {
         // Estado inicial - Confusión/Exploración
@@ -226,7 +204,8 @@ const SuggestionsModule = (function() {
         
         // Get selected wave from localStorage
         const selectedWave = localStorage.getItem('whispers-selected-wave');
-        const suggestions = WAVE_SUGGESTIONS[selectedWave] || WAVE_SUGGESTIONS.default;
+        const waveSuggestions = getWaveSuggestions();
+        const suggestions = waveSuggestions[selectedWave] || waveSuggestions.default;
         
         // Get wave icon for title
         const waveIcons = {

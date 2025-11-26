@@ -252,6 +252,32 @@ const translations = {
             reflect: 'Reflect on:',
             deepen: 'Deepen into:',
             nextSteps: 'Next steps:',
+            waves: {
+                calm: [
+                    "I want to take time to know myself better",
+                    "What really makes me happy?",
+                    "I need to understand my values before deciding",
+                    "I want to explore without pressure what calls me"
+                ],
+                deep: [
+                    "I feel there's something deeper behind my confusion",
+                    "I have fears I can't identify",
+                    "Why is it so hard for me to decide?",
+                    "I want to understand what's blocking me"
+                ],
+                energetic: [
+                    "I need to decide soon between these options",
+                    "I want a concrete action plan",
+                    "What's the first step I should take?",
+                    "I need momentum to start"
+                ],
+                healing: [
+                    "I'm exhausted from all the pressure",
+                    "I need to process my emotions first",
+                    "I feel overwhelmed by all the expectations",
+                    "I want to find peace before deciding"
+                ]
+            },
             examples: {
                 neutral: [
                     "I'm between medicine and engineering",
@@ -406,6 +432,32 @@ const translations = {
             reflect: 'Reflectează asupra:',
             deepen: 'Aprofundează în:',
             nextSteps: 'Pașii următori:',
+            waves: {
+                calm: [
+                    "Vreau să îmi iau timp să mă cunosc mai bine",
+                    "Ce mă face cu adevărat fericit?",
+                    "Trebuie să îmi înțeleg valorile înainte de a decide",
+                    "Vreau să explorez fără presiune ce mă cheamă"
+                ],
+                deep: [
+                    "Simt că există ceva mai profund în spatele confuziei mele",
+                    "Am temeri pe care nu le pot identifica",
+                    "De ce îmi este atât de greu să decid?",
+                    "Vreau să înțeleg ce mă blochează"
+                ],
+                energetic: [
+                    "Trebuie să decid curând între aceste opțiuni",
+                    "Vreau un plan de acțiune concret",
+                    "Care este primul pas pe care ar trebui să îl fac?",
+                    "Am nevoie de impuls pentru a începe"
+                ],
+                healing: [
+                    "Sunt epuizat de toată presiunea",
+                    "Trebuie să îmi procesez emoțiile mai întâi",
+                    "Mă simt copleșit de toate așteptările",
+                    "Vreau să găsesc pace înainte de a decide"
+                ]
+            },
             examples: {
                 neutral: [
                     "Sunt între medicină și inginerie",
