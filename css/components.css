@@ -2052,34 +2052,9 @@ body[data-theme="light"] .modal-btn-confirm:hover {
     position: relative;
 }
 
-/* Reset Button in Splash */
-.reset-btn-splash {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background: rgba(244, 67, 54, 0.15);
-    border: 2px solid rgba(244, 67, 54, 0.3);
-    border-radius: 12px;
-    color: #f44336;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
-}
-
-.reset-btn-splash:hover {
-    background: rgba(244, 67, 54, 0.25);
-    border-color: #f44336;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
-}
-
-.reset-btn-splash:active {
-    transform: translateY(0);
+/* Back button in wave selection */
+.wave-selection-content .splash-btn.small {
+    margin-top: 2rem;
 }
 
 .wave-selection-title {
