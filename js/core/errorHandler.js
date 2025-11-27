@@ -95,25 +95,28 @@ function handleError(error, context = 'Unknown') {
     let userMessage = ERROR_MESSAGES[ErrorTypes.UNKNOWN_ERROR];
     let severity = ErrorSeverity.MEDIUM;
 
+    // Safely get error message
+    const errorMessage = error?.message || String(error) || '';
+
     if (error instanceof OceanError) {
         errorType = error.type;
         userMessage = error.message;
         severity = error.severity;
-    } else if (error.message) {
+    } else if (errorMessage) {
         // Parse common error patterns
-        if (error.message.includes('401') || error.message.includes('API key')) {
+        if (errorMessage.includes('401') || errorMessage.includes('API key')) {
             errorType = ErrorTypes.API_ERROR;
-            userMessage = ERROR_MESSAGES[ErrorTypes.API_ERROR][401];
+            userMessage = ERROR_MESSAGES[ErrorTypes.API_ERROR]?.[401] || ERROR_MESSAGES[ErrorTypes.API_ERROR]?.default;
             severity = ErrorSeverity.HIGH;
-        } else if (error.message.includes('429')) {
+        } else if (errorMessage.includes('429')) {
             errorType = ErrorTypes.API_ERROR;
-            userMessage = ERROR_MESSAGES[ErrorTypes.API_ERROR][429];
+            userMessage = ERROR_MESSAGES[ErrorTypes.API_ERROR]?.[429] || ERROR_MESSAGES[ErrorTypes.API_ERROR]?.default;
             severity = ErrorSeverity.MEDIUM;
-        } else if (error.message.includes('500') || error.message.includes('503')) {
+        } else if (errorMessage.includes('500') || errorMessage.includes('503')) {
             errorType = ErrorTypes.API_ERROR;
-            userMessage = ERROR_MESSAGES[ErrorTypes.API_ERROR][500];
+            userMessage = ERROR_MESSAGES[ErrorTypes.API_ERROR]?.[500] || ERROR_MESSAGES[ErrorTypes.API_ERROR]?.default;
             severity = ErrorSeverity.HIGH;
-        } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+        } else if (errorMessage.includes('Failed to fetch') || errorMessage.includes('NetworkError')) {
             errorType = ErrorTypes.NETWORK_ERROR;
             userMessage = ERROR_MESSAGES[ErrorTypes.NETWORK_ERROR];
             severity = ErrorSeverity.HIGH;
@@ -174,4 +177,11 @@ function createValidationError(message) {
     );
 }
 
-// ============================================
+// Expose for global use
+window.ErrorTypes = ErrorTypes;
+window.ErrorSeverity = ErrorSeverity;
+window.OceanError = OceanError;
+window.handleError = handleError;
+window.createApiError = createApiError;
+window.createNetworkError = createNetworkError;
+window.createValidationError = createValidationError;

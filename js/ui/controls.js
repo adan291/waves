@@ -57,15 +57,36 @@ function createAudioControls(messageId, text) {
  * @example
  * const button = createAudioButton('msg-123', 'Hello');
  */
+/**
+ * Get audio button text by language
+ * @param {string} key - Text key (listen, generating, stop, error)
+ * @returns {string} Translated text
+ */
+function getAudioText(key) {
+    const lang = localStorage.getItem('whispers-language') || 'es';
+    const texts = {
+        listen: { es: '🔊 Escuchar', en: '🔊 Listen', ro: '🔊 Ascultă' },
+        generating: { es: '⏳ Generando...', en: '⏳ Generating...', ro: '⏳ Se generează...' },
+        stop: { es: '⏸️ Detener', en: '⏸️ Stop', ro: '⏸️ Oprește' },
+        error: { es: '❌ Error', en: '❌ Error', ro: '❌ Eroare' },
+        audioNotAvailable: { es: '❌ Audio no disponible', en: '❌ Audio not available', ro: '❌ Audio indisponibil' },
+        serviceNotAvailable: { es: '❌ Servicio no disponible', en: '❌ Service not available', ro: '❌ Serviciu indisponibil' }
+    };
+    return texts[key]?.[lang] || texts[key]?.en || key;
+}
+
 function createAudioButton(messageId, text) {
     const button = document.createElement('button');
     button.className = 'audio-btn';
     button.dataset.messageId = messageId;
     button.dataset.text = text;
-    button.textContent = '🔊 Escuchar';
+    button.textContent = getAudioText('listen');
     
-    // Add click handler
-    button.addEventListener('click', () => handleAudioClick(messageId, text, button));
+    // Add click handler - use the text from dataset to ensure correct text is read
+    button.addEventListener('click', () => {
+        const textToRead = button.dataset.text;
+        handleAudioClick(messageId, textToRead, button);
+    });
     
     return button;
 }
@@ -83,7 +104,7 @@ async function handleAudioClick(messageId, text, button) {
     // Check if audioService is available
     if (typeof playTextToSpeech === 'undefined') {
         console.error('Audio service not loaded');
-        button.textContent = '❌ Audio no disponible';
+        button.textContent = getAudioText('audioNotAvailable');
         button.disabled = true;
         return;
     }
@@ -91,7 +112,7 @@ async function handleAudioClick(messageId, text, button) {
     // Check if GeminiService is available
     if (typeof GeminiService === 'undefined') {
         console.error('GeminiService not loaded');
-        button.textContent = '❌ Servicio no disponible';
+        button.textContent = getAudioText('serviceNotAvailable');
         button.disabled = true;
         return;
     }
@@ -157,10 +178,10 @@ function updateAudioButtonState(messageId, state) {
     if (!button) return;
     
     const states = {
-        ready: { text: '🔊 Escuchar', disabled: false },
-        loading: { text: '⏳ Generando...', disabled: true },
-        playing: { text: '⏸️ Detener', disabled: false },
-        error: { text: '❌ Error', disabled: true }
+        ready: { text: getAudioText('listen'), disabled: false },
+        loading: { text: getAudioText('generating'), disabled: true },
+        playing: { text: getAudioText('stop'), disabled: false },
+        error: { text: getAudioText('error'), disabled: true }
     };
     
     const stateConfig = states[state] || states.ready;
@@ -299,6 +320,21 @@ async function testControlsModule() {
     
     console.log('\n🎉 === CONTROLS MODULE TEST COMPLETE ===\n');
 }
+
+// ============================================
+// LANGUAGE CHANGE LISTENER
+// ============================================
+
+// Update all audio buttons when language changes
+document.addEventListener('language:changed', () => {
+    const audioButtons = document.querySelectorAll('.audio-btn');
+    audioButtons.forEach(button => {
+        // Only update if button is in ready state (not loading/playing)
+        if (!button.disabled && !button.textContent.includes('⏳') && !button.textContent.includes('⏸️')) {
+            button.textContent = getAudioText('listen');
+        }
+    });
+});
 
 // Auto-run test if in development mode
 if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {

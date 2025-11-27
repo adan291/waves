@@ -83,6 +83,12 @@ function init() {
         // Initialize suggestions
         initializeSuggestions();
 
+        // Scroll message display to top at start
+        const messageDisplay = document.getElementById('messageDisplay');
+        if (messageDisplay) {
+            messageDisplay.scrollTop = 0;
+        }
+
         // Lazy load non-critical features
         if (typeof LazyLoadManager !== 'undefined') {
             LazyLoadManager.loadModules([
@@ -346,33 +352,70 @@ function toggleTTS() {
     }
 }
 
+/**
+ * Update the existing welcome message with wave-specific text
+ * @param {Object} wave - Wave object with name property
+ * @returns {void}
+ */
+function updateWelcomeMessage(wave) {
+    const existingWelcome = document.querySelector('.welcome-message');
+    if (!existingWelcome) return;
+    
+    // Update whisper text
+    const whisperEl = existingWelcome.querySelector('.whisper');
+    if (whisperEl && typeof i18n !== 'undefined') {
+        whisperEl.textContent = i18n.t('ui.welcome');
+    }
+    
+    // Update wave reflection with persona name
+    const waveReflection = existingWelcome.querySelector('.wave-reflection');
+    if (waveReflection) {
+        const waveName = wave?.name || (typeof i18n !== 'undefined' 
+            ? i18n.t('personas.guardian') 
+            : 'El Guardián de la Ola');
+        
+        const lang = localStorage.getItem(STORAGE_KEYS.LANGUAGE) || 'es';
+        const welcomeText = typeof i18n !== 'undefined' 
+            ? i18n.t('ui.welcomeMessage')
+            : { es: 'Comparte lo que llevas dentro, y las olas reflejarán tu verdad.',
+                en: 'Share what you carry within, and the waves will reflect your truth.',
+                ro: 'Împărtășește ce porți înăuntru, și valurile vor reflecta adevărul tău.'
+              }[lang] || 'Comparte lo que llevas dentro, y las olas reflejarán tu verdad.';
+        
+        waveReflection.textContent = `${waveName}. ${welcomeText}`;
+    }
+}
+
+/**
+ * Show main application UI after wave selection
+ */
+function showMainUI() {
+    const container = document.querySelector('.container');
+    if (container) {
+        container.style.display = 'flex';
+    }
+
+    const controlsLeft = document.querySelector('.fixed-controls-left');
+    const controlsRight = document.querySelector('.fixed-controls-right');
+    if (controlsLeft) controlsLeft.style.display = 'flex';
+    if (controlsRight) controlsRight.style.display = 'flex';
+}
+
 // Listen for wave selection event
 document.addEventListener('wave:selected', (e) => {
-
     // Small delay to allow splash screen to fade out
     setTimeout(() => {
-        // Show main container
-        const container = document.querySelector('.container');
-        if (container) {
-            container.style.display = 'flex';
+        showMainUI();
+
+        // Update existing welcome message with wave-specific persona (don't create new one)
+        if (e.detail?.wave) {
+            updateWelcomeMessage(e.detail.wave);
         }
-
-        // Show fixed controls
-        const controlsLeft = document.querySelector('.fixed-controls-left');
-        const controlsRight = document.querySelector('.fixed-controls-right');
-        if (controlsLeft) controlsLeft.style.display = 'flex';
-        if (controlsRight) controlsRight.style.display = 'flex';
-
-        // Clear message display for fresh start
+        
+        // Clear message display for fresh conversation
         const messageDisplay = document.getElementById('messageDisplay');
         if (messageDisplay) {
-            messageDisplay.innerHTML = `
-                <div class="welcome-message">
-                    <p class="whisper" data-i18n="ui.welcome">Bienvenido al océano de pensamientos...</p>
-                    <p class="wave-reflection">Soy ${e.detail.wave.name || 'El Guardián de la Ola'}. Comparte lo que llevas dentro, y las olas reflejarán tu verdad.</p>
-                </div>
-                <div id="suggestionsContainer"></div>
-            `;
+            messageDisplay.innerHTML = '';
         }
 
         initializeState();
@@ -383,6 +426,11 @@ document.addEventListener('wave:selected', (e) => {
 
         // Initialize suggestions after app is ready
         initializeSuggestions();
+
+        // Scroll message display to top at start
+        if (messageDisplay) {
+            messageDisplay.scrollTop = 0;
+        }
 
     }, 100);
 });

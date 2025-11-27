@@ -11,7 +11,7 @@
  */
 
 // Configuration
-const CACHE_VERSION = 1;
+const CACHE_VERSION = 2;
 const CACHE_NAME = `waves-v${CACHE_VERSION}`;
 
 // Critical assets to cache on install

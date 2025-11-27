@@ -30,7 +30,9 @@ const translations = {
             deep_explorer: 'El Explorador Profundo',
             problem_solver: 'El Solucionador',
             healer: 'El Sanador',
-            life_questioning: 'El Guía del Propósito'
+            life_questioning: 'El Guía del Propósito',
+            narrador: 'El Narrador del Mar',
+            kiro: 'Kiro - Susurro de la Ola'
         },
         ui: {
             welcome: 'Bienvenido al océano de pensamientos...',
@@ -213,7 +215,9 @@ const translations = {
             deep_explorer: 'The Deep Explorer',
             problem_solver: 'The Problem Solver',
             healer: 'The Healer',
-            life_questioning: 'The Purpose Guide'
+            life_questioning: 'The Purpose Guide',
+            narrador: 'The Sea Narrator',
+            kiro: 'Kiro - Wave Whisper'
         },
         ui: {
             welcome: 'Welcome to the ocean of thoughts...',
@@ -396,7 +400,9 @@ const translations = {
             deep_explorer: 'Exploratorul Profund',
             problem_solver: 'Rezolvatorul',
             healer: 'Vindecătorul',
-            life_questioning: 'Ghidul Scopului'
+            life_questioning: 'Ghidul Scopului',
+            narrador: 'Naratorul Mării',
+            kiro: 'Kiro - Șoapta Valului'
         },
         ui: {
             welcome: 'Bine ai venit în oceanul gândurilor...',

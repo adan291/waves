@@ -776,20 +776,20 @@ body[data-theme="light"] .modal-container::before {
 
 .ocean-state-indicator {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
+    bottom: 8px;
+    right: 15px;
     left: auto;
     background: rgba(10, 17, 40, 0.9);
     backdrop-filter: blur(15px);
     border: 1px solid rgba(125, 211, 192, 0.4);
-    border-radius: 10px;
-    padding: 0.4rem 0.7rem;
+    border-radius: 8px;
+    padding: 0.3rem 0.5rem;
     z-index: 900;
     animation: slideInRight 0.5s ease-out;
     will-change: transform, opacity;
     transform: translateZ(0);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    min-width: 120px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    min-width: 100px;
 }
 
 .state-indicator-content {

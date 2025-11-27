@@ -30,8 +30,8 @@ const RendererModule = (function () {
         'modoA': { icon: '🎭', name: 'Escenas Poéticas' },
         'modoB': { icon: '💙', name: 'Exploración Emocional' },
         'modoC': { icon: '🧭', name: 'Guía de Claridad' },
-        'narrador': { icon: '📖', name: 'El Narrador del Mar' },
-        'kiro': { icon: '🌙', name: 'Kiro - Susurro de la Ola' }
+        'narrador': { icon: '📖', i18nKey: 'personas.narrador', fallback: 'The Sea Narrator' },
+        'kiro': { icon: '🌙', i18nKey: 'personas.kiro', fallback: 'Kiro - Wave Whisper' }
     };
 
     // ============================================
@@ -83,21 +83,39 @@ const RendererModule = (function () {
     }
 
     /**
-     * Scroll message display to bottom
+     * Scroll to the last message (top of it, not bottom of container)
      * @private
      */
-    const scrollToBottom = (function () {
-        // Use RAF throttling for smooth scrolling
+    const scrollToLastMessage = (function () {
         const scroll = () => {
             const messageDisplay = document.getElementById('messageDisplay');
-            if (messageDisplay) {
-                messageDisplay.scrollTop = messageDisplay.scrollHeight;
+            if (!messageDisplay) return;
+            
+            // Find the last message container
+            const messages = messageDisplay.querySelectorAll('.message-container, .user-message');
+            const lastMessage = messages[messages.length - 1];
+            
+            if (lastMessage) {
+                // Calculate position: scroll so last message starts at top of visible area
+                const containerRect = messageDisplay.getBoundingClientRect();
+                const messageRect = lastMessage.getBoundingClientRect();
+                const scrollOffset = messageRect.top - containerRect.top + messageDisplay.scrollTop;
+                
+                messageDisplay.scrollTo({
+                    top: scrollOffset,
+                    behavior: 'smooth'
+                });
+            } else {
+                // Fallback: scroll to top if no messages
+                messageDisplay.scrollTop = 0;
             }
         };
 
-        // Return throttled version if available
         return typeof rafThrottle !== 'undefined' ? rafThrottle(scroll) : scroll;
     })();
+    
+    // Alias for backward compatibility
+    const scrollToBottom = scrollToLastMessage;
 
     // ============================================
     // PUBLIC FUNCTIONS
@@ -150,19 +168,15 @@ const RendererModule = (function () {
      * Display whisper section
      * @param {string} text - Whisper text
      * @param {string} messageId - Optional message ID
+     * @param {Object} options - Display options
+     * @param {boolean} [options.autoScroll=true] - Whether to auto-scroll to the message
      * 
      * @example
      * RendererModule.displayWhisper('El océano susurra...', 'msg-123');
+     * RendererModule.displayWhisper('El océano susurra...', 'msg-123', { autoScroll: false });
      */
-    /**
-     * Display whisper section
-     * @param {string} text - Whisper text
-     * @param {string} messageId - Optional message ID
-     * 
-     * @example
-     * RendererModule.displayWhisper('El océano susurra...', 'msg-123');
-     */
-    function displayWhisper(text, messageId = null) {
+    function displayWhisper(text, messageId = null, options = {}) {
+        const { autoScroll = true } = options;
         if (!text || typeof text !== 'string') {
             console.warn('displayWhisper: Invalid text provided');
             return;
@@ -210,7 +224,10 @@ const RendererModule = (function () {
 
         container.appendChild(whisper);
         getConversationContainer().appendChild(container);
-        scrollToBottom();
+
+        if (autoScroll) {
+            scrollToBottom();
+        }
 
         console.log('🌊 Whisper displayed');
     }
@@ -219,11 +236,15 @@ const RendererModule = (function () {
      * Display wave reflection section
      * @param {string} text - Wave text
      * @param {string} messageId - Optional message ID
+     * @param {Object} options - Display options
+     * @param {boolean} [options.autoScroll=true] - Whether to auto-scroll to the message
      * 
      * @example
      * RendererModule.displayWave('¿Qué resuena en ti?', 'msg-123');
+     * RendererModule.displayWave('¿Qué resuena en ti?', 'msg-123', { autoScroll: false });
      */
-    function displayWave(text, messageId = null) {
+    function displayWave(text, messageId = null, options = {}) {
+        const { autoScroll = true } = options;
         if (!text || typeof text !== 'string') {
             console.warn('displayWave: Invalid text provided');
             return;
@@ -277,7 +298,10 @@ const RendererModule = (function () {
         wave.appendChild(audioBtn);
 
         container.appendChild(wave);
-        scrollToBottom();
+
+        if (autoScroll) {
+            scrollToBottom();
+        }
 
         console.log('🌙 Wave displayed');
     }
@@ -344,7 +368,7 @@ const RendererModule = (function () {
         `;
 
         getConversationContainer().appendChild(indicator);
-        scrollToBottom();
+        // Don't scroll here - let user control scroll after initial message
 
         console.log('⏳ Typing indicator shown');
     }
@@ -440,6 +464,41 @@ const RendererModule = (function () {
             console.log(`🎭 Mode indicator updated: ${displayName}`);
         }
     }
+
+    // ============================================
+    // PRIVATE HELPER: GET CURRENT PERSONA
+    // ============================================
+
+    /**
+     * Get current persona from AppFacade or return default
+     * @private
+     * @returns {string} Current persona identifier
+     */
+    function getCurrentPersona() {
+        if (typeof AppFacade !== 'undefined' && typeof AppFacade.getCurrentPersona === 'function') {
+            return AppFacade.getCurrentPersona();
+        }
+        return 'narrador';
+    }
+
+    /**
+     * Refresh mode indicator with current state
+     * Called when language changes or other events require UI refresh
+     * @private
+     */
+    function refreshModeIndicator() {
+        const modeIndicator = document.getElementById('modeIndicator');
+        if (!modeIndicator) return;
+        
+        updateModeIndicator('default', getCurrentPersona());
+    }
+
+    // ============================================
+    // EVENT LISTENERS
+    // ============================================
+    
+    // Update mode indicator when language changes
+    document.addEventListener('language:changed', refreshModeIndicator);
 
     // ============================================
     // PUBLIC API

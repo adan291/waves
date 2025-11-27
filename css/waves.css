@@ -222,18 +222,18 @@ body[data-wave=""][data-theme="light"] .ocean-background {
     animation: waveMove 25s linear infinite reverse;
     opacity: 0.05;
     background-size: 1200px 100%;
-    bottom: 0;
+    bottom: 25px;
     top: auto;
-    height: 40%;
+    height: 20%;
 }
 
 .ocean-background::after {
     animation: waveMove 15s linear infinite;
     opacity: 0.08;
     background-size: 800px 100%;
-    bottom: 0;
+    bottom: 25px;
     top: auto;
-    height: 30%;
+    height: 15%;
 }
 
 @keyframes waveMove {

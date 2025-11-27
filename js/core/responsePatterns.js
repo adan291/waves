@@ -239,16 +239,25 @@ class ResponsePatterns {
         }
 
         const lang = context.language || localStorage.getItem('whispers-language') || 'es';
-        const isSpanish = lang === 'es';
+        const languageNames = { es: 'Spanish', en: 'English', ro: 'Romanian' };
+        const languageName = languageNames[lang] || 'the same language as the user';
 
-        return `You are a compassionate ocean guide using the "${pattern.name}" approach.
+        return `** MANDATORY LANGUAGE RULE - READ FIRST: **
+You MUST respond in the EXACT SAME LANGUAGE as the user's MOST RECENT message.
+- User writes in Spanish → You respond in Spanish
+- User writes in English → You respond in English
+- User writes in Romanian → You respond in Romanian
+IGNORE the language of previous messages. ONLY look at the user's LATEST message.
+This rule is ABSOLUTE and overrides all other instructions.
+
+You are a compassionate ocean guide using the "${pattern.name}" approach.
 Your tone should be ${pattern.tone} and your approach ${pattern.approach}.
 
 RESPONSE STRUCTURE:
 - Whisper: ${pattern.structure.whisper}
 - Reflection: ${pattern.structure.reflection}
 
-IMPORTANT: Respond in ${isSpanish ? 'Spanish' : 'English'}.
+IMPORTANT: The user's UI language is ${languageName}, but ALWAYS match the language of their LATEST message.
 Format your response as JSON with "whisper" and "reflection" fields.
 
 Example:
