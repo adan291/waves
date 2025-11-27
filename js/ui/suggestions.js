@@ -34,67 +34,60 @@ const SuggestionsModule = (function() {
         return t;
     }
 
+    /**
+     * Get wave-specific examples based on selected wave
+     * @returns {Array} Examples for the current wave
+     */
+    function getWaveExamples() {
+        const t = getTranslations();
+        const selectedWave = localStorage.getItem('whispers-selected-wave') || 'calm';
+        return t.suggestions?.waveExamples?.[selectedWave] || t.suggestions?.waveExamples?.calm || [];
+    }
+
     const CONTEXTUAL_SUGGESTIONS = {
-        // Estado inicial - Confusión/Exploración
+        // All states now use wave-specific examples
         get confused() {
-            const t = getTranslations();
-            return t.suggestions?.examples?.exploration || [];
+            return getWaveExamples();
         },
         
-        // Profundizando - Ansiedad/Preocupación
         get anxious() {
-            const t = getTranslations();
-            return t.suggestions?.examples?.depth || [];
+            return getWaveExamples();
         },
         get anxiety() {
-            const t = getTranslations();
-            return t.suggestions?.examples?.depth || [];
+            return getWaveExamples();
         },
         
-        // Procesando - Reflexión
         get processing() {
-            const t = getTranslations();
-            return t.suggestions?.examples?.identity || [];
+            return getWaveExamples();
         },
         
-        // Claridad emergente
         get clarity() {
-            const t = getTranslations();
-            return t.suggestions?.examples?.identity || [];
+            return getWaveExamples();
         },
         
-        // Resolución - Acción
         get resolved() {
-            const t = getTranslations();
-            return t.suggestions?.examples?.action || [];
+            return getWaveExamples();
         },
         get resolution() {
-            const t = getTranslations();
-            return t.suggestions?.examples?.action || [];
+            return getWaveExamples();
         },
         
-        // Estado neutral
         get neutral() {
-            const t = getTranslations();
-            return t.suggestions?.examples?.neutral || [];
+            return getWaveExamples();
         },
         
-        // Life Questioning específico
+        // Life Questioning - also use wave examples
         get exploration() {
-            const t = getTranslations();
-            return t.suggestions?.examples?.exploration || [];
+            return getWaveExamples();
         },
         get depth() {
-            const t = getTranslations();
-            return t.suggestions?.examples?.depth || [];
+            return getWaveExamples();
         },
         get identity() {
-            const t = getTranslations();
-            return t.suggestions?.examples?.identity || [];
+            return getWaveExamples();
         },
         get action() {
-            const t = getTranslations();
-            return t.suggestions?.examples?.action || [];
+            return getWaveExamples();
         }
     };
 

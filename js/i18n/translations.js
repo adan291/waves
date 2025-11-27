@@ -108,36 +108,30 @@ const translations = {
                     "Cargo con un peso que necesito soltar"
                 ]
             },
-            examples: {
-                neutral: [
-                    "Estoy entre medicina e ingeniería",
-                    "Me gusta el arte pero también la ciencia",
-                    "No sé si estudiar o trabajar primero",
-                    "Mis padres quieren que estudie una cosa pero yo otra"
+            waveExamples: {
+                calm: [
+                    "Últimamente me siento desconectado de mí mismo",
+                    "No sé qué quiero realmente de la vida",
+                    "Necesito un momento de calma para pensar",
+                    "Quiero entender mejor mis sentimientos"
                 ],
-                exploration: [
-                    "Me da miedo equivocarme y perder tiempo",
-                    "Siento presión de mi familia por elegir algo estable",
-                    "No sé qué me gusta realmente",
-                    "Tengo muchas opciones y me paralizo"
+                deep: [
+                    "Tengo miedo de decepcionar a quienes confían en mí",
+                    "Hay algo que me bloquea y no sé qué es",
+                    "Siento que repito los mismos errores",
+                    "Me cuesta conectar con mis emociones profundas"
                 ],
-                depth: [
-                    "Tengo miedo de decepcionar a las personas que confían en mí",
-                    "Me da miedo no ser lo suficientemente bueno",
-                    "Temo invertir años en algo que no me llene",
-                    "El miedo al fracaso me paraliza"
+                energetic: [
+                    "Tengo que tomar una decisión importante pronto",
+                    "Estoy atascado y necesito avanzar",
+                    "Quiero resolver un conflicto que me agota",
+                    "Necesito un plan claro para seguir adelante"
                 ],
-                identity: [
-                    "Quiero hacer algo que tenga impacto en las personas",
-                    "Me gusta crear cosas y ver resultados tangibles",
-                    "Disfruto ayudar a otros y verlos crecer",
-                    "Me apasiona aprender cosas nuevas constantemente"
-                ],
-                action: [
-                    "Podría investigar más sobre las opciones que me interesan",
-                    "Hablar con alguien que ya trabaje en eso",
-                    "Probar algo pequeño esta semana para experimentar",
-                    "Hacer una lista de pros y contras de cada opción"
+                healing: [
+                    "Estoy pasando por un momento muy difícil",
+                    "Necesito procesar una pérdida o un dolor",
+                    "Me siento emocionalmente agotado",
+                    "Cargo con heridas que necesitan sanar"
                 ]
             }
         },
@@ -301,36 +295,30 @@ const translations = {
                     "I carry a weight I need to release"
                 ]
             },
-            examples: {
-                neutral: [
-                    "I'm between medicine and engineering",
-                    "I like art but also science",
-                    "I don't know whether to study or work first",
-                    "My parents want me to study one thing but I want another"
+            waveExamples: {
+                calm: [
+                    "Lately I feel disconnected from myself",
+                    "I don't know what I really want from life",
+                    "I need a moment of calm to think",
+                    "I want to better understand my feelings"
                 ],
-                exploration: [
-                    "I'm afraid of making a mistake and wasting time",
-                    "I feel pressure from my family to choose something stable",
-                    "I don't know what I really like",
-                    "I have many options and I'm paralyzed"
+                deep: [
+                    "I'm afraid of disappointing those who trust me",
+                    "There's something blocking me and I don't know what",
+                    "I feel like I keep repeating the same mistakes",
+                    "I struggle to connect with my deeper emotions"
                 ],
-                depth: [
-                    "I'm afraid of disappointing people who trust me",
-                    "I'm afraid I'm not good enough",
-                    "I fear investing years in something that won't fulfill me",
-                    "Fear of failure paralyzes me"
+                energetic: [
+                    "I have to make an important decision soon",
+                    "I'm stuck and need to move forward",
+                    "I want to resolve a conflict that's draining me",
+                    "I need a clear plan to move ahead"
                 ],
-                identity: [
-                    "I want to do something that impacts people",
-                    "I like creating things and seeing tangible results",
-                    "I enjoy helping others and watching them grow",
-                    "I'm passionate about constantly learning new things"
-                ],
-                action: [
-                    "I could research more about the options that interest me",
-                    "Talk to someone who already works in that field",
-                    "Try something small this week to experiment",
-                    "Make a pros and cons list for each option"
+                healing: [
+                    "I'm going through a very difficult time",
+                    "I need to process a loss or pain",
+                    "I feel emotionally exhausted",
+                    "I carry wounds that need to heal"
                 ]
             }
         },
@@ -494,36 +482,30 @@ const translations = {
                     "Port o greutate pe care trebuie să o eliberez"
                 ]
             },
-            examples: {
-                neutral: [
-                    "Sunt între medicină și inginerie",
-                    "Îmi place arta dar și știința",
-                    "Nu știu dacă să studiez sau să lucrez mai întâi",
-                    "Părinții mei vor să studiez ceva dar eu vreau altceva"
+            waveExamples: {
+                calm: [
+                    "În ultima vreme mă simt deconectat de mine însumi",
+                    "Nu știu ce vreau cu adevărat de la viață",
+                    "Am nevoie de un moment de liniște să gândesc",
+                    "Vreau să îmi înțeleg mai bine sentimentele"
                 ],
-                exploration: [
-                    "Mi-e frică să greșesc și să pierd timp",
-                    "Simt presiune din partea familiei să aleg ceva stabil",
-                    "Nu știu ce îmi place cu adevărat",
-                    "Am multe opțiuni și sunt paralizat"
+                deep: [
+                    "Mi-e frică să dezamăgesc pe cei care au încredere în mine",
+                    "Există ceva care mă blochează și nu știu ce",
+                    "Simt că repet mereu aceleași greșeli",
+                    "Îmi este greu să mă conectez cu emoțiile mele profunde"
                 ],
-                depth: [
-                    "Mi-e frică să dezamăgesc oamenii care au încredere în mine",
-                    "Mi-e frică că nu sunt suficient de bun",
-                    "Mă tem să investesc ani în ceva care nu mă va împlini",
-                    "Frica de eșec mă paralizează"
+                energetic: [
+                    "Trebuie să iau o decizie importantă în curând",
+                    "Sunt blocat și trebuie să avansez",
+                    "Vreau să rezolv un conflict care mă epuizează",
+                    "Am nevoie de un plan clar pentru a merge mai departe"
                 ],
-                identity: [
-                    "Vreau să fac ceva care să aibă impact asupra oamenilor",
-                    "Îmi place să creez lucruri și să văd rezultate tangibile",
-                    "Mă bucur să ajut pe alții și să îi văd crescând",
-                    "Sunt pasionat de a învăța constant lucruri noi"
-                ],
-                action: [
-                    "Aș putea cerceta mai mult despre opțiunile care mă interesează",
-                    "Să vorbesc cu cineva care lucrează deja în domeniu",
-                    "Să încerc ceva mic săptămâna aceasta pentru a experimenta",
-                    "Să fac o listă de pro și contra pentru fiecare opțiune"
+                healing: [
+                    "Trec printr-un moment foarte dificil",
+                    "Trebuie să procesez o pierdere sau o durere",
+                    "Mă simt epuizat emoțional",
+                    "Port răni care au nevoie să se vindece"
                 ]
             }
         },
