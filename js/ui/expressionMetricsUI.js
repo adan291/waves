@@ -26,7 +26,55 @@ const ExpressionMetricsUI = {
             this.createContainer();
         }
 
+        // Listen for language changes
+        document.addEventListener('language:changed', () => {
+            this.refreshContainer();
+        });
+
         console.log('📊 Expression Metrics UI initialized');
+    },
+
+    /**
+     * Refresh container with new language
+     */
+    refreshContainer() {
+        if (this.container) {
+            const wasMinimized = this.container.classList.contains('minimized');
+            const wasHidden = this.container.classList.contains('hidden');
+            this.container.remove();
+            this.container = null;
+            this.createContainer();
+            if (wasMinimized) this.container.classList.add('minimized');
+            if (wasHidden) this.container.classList.add('hidden');
+        }
+    },
+
+    /**
+     * Get translated text
+     * @param {string} key - Translation key
+     * @returns {string} Translated text
+     */
+    getText(key) {
+        const lang = this.getLang();
+        const texts = {
+            minimizeExpand: { es: 'Minimizar/Expandir', en: 'Minimize/Expand', ro: 'Minimizează/Extinde' },
+            yourExpression: { es: 'Tu Expresión', en: 'Your Expression', ro: 'Expresia Ta' },
+            clarity: { es: 'Claridad', en: 'Clarity', ro: 'Claritate' },
+            specificity: { es: 'Especificidad', en: 'Specificity', ro: 'Specificitate' },
+            emotionalAwareness: { es: 'Conciencia Emocional', en: 'Emotional Awareness', ro: 'Conștiință Emoțională' },
+            overallScore: { es: 'Puntuación General', en: 'Overall Score', ro: 'Scor General' },
+            explorer: { es: 'Explorador', en: 'Explorer', ro: 'Explorator' },
+            startingJourney: { es: 'Comenzando tu viaje...', en: 'Starting your journey...', ro: 'Începând călătoria ta...' },
+            progressReport: { es: 'Reporte de Progreso', en: 'Progress Report', ro: 'Raport de Progres' },
+            overallSummary: { es: 'Resumen General', en: 'Overall Summary', ro: 'Rezumat General' },
+            totalMessages: { es: 'Mensajes Totales', en: 'Total Messages', ro: 'Mesaje Totale' },
+            averageScore: { es: 'Puntuación Promedio', en: 'Average Score', ro: 'Scor Mediu' },
+            improvement: { es: 'Mejora', en: 'Improvement', ro: 'Îmbunătățire' },
+            detailedMetrics: { es: 'Métricas Detalladas', en: 'Detailed Metrics', ro: 'Metrici Detaliate' },
+            bestMessage: { es: 'Mejor Mensaje', en: 'Best Message', ro: 'Cel Mai Bun Mesaj' },
+            close: { es: 'Cerrar', en: 'Close', ro: 'Închide' }
+        };
+        return texts[key]?.[lang] || texts[key]?.en || key;
     },
 
     /**
@@ -35,47 +83,46 @@ const ExpressionMetricsUI = {
     createContainer() {
         if (this.container) return;
 
-        const lang = this.getLang();
         const container = document.createElement('div');
         container.id = 'expressionMetrics';
         container.className = 'expression-metrics hidden';
         container.innerHTML = `
-            <div class="metrics-toggle" onclick="ExpressionMetricsUI.toggleMinimize()" title="${lang === 'es' ? 'Minimizar/Expandir' : 'Minimize/Expand'}">
+            <div class="metrics-toggle" onclick="ExpressionMetricsUI.toggleMinimize()" title="${this.getText('minimizeExpand')}">
                 <span class="toggle-arrow">▶</span>
             </div>
             <div class="metrics-header">
-                <span class="metrics-title">${lang === 'es' ? 'Tu Expresión' : 'Your Expression'}</span>
+                <span class="metrics-title">${this.getText('yourExpression')}</span>
             </div>
             <div class="metrics-content">
                 <div class="metric-item">
-                    <div class="metric-label">${lang === 'es' ? 'Claridad' : 'Clarity'}</div>
+                    <div class="metric-label">${this.getText('clarity')}</div>
                     <div class="metric-bar">
                         <div class="metric-fill clarity-fill" style="width: 0%"></div>
                     </div>
                     <div class="metric-value clarity-value">0%</div>
                 </div>
                 <div class="metric-item">
-                    <div class="metric-label">${lang === 'es' ? 'Especificidad' : 'Specificity'}</div>
+                    <div class="metric-label">${this.getText('specificity')}</div>
                     <div class="metric-bar">
                         <div class="metric-fill specificity-fill" style="width: 0%"></div>
                     </div>
                     <div class="metric-value specificity-value">0%</div>
                 </div>
                 <div class="metric-item">
-                    <div class="metric-label">${lang === 'es' ? 'Conciencia Emocional' : 'Emotional Awareness'}</div>
+                    <div class="metric-label">${this.getText('emotionalAwareness')}</div>
                     <div class="metric-bar">
                         <div class="metric-fill emotional-fill" style="width: 0%"></div>
                     </div>
                     <div class="metric-value emotional-value">0%</div>
                 </div>
                 <div class="metric-overall">
-                    <div class="overall-label">${lang === 'es' ? 'Puntuación General' : 'Overall Score'}</div>
+                    <div class="overall-label">${this.getText('overallScore')}</div>
                     <div class="overall-score">0</div>
-                    <div class="overall-level">${lang === 'es' ? 'Explorador' : 'Explorer'}</div>
+                    <div class="overall-level">${this.getText('explorer')}</div>
                 </div>
                 <div class="metric-trend">
                     <div class="trend-icon">📈</div>
-                    <div class="trend-text">${lang === 'es' ? 'Comenzando tu viaje...' : 'Starting your journey...'}</div>
+                    <div class="trend-text">${this.getText('startingJourney')}</div>
                 </div>
             </div>
         `;
@@ -109,7 +156,14 @@ const ExpressionMetricsUI = {
         const level = ExpressionAnalyzer.getCurrentLevel();
         const levelEl = this.container.querySelector('.overall-level');
         if (levelEl) {
-            levelEl.textContent = this.getLang() === 'es' ? level.name : level.nameEn;
+            const lang = this.getLang();
+            if (lang === 'ro') {
+                levelEl.textContent = level.nameRo || level.nameEn || level.name;
+            } else if (lang === 'en') {
+                levelEl.textContent = level.nameEn || level.name;
+            } else {
+                levelEl.textContent = level.name;
+            }
         }
 
         // Update trend
@@ -290,8 +344,6 @@ const ExpressionMetricsUI = {
             console.log('No hay suficientes datos para generar un reporte');
             return;
         }
-
-        const lang = this.getLang();
         
         const modal = document.createElement('div');
         modal.className = 'expression-report-modal';
@@ -299,23 +351,23 @@ const ExpressionMetricsUI = {
             <div class="report-overlay" onclick="this.parentElement.remove()"></div>
             <div class="report-content">
                 <div class="report-header">
-                    <h2>${lang === 'es' ? 'Reporte de Progreso' : 'Progress Report'}</h2>
+                    <h2>${this.getText('progressReport')}</h2>
                     <button class="report-close" onclick="this.closest('.expression-report-modal').remove()">×</button>
                 </div>
                 <div class="report-body">
                     <div class="report-section">
-                        <h3>${lang === 'es' ? 'Resumen General' : 'Overall Summary'}</h3>
+                        <h3>${this.getText('overallSummary')}</h3>
                         <div class="report-stats">
                             <div class="stat-item">
-                                <div class="stat-label">${lang === 'es' ? 'Mensajes Totales' : 'Total Messages'}</div>
+                                <div class="stat-label">${this.getText('totalMessages')}</div>
                                 <div class="stat-value">${report.totalMessages}</div>
                             </div>
                             <div class="stat-item">
-                                <div class="stat-label">${lang === 'es' ? 'Puntuación Promedio' : 'Average Score'}</div>
+                                <div class="stat-label">${this.getText('averageScore')}</div>
                                 <div class="stat-value">${report.averageScore}</div>
                             </div>
                             <div class="stat-item">
-                                <div class="stat-label">${lang === 'es' ? 'Mejora' : 'Improvement'}</div>
+                                <div class="stat-label">${this.getText('improvement')}</div>
                                 <div class="stat-value ${report.overall.improvement > 0 ? 'positive' : 'negative'}">
                                     ${report.overall.improvement > 0 ? '+' : ''}${report.overall.improvement}
                                 </div>
@@ -325,10 +377,10 @@ const ExpressionMetricsUI = {
                     </div>
                     
                     <div class="report-section">
-                        <h3>${lang === 'es' ? 'Métricas Detalladas' : 'Detailed Metrics'}</h3>
+                        <h3>${this.getText('detailedMetrics')}</h3>
                         <div class="metrics-grid">
                             <div class="metric-card">
-                                <div class="metric-card-title">${lang === 'es' ? 'Claridad' : 'Clarity'}</div>
+                                <div class="metric-card-title">${this.getText('clarity')}</div>
                                 <div class="metric-card-value">${report.metrics.clarity.current}%</div>
                                 <div class="metric-card-trend ${report.metrics.clarity.trend}">
                                     ${this.getTrendIcon(report.metrics.clarity.trend)} 
@@ -336,7 +388,7 @@ const ExpressionMetricsUI = {
                                 </div>
                             </div>
                             <div class="metric-card">
-                                <div class="metric-card-title">${lang === 'es' ? 'Especificidad' : 'Specificity'}</div>
+                                <div class="metric-card-title">${this.getText('specificity')}</div>
                                 <div class="metric-card-value">${report.metrics.specificity.current}%</div>
                                 <div class="metric-card-trend ${report.metrics.specificity.trend}">
                                     ${this.getTrendIcon(report.metrics.specificity.trend)} 
@@ -344,7 +396,7 @@ const ExpressionMetricsUI = {
                                 </div>
                             </div>
                             <div class="metric-card">
-                                <div class="metric-card-title">${lang === 'es' ? 'Conciencia Emocional' : 'Emotional Awareness'}</div>
+                                <div class="metric-card-title">${this.getText('emotionalAwareness')}</div>
                                 <div class="metric-card-value">${report.metrics.emotionalAwareness.current}%</div>
                                 <div class="metric-card-trend ${report.metrics.emotionalAwareness.trend}">
                                     ${this.getTrendIcon(report.metrics.emotionalAwareness.trend)} 
@@ -355,7 +407,7 @@ const ExpressionMetricsUI = {
                     </div>
                     
                     <div class="report-section">
-                        <h3>${lang === 'es' ? 'Mejor Mensaje' : 'Best Message'}</h3>
+                        <h3>${this.getText('bestMessage')}</h3>
                         <div class="message-highlight best">
                             <div class="message-score">${report.best.score}</div>
                             <div class="message-text">"${report.best.message}"</div>
@@ -364,7 +416,7 @@ const ExpressionMetricsUI = {
                 </div>
                 <div class="report-footer">
                     <button class="report-btn" onclick="this.closest('.expression-report-modal').remove()">
-                        ${lang === 'es' ? 'Cerrar' : 'Close'}
+                        ${this.getText('close')}
                     </button>
                 </div>
             </div>

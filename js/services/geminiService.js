@@ -16,8 +16,11 @@
 const DEFAULT_CONFIG = {
     endpoint: 'https://generativelanguage.googleapis.com/v1beta/models/',
     model: 'gemini-2.5-flash',
+    fallbackModel: 'gemini-1.5-flash',
     ttsModel: 'gemini-2.5-flash-preview-tts',
-    ttsVoice: 'Kore'
+    ttsVoice: 'Kore',
+    maxRetries: 2,
+    retryDelay: 2000 // 2 seconds
 };
 
 
@@ -206,41 +209,82 @@ class GeminiService {
                 contents: formattedMessages
             };
 
-            // Make API request
-            const response = await fetch(this.getEndpoint(), {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            });
+            // Try with retries and fallback model
+            const config = getGeminiConfig();
+            const models = [config.model, config.fallbackModel];
+            let lastError = null;
 
-            // Check for errors
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                throw new Error(`API Error: ${response.status} - ${errorData.error?.message || response.statusText}`);
-            }
+            for (const model of models) {
+                for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
+                    try {
+                        const endpoint = `${config.endpoint}${model}:generateContent?key=${config.apiKey}`;
+                        
+                        console.log(`🌊 Trying ${model} (attempt ${attempt + 1}/${config.maxRetries + 1})`);
 
-            // Parse response
-            const data = await response.json();
+                        const response = await fetch(endpoint, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(payload)
+                        });
 
-            // Extract text from response
-            if (data.candidates && data.candidates.length > 0) {
-                const candidate = data.candidates[0];
-                if (candidate.content && candidate.content.parts && candidate.content.parts.length > 0) {
-                    const responseText = candidate.content.parts[0].text;
+                        // Check for errors
+                        if (!response.ok) {
+                            const errorData = await response.json().catch(() => ({}));
+                            const errorMsg = errorData.error?.message || response.statusText;
+                            
+                            // If 503 (overloaded), wait and retry
+                            if (response.status === 503 && attempt < config.maxRetries) {
+                                console.log(`⏳ Model overloaded, waiting ${config.retryDelay}ms before retry...`);
+                                await new Promise(resolve => setTimeout(resolve, config.retryDelay));
+                                continue;
+                            }
+                            
+                            throw new Error(`API Error: ${response.status} - ${errorMsg}`);
+                        }
 
-                    // Cache the response
-                    if (typeof CacheManager !== 'undefined') {
-                        CacheManager.set('api_response', cacheKey, responseText);
+                        // Parse response
+                        const data = await response.json();
+
+                        // Extract text from response
+                        if (data.candidates && data.candidates.length > 0) {
+                            const candidate = data.candidates[0];
+                            if (candidate.content && candidate.content.parts && candidate.content.parts.length > 0) {
+                                const responseText = candidate.content.parts[0].text;
+
+                                // Cache the response
+                                if (typeof CacheManager !== 'undefined') {
+                                    CacheManager.set('api_response', cacheKey, responseText);
+                                }
+
+                                console.log(`✅ Response received from ${model}`);
+                                endTiming({ success: true });
+                                return responseText;
+                            }
+                        }
+
+                        throw new Error('No response text found in API response');
+
+                    } catch (attemptError) {
+                        lastError = attemptError;
+                        console.warn(`⚠️ Attempt failed:`, attemptError.message);
+                        
+                        // If not a 503 error, don't retry with same model
+                        if (!attemptError.message.includes('503')) {
+                            break;
+                        }
                     }
-
-                    endTiming({ success: true });
-                    return responseText;
+                }
+                
+                // Try fallback model
+                if (model !== config.fallbackModel) {
+                    console.log(`🔄 Switching to fallback model: ${config.fallbackModel}`);
                 }
             }
 
-            throw new Error('No response text found in API response');
+            // All attempts failed
+            throw lastError || new Error('All API attempts failed');
 
         } catch (error) {
             endTiming({ success: false, error: error.message });
@@ -330,21 +374,27 @@ class GeminiService {
         // Use centralized error handler if available
         if (typeof handleError !== 'undefined') {
             const errorResponse = handleError(error, 'Gemini API');
-            return errorResponse.message;
+            return errorResponse?.message || 'Error connecting to the ocean.';
         }
 
         // Fallback error handling
         console.error('Gemini API Error:', error);
 
-        if (error.message.includes('401') || error.message.includes('API key')) {
+        const errorMessage = error?.message || String(error) || '';
+
+        if (errorMessage.includes('401') || errorMessage.includes('API key')) {
             return 'ERROR: Invalid API key. Please check your configuration.';
         }
 
-        if (error.message.includes('429')) {
+        if (errorMessage.includes('429')) {
             return 'The ocean needs a moment to rest. Please wait briefly and try again.';
         }
 
-        if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+        if (errorMessage.includes('503') || errorMessage.includes('overloaded')) {
+            return 'The ocean is very busy right now. Please try again in a moment.';
+        }
+
+        if (errorMessage.includes('Failed to fetch') || errorMessage.includes('NetworkError')) {
             return 'The waves are quiet right now. Please check your connection and try again.';
         }
 

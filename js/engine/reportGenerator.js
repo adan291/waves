@@ -439,63 +439,111 @@ unlockedAt: a.unlockedAt
         const mimeType = 'application/json';
         this._downloadFile(filename, json, mimeType);
     },
+    /**
+     * Get text translation helper
+     * @param {string} lang - Language code
+     * @param {string} key - Translation key
+     * @returns {string} Translated text
+     */
+    _getText(lang, key) {
+        const texts = {
+            journeyReport: { es: 'INFORME DE VIAJE', en: 'JOURNEY REPORT', ro: 'RAPORT DE CĂLĂTORIE' },
+            generated: { es: 'Generado: ', en: 'Generated: ', ro: 'Generat: ' },
+            selectedWave: { es: 'Ola Seleccionada: ', en: 'Selected Wave: ', ro: 'Val Selectat: ' },
+            summary: { es: 'RESUMEN', en: 'SUMMARY', ro: 'REZUMAT' },
+            totalMessages: { es: 'Mensajes Totales: ', en: 'Total Messages: ', ro: 'Mesaje Totale: ' },
+            duration: { es: 'Duración: ', en: 'Duration: ', ro: 'Durată: ' },
+            achievementsUnlocked: { es: 'Logros Desbloqueados: ', en: 'Achievements Unlocked: ', ro: 'Realizări Deblocate: ' },
+            expressionMetrics: { es: 'MÉTRICAS DE EXPRESIÓN', en: 'EXPRESSION METRICS', ro: 'METRICI DE EXPRESIE' },
+            currentLevel: { es: 'Nivel Actual: ', en: 'Current Level: ', ro: 'Nivel Actual: ' },
+            totalImprovement: { es: 'Mejora Total: ', en: 'Total Improvement: ', ro: 'Îmbunătățire Totală: ' },
+            averages: { es: 'Promedios:', en: 'Averages:', ro: 'Medii:' },
+            clarity: { es: 'Claridad', en: 'Clarity', ro: 'Claritate' },
+            specificity: { es: 'Especificidad', en: 'Specificity', ro: 'Specificitate' },
+            emotionalAwareness: { es: 'Conciencia Emocional', en: 'Emotional Awareness', ro: 'Conștiință Emoțională' },
+            overall: { es: 'General', en: 'Overall', ro: 'General' },
+            oceanStates: { es: 'ESTADOS DEL OCÉANO', en: 'OCEAN STATES', ro: 'STĂRI ALE OCEANULUI' },
+            currentState: { es: 'Estado Actual: ', en: 'Current State: ', ro: 'Stare Actuală: ' },
+            statesExperienced: { es: 'Estados Experimentados: ', en: 'States Experienced: ', ro: 'Stări Experimentate: ' },
+            progress: { es: 'Progreso: ', en: 'Progress: ', ro: 'Progres: ' },
+            insights: { es: 'INSIGHTS', en: 'INSIGHTS', ro: 'PERSPECTIVE' },
+            recommendations: { es: 'RECOMENDACIONES', en: 'RECOMMENDATIONS', ro: 'RECOMANDĂRI' },
+            thankYou: { es: 'Gracias por tu viaje en Whispers of the Wave', en: 'Thank you for your journey in Whispers of the Wave', ro: 'Mulțumim pentru călătoria ta în Whispers of the Wave' }
+        };
+        return texts[key]?.[lang] || texts[key]?.en || key;
+    },
+
+    /**
+     * Get localized name from object
+     * @param {object} obj - Object with name, nameEn, nameRo
+     * @param {string} lang - Language code
+     * @returns {string} Localized name
+     */
+    _getLocalizedName(obj, lang) {
+        if (lang === 'ro') return obj.nameRo || obj.nameEn || obj.name;
+        if (lang === 'en') return obj.nameEn || obj.name;
+        return obj.name;
+    },
+
     exportText(report){
-const lang = report.metadata.language;
-let text = '';
- // Header
-text += '═══════════════════════════════════════════════════════\n';
-text += lang === 'es' ?
-'  WHISPERS OF THE WAVE - INFORME DE VIAJE\n' :
-'  WHISPERS OF THE WAVE - JOURNEY REPORT\n';
-text += '═══════════════════════════════════════════════════════\n\n';
- // Metadata
-text += lang === 'es' ? 'Generado: ' : 'Generated: ';
-text += new Date(report.metadata.generatedAt).toLocaleString() + '\n';
-text += lang === 'es' ? 'Ola Seleccionada: ' : 'Selected Wave: ';
-text += (lang === 'es' ? report.metadata.selectedWave.name : report.metadata.selectedWave.nameEn) + '\n\n';
- // Summary
-text += '───────────────────────────────────────────────────────\n';
-text += lang === 'es' ? 'RESUMEN\n' : 'SUMMARY\n';
-text += '───────────────────────────────────────────────────────\n';
-        text += lang === 'es' ? 'Mensajes Totales: ' : 'Total Messages: ';
+        const lang = report.metadata.language;
+        let text = '';
+        
+        // Header
+        text += '═══════════════════════════════════════════════════════\n';
+        text += `  WHISPERS OF THE WAVE - ${this._getText(lang, 'journeyReport')}\n`;
+        text += '═══════════════════════════════════════════════════════\n\n';
+        
+        // Metadata
+        text += this._getText(lang, 'generated');
+        text += new Date(report.metadata.generatedAt).toLocaleString() + '\n';
+        text += this._getText(lang, 'selectedWave');
+        text += this._getLocalizedName(report.metadata.selectedWave, lang) + '\n\n';
+        
+        // Summary
+        text += '───────────────────────────────────────────────────────\n';
+        text += this._getText(lang, 'summary') + '\n';
+        text += '───────────────────────────────────────────────────────\n';
+        text += this._getText(lang, 'totalMessages');
         text += report.summary.totalMessages + '\n';
-        text += lang === 'es' ? 'Duración: ' : 'Duration: ';
+        text += this._getText(lang, 'duration');
         text += report.summary.durationFormatted + '\n';
-        text += lang === 'es' ? 'Logros Desbloqueados: ' : 'Achievements Unlocked: ';
+        text += this._getText(lang, 'achievementsUnlocked');
         text += `${report.summary.achievementsUnlocked} / ${report.summary.achievementsTotal} (${report.summary.completionPercentage}%)\n\n`;
 
         // Expression Metrics
         if (report.expressionMetrics) {
             text += '───────────────────────────────────────────────────────\n';
-            text += lang === 'es' ? 'MÉTRICAS DE EXPRESIÓN\n' : 'EXPRESSION METRICS\n';
+            text += this._getText(lang, 'expressionMetrics') + '\n';
             text += '───────────────────────────────────────────────────────\n';
-            text += lang === 'es' ? 'Nivel Actual: ' : 'Current Level: ';
-            text += (lang === 'es' ? report.expressionMetrics.currentLevel.name : report.expressionMetrics.currentLevel.nameEn) + '\n';
-            text += lang === 'es' ? 'Mejora Total: ' : 'Total Improvement: ';
+            text += this._getText(lang, 'currentLevel');
+            text += this._getLocalizedName(report.expressionMetrics.currentLevel, lang) + '\n';
+            text += this._getText(lang, 'totalImprovement');
             text += `${report.expressionMetrics.improvement > 0 ? '+' : ''}${report.expressionMetrics.improvement}\n\n`;
-            text += lang === 'es' ? 'Promedios:\n' : 'Averages:\n';
-            text += `  ${lang === 'es' ? 'Claridad' : 'Clarity'}: ${report.expressionMetrics.averageScores.clarity}%\n`;
-            text += `  ${lang === 'es' ? 'Especificidad' : 'Specificity'}: ${report.expressionMetrics.averageScores.specificity}%\n`;
-            text += `  ${lang === 'es' ? 'Conciencia Emocional' : 'Emotional Awareness'}: ${report.expressionMetrics.averageScores.emotionalAwareness}%\n`;
-            text += `  ${lang === 'es' ? 'General' : 'Overall'}: ${report.expressionMetrics.averageScores.overall}\n\n`;
+            text += this._getText(lang, 'averages') + '\n';
+            text += `  ${this._getText(lang, 'clarity')}: ${report.expressionMetrics.averageScores.clarity}%\n`;
+            text += `  ${this._getText(lang, 'specificity')}: ${report.expressionMetrics.averageScores.specificity}%\n`;
+            text += `  ${this._getText(lang, 'emotionalAwareness')}: ${report.expressionMetrics.averageScores.emotionalAwareness}%\n`;
+            text += `  ${this._getText(lang, 'overall')}: ${report.expressionMetrics.averageScores.overall}\n\n`;
         }
 
         // Ocean States
         if (report.oceanStates) {
             text += '───────────────────────────────────────────────────────\n';
-            text += lang === 'es' ? 'ESTADOS DEL OCÉANO\n' : 'OCEAN STATES\n';
+            text += this._getText(lang, 'oceanStates') + '\n';
             text += '───────────────────────────────────────────────────────\n';
-            text += lang === 'es' ? 'Estado Actual: ' : 'Current State: ';
-            text += (lang === 'es' ? report.oceanStates.currentState.name : report.oceanStates.currentState.nameEn) + '\n';
-            text += lang === 'es' ? 'Estados Experimentados: ' : 'States Experienced: ';
+            text += this._getText(lang, 'currentState');
+            text += this._getLocalizedName(report.oceanStates.currentState, lang) + '\n';
+            text += this._getText(lang, 'statesExperienced');
             text += report.oceanStates.totalStatesExperienced + '\n';
-            text += lang === 'es' ? 'Progreso: ' : 'Progress: ';
+            text += this._getText(lang, 'progress');
             text += report.oceanStates.progressionPercentage + '%\n\n';
         }
+        
         // Insights
         if (report.insights.length > 0) {
             text += '───────────────────────────────────────────────────────\n';
-            text += lang === 'es' ? 'INSIGHTS\n' : 'INSIGHTS\n';
+            text += this._getText(lang, 'insights') + '\n';
             text += '───────────────────────────────────────────────────────\n';
             report.insights.forEach((insight, i) => {
                 text += `${i + 1}. ${insight.text}\n`;
@@ -506,7 +554,7 @@ text += '───────────────────────�
         // Recommendations
         if (report.recommendations.length > 0) {
             text += '───────────────────────────────────────────────────────\n';
-            text += lang === 'es' ? 'RECOMENDACIONES\n' : 'RECOMMENDATIONS\n';
+            text += this._getText(lang, 'recommendations') + '\n';
             text += '───────────────────────────────────────────────────────\n';
             report.recommendations.forEach((rec, i) => {
                 text += `${i + 1}. ${rec.text}\n`;
@@ -516,13 +564,11 @@ text += '───────────────────────�
 
         // Footer
         text += '═══════════════════════════════════════════════════════\n';
-        text += lang === 'es' ?
-            '  Gracias por tu viaje en Whispers of the Wave\n' :
-            '  Thank you for your journey in Whispers of the Wave\n';
+        text += `  ${this._getText(lang, 'thankYou')}\n`;
         text += '═══════════════════════════════════════════════════════\n';
 
         return text;
-},
+    },
     /**
      * Download report as text file
      * @param {Object} report - Report object

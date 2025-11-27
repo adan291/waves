@@ -117,8 +117,8 @@ const ResponseValidator = {
             patterns.push('unparsed_json');
         }
 
-        // Check for truncation indicators
-        if (combined.includes('[truncated') || combined.includes('...') && combined.length > 500) {
+        // Check for truncation indicators (only explicit truncation markers)
+        if (combined.includes('[truncated') || combined.includes('[...]') || combined.includes('…truncated')) {
             patterns.push('truncated_content');
         }
 

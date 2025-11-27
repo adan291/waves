@@ -24,6 +24,15 @@ const AchievementUI = {
         document.addEventListener('achievement:unlocked', (e) => {
             this.showNotification(e.detail.achievement);
         });
+
+        // Listen for language changes - refresh gallery if open
+        document.addEventListener('language:changed', () => {
+            const existingModal = document.querySelector('.achievement-gallery-modal');
+            if (existingModal) {
+                existingModal.remove();
+                this.showGallery();
+            }
+        });
     },
 
     /**
@@ -86,19 +95,41 @@ const AchievementUI = {
      */
     createNotificationElement(achievement) {
         const lang = localStorage.getItem('whispers-language') || 'es';
+        
+        // Translations for "Achievement Unlocked!"
+        const unlockedText = {
+            es: '¡Logro Desbloqueado!',
+            en: 'Achievement Unlocked!',
+            ro: 'Realizare Deblocată!'
+        };
+        
+        // Get achievement name by language
+        const getName = () => {
+            if (lang === 'es') return achievement.name;
+            if (lang === 'ro') return achievement.nameRo || achievement.nameEn || achievement.name;
+            return achievement.nameEn || achievement.name;
+        };
+        
+        // Get achievement description by language
+        const getDescription = () => {
+            if (lang === 'es') return achievement.description;
+            if (lang === 'ro') return achievement.descriptionRo || achievement.descriptionEn || achievement.description;
+            return achievement.descriptionEn || achievement.description;
+        };
+        
         const notification = document.createElement('div');
         notification.className = `achievement-notification ${achievement.rarity}`;
         notification.innerHTML = `
             <div class="achievement-notification-content">
                 <div class="achievement-icon">${achievement.icon}</div>
                 <div class="achievement-info">
-                    <div class="achievement-unlocked">${lang === 'es' ? '¡Logro Desbloqueado!' : 'Achievement Unlocked!'}</div>
-                    <div class="achievement-name">${lang === 'es' ? achievement.name : achievement.nameEn}</div>
-                    <div class="achievement-description">${lang === 'es' ? achievement.description : achievement.descriptionEn}</div>
+                    <div class="achievement-unlocked">${unlockedText[lang] || unlockedText.en}</div>
+                    <div class="achievement-name">${getName()}</div>
+                    <div class="achievement-description">${getDescription()}</div>
                     <div class="achievement-rarity">${AchievementSystem.getRarityLabel(achievement.rarity, lang)}</div>
                 </div>
             </div>
-            <div class="achievement-close" onclick="AchievementUI.dismissCurrent(this.parentElement)">×</div>
+            <div class="achievement-close" onclick="this.parentElement.remove()">×</div>
         `;
 
         // Click to dismiss (clear timeout to prevent race condition)
@@ -141,6 +172,16 @@ const AchievementUI = {
         // Could integrate with AudioService here
         // For now, just log
         console.log(`🔊 Playing ${rarity} achievement sound`);
+    },
+
+    /**
+     * Get "Completed" label by language
+     * @returns {string} Translated label
+     */
+    getCompletedLabel() {
+        const lang = localStorage.getItem('whispers-language') || 'es';
+        const labels = { es: 'Completado', en: 'Completed', ro: 'Completat' };
+        return labels[lang] || labels.en;
     },
 
     /**
@@ -191,7 +232,7 @@ const AchievementUI = {
                     </div>
                     <div class="gallery-stat">
                         <div class="stat-value">${stats.percentage}%</div>
-                        <div class="stat-label">${typeof i18n !== 'undefined' ? i18n.t('report.summary') : 'Completado'}</div>
+                        <div class="stat-label">${this.getCompletedLabel()}</div>
                     </div>
                 </div>
 
@@ -214,13 +255,18 @@ const AchievementUI = {
      * @returns {string} HTML
      */
     renderCategories(categories) {
-        const lang = typeof i18n !== 'undefined' ? i18n.getCurrentLanguage() : 'en';
+        const lang = typeof i18n !== 'undefined' ? i18n.getCurrentLanguage() : 'es';
         
         // Category names translations
         const categoryNames = {
+            journey: { es: 'Viaje', en: 'Journey', ro: 'Călătorie' },
             milestone: { es: 'Hitos', en: 'Milestones', ro: 'Repere' },
             expression: { es: 'Expresión', en: 'Expression', ro: 'Expresie' },
-            special: { es: 'Especiales', en: 'Special', ro: 'Speciale' }
+            ocean: { es: 'Océano', en: 'Ocean', ro: 'Ocean' },
+            progress: { es: 'Progreso', en: 'Progress', ro: 'Progres' },
+            consistency: { es: 'Consistencia', en: 'Consistency', ro: 'Consistență' },
+            special: { es: 'Especiales', en: 'Special', ro: 'Speciale' },
+            legendary: { es: 'Legendarios', en: 'Legendary', ro: 'Legendare' }
         };
 
         return Object.entries(categories).map(([category, achievements]) => `
@@ -244,12 +290,19 @@ const AchievementUI = {
         const unlockedData = isUnlocked ? 
             AchievementSystem.unlocked.find(u => u.id === achievement.id) : null;
 
+        // Locked achievement text by language
+        const lockedText = {
+            es: 'Logro bloqueado',
+            en: 'Locked achievement',
+            ro: 'Realizare blocată'
+        };
+
         return `
             <div class="achievement-card ${isUnlocked ? 'unlocked' : 'locked'} ${achievement.rarity}">
                 <div class="achievement-card-icon">${isUnlocked ? achievement.icon : '🔒'}</div>
-                <div class="achievement-card-name">${isUnlocked ? (lang === 'es' ? achievement.name : achievement.nameEn) : '???'}</div>
+                <div class="achievement-card-name">${isUnlocked ? AchievementSystem.getAchievementName(achievement, lang) : '???'}</div>
                 <div class="achievement-card-description">
-                    ${isUnlocked ? (lang === 'es' ? achievement.description : achievement.descriptionEn) : (lang === 'es' ? 'Logro bloqueado' : 'Locked achievement')}
+                    ${isUnlocked ? AchievementSystem.getAchievementDescription(achievement, lang) : (lockedText[lang] || lockedText.en)}
                 </div>
                 <div class="achievement-card-rarity" style="color: ${AchievementSystem.getRarityColor(achievement.rarity)}">
                     ${AchievementSystem.getRarityLabel(achievement.rarity, lang)}

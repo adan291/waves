@@ -171,17 +171,19 @@
             <span id="modeText" class="mode-text" data-i18n="personas.guardian">The Wave Guardian</span>
         </div>
 
-        <!-- Message display area (scrollable) -->
+        <!-- Welcome message -->
+        <div class="welcome-message">
+            <p class="whisper" data-i18n="ui.welcome">Bienvenido al océano de pensamientos...</p>
+            <p class="wave-reflection" data-i18n="ui.welcomeMessage">Comparte lo que llevas dentro, y las olas
+                reflejarán tu verdad.</p>
+        </div>
+
+        <!-- Suggestions (always visible) -->
+        <div id="suggestionsContainer"></div>
+        
+        <!-- Conversation area (scrollable) -->
         <div id="messageDisplay" class="message-display" role="log" aria-live="polite"
             aria-label="Conversation history">
-            <div class="welcome-message">
-                <p class="whisper" data-i18n="ui.welcome">Bienvenido al océano de pensamientos...</p>
-                <p class="wave-reflection" data-i18n="ui.welcomeMessage">Comparte lo que llevas dentro, y las olas
-                    reflejarán tu verdad.</p>
-            </div>
-
-            <!-- Suggestions container inside conversation flow -->
-            <div id="suggestionsContainer"></div>
         </div>
 
         <!-- Input container (fixed at bottom) -->

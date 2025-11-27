@@ -9,36 +9,91 @@ const ExpressionAnalyzer = {
     history: [],
     maxHistorySize: 100,
 
+    // Configuration constants
+    config: {
+        weights: {
+            clarity: 0.35,
+            specificity: 0.25,
+            emotionalAwareness: 0.25,
+            length: 0.15
+        },
+        thresholds: {
+            improvingSignificantly: 15,
+            improving: 5,
+            declining: -5,
+            decliningSignificantly: -15
+        }
+    },
+
+    // Localized messages
+    messages: {
+        insufficientData: {
+            es: 'Necesitas más mensajes para ver tu progreso',
+            en: 'You need more messages to see your progress',
+            ro: 'Ai nevoie de mai multe mesaje pentru a-ți vedea progresul'
+        },
+        stable: {
+            es: 'Tu expresión se mantiene estable',
+            en: 'Your expression remains stable',
+            ro: 'Expresia ta rămâne stabilă'
+        },
+        improvingSignificantly: {
+            es: '¡Excelente! Tu claridad ha mejorado notablemente',
+            en: 'Excellent! Your clarity has improved significantly',
+            ro: 'Excelent! Claritatea ta s-a îmbunătățit semnificativ'
+        },
+        improving: {
+            es: 'Bien, estás expresándote con más claridad',
+            en: 'Good, you are expressing yourself more clearly',
+            ro: 'Bine, te exprimi mai clar'
+        },
+        decliningSignificantly: {
+            es: 'Parece que estás más confundido. Tomemos un momento',
+            en: 'You seem more confused. Let\'s take a moment',
+            ro: 'Pari mai confuz. Să luăm un moment'
+        },
+        declining: {
+            es: 'Tu expresión es menos clara. ¿Necesitas ayuda?',
+            en: 'Your expression is less clear. Need help?',
+            ro: 'Expresia ta este mai puțin clară. Ai nevoie de ajutor?'
+        }
+    },
+
     // Word dictionaries for analysis
     dictionaries: {
         // Confusion indicators (negative for clarity)
         confusion: {
             es: ['no sé', 'quizás', 'tal vez', 'creo que', 'puede ser', 'supongo', 'a lo mejor', 'no estoy seguro'],
-            en: ["don't know", 'maybe', 'perhaps', 'i think', 'might be', 'i guess', 'not sure', 'possibly']
+            en: ["don't know", 'maybe', 'perhaps', 'i think', 'might be', 'i guess', 'not sure', 'possibly'],
+            ro: ['nu știu', 'poate', 'probabil', 'cred că', 'ar putea fi', 'presupun', 'nu sunt sigur']
         },
         
         // Clarity indicators (positive)
         clarity: {
             es: ['siento', 'necesito', 'quiero', 'me pasa', 'experimento', 'sé que', 'estoy seguro', 'claramente'],
-            en: ['i feel', 'i need', 'i want', 'i experience', 'i know', "i'm sure", 'clearly', 'definitely']
+            en: ['i feel', 'i need', 'i want', 'i experience', 'i know', "i'm sure", 'clearly', 'definitely'],
+            ro: ['simt', 'am nevoie', 'vreau', 'mi se întâmplă', 'experimentez', 'știu că', 'sunt sigur', 'clar']
         },
         
         // Emotional awareness (positive)
         emotionalAwareness: {
             es: ['me siento', 'siento que', 'emocionalmente', 'mi emoción', 'esto me hace sentir', 'reconozco que'],
-            en: ['i feel', 'i sense', 'emotionally', 'my emotion', 'this makes me feel', 'i recognize']
+            en: ['i feel', 'i sense', 'emotionally', 'my emotion', 'this makes me feel', 'i recognize'],
+            ro: ['mă simt', 'simt că', 'emoțional', 'emoția mea', 'asta mă face să simt', 'recunosc că']
         },
         
         // Specificity indicators (positive)
         specificity: {
             es: ['porque', 'cuando', 'específicamente', 'en particular', 'por ejemplo', 'concretamente'],
-            en: ['because', 'when', 'specifically', 'in particular', 'for example', 'concretely']
+            en: ['because', 'when', 'specifically', 'in particular', 'for example', 'concretely'],
+            ro: ['pentru că', 'când', 'specific', 'în particular', 'de exemplu', 'concret']
         },
         
         // Vague language (negative for specificity)
         vague: {
             es: ['algo', 'cosas', 'todo', 'nada', 'siempre', 'nunca', 'alguien', 'algún'],
-            en: ['something', 'things', 'everything', 'nothing', 'always', 'never', 'someone', 'some']
+            en: ['something', 'things', 'everything', 'nothing', 'always', 'never', 'someone', 'some'],
+            ro: ['ceva', 'lucruri', 'totul', 'nimic', 'mereu', 'niciodată', 'cineva', 'vreun']
         }
     },
 
@@ -67,11 +122,12 @@ const ExpressionAnalyzer = {
         const length = this.calculateLengthScore(wordCount);
         
         // Calculate overall score (weighted average)
+        const { weights } = this.config;
         const overall = Math.round(
-            (clarity * 0.35) + 
-            (specificity * 0.25) + 
-            (emotionalAwareness * 0.25) + 
-            (length * 0.15)
+            (clarity * weights.clarity) + 
+            (specificity * weights.specificity) + 
+            (emotionalAwareness * weights.emotionalAwareness) + 
+            (length * weights.length)
         );
         
         const metrics = {
@@ -222,6 +278,24 @@ const ExpressionAnalyzer = {
     },
 
     /**
+     * Get current language
+     * @returns {string} Language code (es, en, ro)
+     */
+    getLang() {
+        return localStorage.getItem('whispers-language') || 'es';
+    },
+
+    /**
+     * Get localized message
+     * @param {string} key - Message key
+     * @returns {string} Localized message
+     */
+    getMessage(key) {
+        const lang = this.getLang();
+        return this.messages[key]?.[lang] || this.messages[key]?.en || key;
+    },
+
+    /**
      * Get improvement trend
      * @param {number} recentCount - Number of recent messages to compare
      * @returns {object} Trend analysis
@@ -231,7 +305,7 @@ const ExpressionAnalyzer = {
             return {
                 trend: 'insufficient_data',
                 improvement: 0,
-                message: 'Necesitas más mensajes para ver tu progreso'
+                message: this.getMessage('insufficientData')
             };
         }
         
@@ -243,22 +317,23 @@ const ExpressionAnalyzer = {
         const recentAvg = recent.reduce((sum, m) => sum + m.overall, 0) / recent.length;
         
         const improvement = recentAvg - firstAvg;
+        const { thresholds } = this.config;
         
         let trend = 'stable';
-        let message = 'Tu expresión se mantiene estable';
+        let messageKey = 'stable';
         
-        if (improvement > 15) {
+        if (improvement > thresholds.improvingSignificantly) {
             trend = 'improving_significantly';
-            message = '¡Excelente! Tu claridad ha mejorado notablemente';
-        } else if (improvement > 5) {
+            messageKey = 'improvingSignificantly';
+        } else if (improvement > thresholds.improving) {
             trend = 'improving';
-            message = 'Bien, estás expresándote con más claridad';
-        } else if (improvement < -15) {
+            messageKey = 'improving';
+        } else if (improvement < thresholds.decliningSignificantly) {
             trend = 'declining_significantly';
-            message = 'Parece que estás más confundido. Tomemos un momento';
-        } else if (improvement < -5) {
+            messageKey = 'decliningSignificantly';
+        } else if (improvement < thresholds.declining) {
             trend = 'declining';
-            message = 'Tu expresión es menos clara. ¿Necesitas ayuda?';
+            messageKey = 'declining';
         }
         
         return {
@@ -266,7 +341,7 @@ const ExpressionAnalyzer = {
             improvement: Math.round(improvement),
             firstScore: Math.round(firstAvg),
             recentScore: Math.round(recentAvg),
-            message,
+            message: this.getMessage(messageKey),
             messageCount: this.history.length
         };
     },
@@ -351,11 +426,11 @@ const ExpressionAnalyzer = {
         const avgScore = this.history.reduce((sum, m) => sum + m.overall, 0) / this.history.length;
         
         const levels = [
-            { min: 0, max: 20, level: 1, name: 'Explorador', nameEn: 'Explorer', next: 'Aprendiz' },
-            { min: 20, max: 40, level: 2, name: 'Aprendiz', nameEn: 'Learner', next: 'Comunicador' },
-            { min: 40, max: 60, level: 3, name: 'Comunicador', nameEn: 'Communicator', next: 'Articulado' },
-            { min: 60, max: 80, level: 4, name: 'Articulado', nameEn: 'Articulate', next: 'Maestro' },
-            { min: 80, max: 100, level: 5, name: 'Maestro', nameEn: 'Master', next: null }
+            { min: 0, max: 20, level: 1, name: 'Explorador', nameEn: 'Explorer', nameRo: 'Explorator', next: 'Aprendiz' },
+            { min: 20, max: 40, level: 2, name: 'Aprendiz', nameEn: 'Learner', nameRo: 'Ucenic', next: 'Comunicador' },
+            { min: 40, max: 60, level: 3, name: 'Comunicador', nameEn: 'Communicator', nameRo: 'Comunicator', next: 'Articulado' },
+            { min: 60, max: 80, level: 4, name: 'Articulado', nameEn: 'Articulate', nameRo: 'Articulat', next: 'Maestro' },
+            { min: 80, max: 100, level: 5, name: 'Maestro', nameEn: 'Master', nameRo: 'Maestru', next: null }
         ];
         
         const currentLevel = levels.find(l => avgScore >= l.min && avgScore < l.max) || levels[levels.length - 1];

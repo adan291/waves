@@ -3037,3 +3037,19 @@ body[data-theme="light"] .summary-card {
 body[data-theme="light"] .report-section h3 {
     color: #0077b6;
 }
+
+
+/* ===================================
+   WELCOME & SUGGESTIONS (Fixed above conversation)
+   =================================== */
+
+.container > .welcome-message {
+    flex-shrink: 0;
+    text-align: center;
+    padding: 1rem 2rem;
+}
+
+.container > #suggestionsContainer {
+    flex-shrink: 0;
+    padding: 0 2rem 1rem 2rem;
+}

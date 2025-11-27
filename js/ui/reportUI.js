@@ -59,12 +59,19 @@ const ReportUI = {
 
     renderHeader(report, lang) {
         const title = typeof i18n !== 'undefined' ? i18n.t('report.title') : 'Informe de Viaje';
-        const waveName = lang === 'es' ? report.metadata.selectedWave.name : report.metadata.selectedWave.nameEn;
+        
+        // Get wave name by language
+        const getWaveName = () => {
+            if (lang === 'ro') return report.metadata.selectedWave.nameRo || report.metadata.selectedWave.nameEn || report.metadata.selectedWave.name;
+            if (lang === 'en') return report.metadata.selectedWave.nameEn || report.metadata.selectedWave.name;
+            return report.metadata.selectedWave.name;
+        };
+        
         return `
             <div class="report-header">
                 <div class="report-title">
                     <h2>🌊 ${title}</h2>
-                    <p class="report-subtitle">${waveName}</p>
+                    <p class="report-subtitle">${getWaveName()}</p>
                 </div>
                 <button class="report-close" onclick="this.closest('.report-modal').remove()">×</button>
             </div>
@@ -86,25 +93,32 @@ const ReportUI = {
     },
 
     renderSummary(summary, lang) {
+        const labels = {
+            summary: { es: '📊 Resumen', en: '📊 Summary', ro: '📊 Rezumat' },
+            messages: { es: 'Mensajes', en: 'Messages', ro: 'Mesaje' },
+            duration: { es: 'Duración', en: 'Duration', ro: 'Durată' },
+            achievements: { es: 'Logros', en: 'Achievements', ro: 'Realizări' },
+            completed: { es: 'Completado', en: 'Completed', ro: 'Completat' }
+        };
         return `
             <div class="report-section">
-                <h3>${lang === 'es' ? '📊 Resumen' : '📊 Summary'}</h3>
+                <h3>${labels.summary[lang] || labels.summary.en}</h3>
                 <div class="summary-grid">
                     <div class="summary-card">
                         <div class="summary-value">${summary.totalMessages}</div>
-                        <div class="summary-label">${lang === 'es' ? 'Mensajes' : 'Messages'}</div>
+                        <div class="summary-label">${labels.messages[lang] || labels.messages.en}</div>
                     </div>
                     <div class="summary-card">
                         <div class="summary-value">${summary.durationFormatted}</div>
-                        <div class="summary-label">${lang === 'es' ? 'Duración' : 'Duration'}</div>
+                        <div class="summary-label">${labels.duration[lang] || labels.duration.en}</div>
                     </div>
                     <div class="summary-card">
                         <div class="summary-value">${summary.achievementsUnlocked} / ${summary.achievementsTotal}</div>
-                        <div class="summary-label">${lang === 'es' ? 'Logros' : 'Achievements'}</div>
+                        <div class="summary-label">${labels.achievements[lang] || labels.achievements.en}</div>
                     </div>
                     <div class="summary-card">
                         <div class="summary-value">${summary.completionPercentage}%</div>
-                        <div class="summary-label">${lang === 'es' ? 'Completado' : 'Completed'}</div>
+                        <div class="summary-label">${labels.completed[lang] || labels.completed.en}</div>
                     </div>
                 </div>
             </div>
@@ -115,17 +129,22 @@ const ReportUI = {
         if (journey.timeline.length === 0) {
             return '';
         }
+        const labels = {
+            title: { es: '💫 Viaje Emocional', en: '💫 Emotional Journey', ro: '💫 Călătorie Emoțională' },
+            start: { es: 'Inicio:', en: 'Start:', ro: 'Început:' },
+            current: { es: 'Actual:', en: 'Current:', ro: 'Actual:' }
+        };
         return `
             <div class="report-section">
-                <h3>${lang === 'es' ? '💫 Viaje Emocional' : '💫 Emotional Journey'}</h3>
+                <h3>${labels.title[lang] || labels.title.en}</h3>
                 <div class="journey-summary">
                     <div class="journey-state">
-                        <span class="state-label">${lang === 'es' ? 'Inicio:' : 'Start:'}</span>
+                        <span class="state-label">${labels.start[lang] || labels.start.en}</span>
                         <span class="state-value">${this.getStateName(journey.startState, lang)}</span>
                     </div>
                     <div class="journey-arrow">→</div>
                     <div class="journey-state">
-                        <span class="state-label">${lang === 'es' ? 'Actual:' : 'Current:'}</span>
+                        <span class="state-label">${labels.current[lang] || labels.current.en}</span>
                         <span class="state-value">${this.getStateName(journey.endState, lang)}</span>
                     </div>
                     <div class="journey-progression ${journey.progression >= 0 ? 'positive' : 'negative'}">
@@ -164,11 +183,15 @@ const ReportUI = {
     },
 
     renderPeaksValleys(peaks, valleys, lang) {
+        const labels = {
+            highPoints: { es: 'Momentos Altos', en: 'High Points', ro: 'Momente Înalte' },
+            lowPoints: { es: 'Momentos Bajos', en: 'Low Points', ro: 'Momente Joase' }
+        };
         return `
             <div class="peaks-valleys">
                 ${peaks.length > 0 ? `
                     <div class="peaks">
-                        <h4>📈 ${lang === 'es' ? 'Momentos Altos' : 'High Points'}</h4>
+                        <h4>📈 ${labels.highPoints[lang] || labels.highPoints.en}</h4>
                         ${peaks.map(peak => `
                             <div class="moment-item">
                                 <span class="moment-score">${peak.score}</span>
@@ -179,7 +202,7 @@ const ReportUI = {
                 ` : ''}
                 ${valleys.length > 0 ? `
                     <div class="valleys">
-                        <h4>📉 ${lang === 'es' ? 'Momentos Bajos' : 'Low Points'}</h4>
+                        <h4>📉 ${labels.lowPoints[lang] || labels.lowPoints.en}</h4>
                         ${valleys.map(valley => `
                             <div class="moment-item">
                                 <span class="moment-score">${valley.score}</span>
@@ -193,22 +216,38 @@ const ReportUI = {
     },
 
     renderExpressionMetrics(metrics, lang) {
+        const labels = {
+            title: { es: '💎 Métricas de Expresión', en: '💎 Expression Metrics', ro: '💎 Metrici de Expresie' },
+            level: { es: 'Nivel:', en: 'Level:', ro: 'Nivel:' },
+            points: { es: 'puntos', en: 'points', ro: 'puncte' },
+            clarity: { es: 'Claridad', en: 'Clarity', ro: 'Claritate' },
+            specificity: { es: 'Especificidad', en: 'Specificity', ro: 'Specificitate' },
+            emotionalAwareness: { es: 'Conciencia Emocional', en: 'Emotional Awareness', ro: 'Conștiință Emoțională' }
+        };
+        
+        // Get level name by language
+        const getLevelName = () => {
+            if (lang === 'ro') return metrics.currentLevel.nameRo || metrics.currentLevel.nameEn || metrics.currentLevel.name;
+            if (lang === 'en') return metrics.currentLevel.nameEn || metrics.currentLevel.name;
+            return metrics.currentLevel.name;
+        };
+        
         return `
             <div class="report-section">
-                <h3>${lang === 'es' ? '💎 Métricas de Expresión' : '💎 Expression Metrics'}</h3>
+                <h3>${labels.title[lang] || labels.title.en}</h3>
                 <div class="metrics-summary">
                     <div class="metric-level">
-                        <span class="level-label">${lang === 'es' ? 'Nivel:' : 'Level:'}</span>
-                        <span class="level-value">${lang === 'es' ? metrics.currentLevel.name : metrics.currentLevel.nameEn}</span>
+                        <span class="level-label">${labels.level[lang] || labels.level.en}</span>
+                        <span class="level-value">${getLevelName()}</span>
                     </div>
                     <div class="metric-improvement ${metrics.improvement >= 0 ? 'positive' : 'negative'}">
-                        ${metrics.improvement >= 0 ? '+' : ''}${metrics.improvement}${lang === 'es' ? 'puntos' : 'points'}
+                        ${metrics.improvement >= 0 ? '+' : ''}${metrics.improvement} ${labels.points[lang] || labels.points.en}
                     </div>
                 </div>
                 <div class="metrics-bars">
-                    ${this.renderMetricBar(lang === 'es' ? 'Claridad' : 'Clarity', metrics.averageScores.clarity, metrics.maxScores.clarity)}
-                    ${this.renderMetricBar(lang === 'es' ? 'Especificidad' : 'Specificity', metrics.averageScores.specificity, metrics.maxScores.specificity)}
-                    ${this.renderMetricBar(lang === 'es' ? 'Conciencia Emocional' : 'Emotional Awareness', metrics.averageScores.emotionalAwareness, metrics.maxScores.emotionalAwareness)}
+                    ${this.renderMetricBar(labels.clarity[lang] || labels.clarity.en, metrics.averageScores.clarity, metrics.maxScores.clarity)}
+                    ${this.renderMetricBar(labels.specificity[lang] || labels.specificity.en, metrics.averageScores.specificity, metrics.maxScores.specificity)}
+                    ${this.renderMetricBar(labels.emotionalAwareness[lang] || labels.emotionalAwareness.en, metrics.averageScores.emotionalAwareness, metrics.maxScores.emotionalAwareness)}
                 </div>
             </div>
         `;
@@ -233,16 +272,29 @@ const ReportUI = {
     },
 
     renderOceanStates(states, lang) {
+        const labels = {
+            title: { es: '🌊 Estados del Océano', en: '🌊 Ocean States', ro: '🌊 Stări ale Oceanului' },
+            currentState: { es: 'Estado Actual:', en: 'Current State:', ro: 'Stare Actuală:' },
+            progress: { es: 'Progreso:', en: 'Progress:', ro: 'Progres:' }
+        };
+        
+        // Get state name by language
+        const getStateName = (state) => {
+            if (lang === 'ro') return state.nameRo || state.nameEn || state.name;
+            if (lang === 'en') return state.nameEn || state.name;
+            return state.name;
+        };
+        
         return `
             <div class="report-section">
-                <h3>${lang === 'es' ? '🌊 Estados del Océano' : '🌊 Ocean States'}</h3>
+                <h3>${labels.title[lang] || labels.title.en}</h3>
                 <div class="ocean-summary">
                     <div class="ocean-current">
-                        <span class="ocean-label">${lang === 'es' ? 'Estado Actual:' : 'Current State:'}</span>
-                        <span class="ocean-value">${lang === 'es' ? states.currentState.name : states.currentState.nameEn}</span>
+                        <span class="ocean-label">${labels.currentState[lang] || labels.currentState.en}</span>
+                        <span class="ocean-value">${getStateName(states.currentState)}</span>
                     </div>
                     <div class="ocean-progress">
-                        <span class="ocean-label">${lang === 'es' ? 'Progreso:' : 'Progress:'}</span>
+                        <span class="ocean-label">${labels.progress[lang] || labels.progress.en}</span>
                         <span class="ocean-value">${states.progressionPercentage}%</span>
                     </div>
                 </div>
@@ -250,7 +302,7 @@ const ReportUI = {
                     ${states.statesReached.map((state, index) => `
                         <div class="state-item">
                             <div class="state-number">${index + 1}</div>
-                            <div class="state-name">${lang === 'es' ? state.name : state.nameEn}</div>
+                            <div class="state-name">${getStateName(state)}</div>
                         </div>
                     `).join('<div class="state-arrow">→</div>')}
                 </div>
@@ -259,27 +311,41 @@ const ReportUI = {
     },
 
     renderAchievements(achievements, lang) {
+        const labels = {
+            title: { es: '🏆 Logros Desbloqueados', en: '🏆 Unlocked Achievements', ro: '🏆 Realizări Deblocate' },
+            unlocked: { es: 'Desbloqueados', en: 'Unlocked', ro: 'Deblocate' },
+            completed: { es: 'Completado', en: 'Completed', ro: 'Completat' },
+            recent: { es: 'Recientes', en: 'Recent', ro: 'Recente' }
+        };
+        
+        // Get achievement name by language
+        const getAchievementName = (a) => {
+            if (lang === 'ro') return a.nameRo || a.nameEn || a.name;
+            if (lang === 'en') return a.nameEn || a.name;
+            return a.name;
+        };
+        
         return `
             <div class="report-section">
-                <h3>${lang === 'es' ? '🏆 Logros Desbloqueados' : '🏆 Unlocked Achievements'}</h3>
+                <h3>${labels.title[lang] || labels.title.en}</h3>
                 <div class="achievements-summary">
                     <div class="achievement-stat">
                         <span class="stat-value">${achievements.unlocked} / ${achievements.total}</span>
-                        <span class="stat-label">${lang === 'es' ? 'Desbloqueados' : 'Unlocked'}</span>
+                        <span class="stat-label">${labels.unlocked[lang] || labels.unlocked.en}</span>
                     </div>
                     <div class="achievement-stat">
                         <span class="stat-value">${achievements.percentage}%</span>
-                        <span class="stat-label">${lang === 'es' ? 'Completado' : 'Completed'}</span>
+                        <span class="stat-label">${labels.completed[lang] || labels.completed.en}</span>
                     </div>
                 </div>
                 ${achievements.recentlyUnlocked.length > 0 ? `
                     <div class="recent-achievements">
-                        <h4>${lang === 'es' ? 'Recientes' : 'Recent'}</h4>
+                        <h4>${labels.recent[lang] || labels.recent.en}</h4>
                         <div class="achievement-list">
                             ${achievements.recentlyUnlocked.map(a => `
                                 <div class="achievement-item ${a.rarity}">
                                     <span class="achievement-icon">${a.icon}</span>
-                                    <span class="achievement-name">${lang === 'es' ? a.name : a.nameEn}</span>
+                                    <span class="achievement-name">${getAchievementName(a)}</span>
                                 </div>
                             `).join('')}
                         </div>
@@ -291,9 +357,12 @@ const ReportUI = {
 
     renderInsights(insights, lang) {
         if (insights.length === 0) return '';
+        const labels = {
+            title: { es: '💡 Insights', en: '💡 Insights', ro: '💡 Perspective' }
+        };
         return `
             <div class="report-section">
-                <h3>${lang === 'es' ? '💡 Insights' : '💡 Insights'}</h3>
+                <h3>${labels.title[lang] || labels.title.en}</h3>
                 <div class="insights-list">
                     ${insights.map(insight => `
                         <div class="insight-item ${insight.type}">
@@ -308,9 +377,12 @@ const ReportUI = {
 
     renderRecommendations(recommendations, lang) {
         if (recommendations.length === 0) return '';
+        const labels = {
+            title: { es: '🎯 Recomendaciones', en: '🎯 Recommendations', ro: '🎯 Recomandări' }
+        };
         return `
             <div class="report-section">
-                <h3>${lang === 'es' ? '🎯 Recomendaciones' : '🎯 Recommendations'}</h3>
+                <h3>${labels.title[lang] || labels.title.en}</h3>
                 <div class="recommendations-list">
                     ${recommendations.map((rec, index) => `
                         <div class="recommendation-item priority-${rec.priority}">
@@ -324,16 +396,21 @@ const ReportUI = {
     },
 
     renderFooter(report, lang) {
+        const labels = {
+            downloadJSON: { es: 'Descargar JSON', en: 'Download JSON', ro: 'Descarcă JSON' },
+            downloadTXT: { es: 'Descargar TXT', en: 'Download TXT', ro: 'Descarcă TXT' },
+            close: { es: 'Cerrar', en: 'Close', ro: 'Închide' }
+        };
         return `
             <div class="report-footer">
                 <button class="report-btn secondary" onclick="ReportUI.downloadJSON()">
-                    📄 ${lang === 'es' ? 'Descargar JSON' : 'Download JSON'}
+                    📄 ${labels.downloadJSON[lang] || labels.downloadJSON.en}
                 </button>
                 <button class="report-btn secondary" onclick="ReportUI.downloadText()">
-                    📝 ${lang === 'es' ? 'Descargar TXT' : 'Download TXT'}
+                    📝 ${labels.downloadTXT[lang] || labels.downloadTXT.en}
                 </button>
                 <button class="report-btn primary" onclick="this.closest('.report-modal').remove()">
-                    ${lang === 'es' ? 'Cerrar' : 'Close'}
+                    ${labels.close[lang] || labels.close.en}
                 </button>
             </div>
         `;
@@ -353,13 +430,14 @@ const ReportUI = {
 
     getStateName(stateId, lang) {
         const names = {
-            confused: { es: 'Confusión', en: 'Confusion' },
-            anxious: { es: 'Ansiedad', en: 'Anxiety' },
-            processing: { es: 'Procesando', en: 'Processing' },
-            clarity: { es: 'Claridad', en: 'Clarity' },
-            resolved: { es: 'Resolución', en: 'Resolution' }
+            confused: { es: 'Confusión', en: 'Confusion', ro: 'Confuzie' },
+            anxious: { es: 'Ansiedad', en: 'Anxiety', ro: 'Anxietate' },
+            processing: { es: 'Procesando', en: 'Processing', ro: 'Procesare' },
+            clarity: { es: 'Claridad', en: 'Clarity', ro: 'Claritate' },
+            resolved: { es: 'Resolución', en: 'Resolution', ro: 'Rezolvare' },
+            neutral: { es: 'Neutral', en: 'Neutral', ro: 'Neutru' }
         };
-        return names[stateId]?.[lang] || stateId;
+        return names[stateId]?.[lang] || names[stateId]?.en || stateId;
     },
 
     getInsightIcon(type) {

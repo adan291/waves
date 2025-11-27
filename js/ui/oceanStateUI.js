@@ -89,6 +89,27 @@ const OceanStateUI = {
     },
 
     /**
+     * Get state name by language
+     * @param {object} state - State object with name, nameEn
+     * @returns {string} Translated state name
+     */
+    getStateName(state) {
+        const lang = this.getLang();
+        if (lang === 'es') return state.name;
+        if (lang === 'en') return state.nameEn || state.name;
+        // Romanian translations
+        const roTranslations = {
+            'Confusión': 'Confuzie',
+            'Ansiedad': 'Anxietate', 
+            'Procesando': 'Procesare',
+            'Claridad': 'Claritate',
+            'Resolución': 'Rezolvare',
+            'Neutral': 'Neutru'
+        };
+        return roTranslations[state.name] || state.nameEn || state.name;
+    },
+
+    /**
      * Refresh indicator text when language changes
      */
     refreshIndicatorLanguage() {
@@ -97,12 +118,10 @@ const OceanStateUI = {
         const nameEl = this.indicatorElement.querySelector('.state-name');
         if (!nameEl) return;
         
-        const lang = this.getLang();
-        
         if (typeof OceanDynamics !== 'undefined') {
             const state = OceanDynamics.getCurrentState();
             if (state && state.name) {
-                nameEl.textContent = lang === 'es' ? state.name : (state.nameEn || state.name);
+                nameEl.textContent = this.getStateName(state);
                 return;
             }
         }
@@ -133,8 +152,7 @@ const OceanStateUI = {
         }
 
         if (nameEl) {
-            const lang = this.getLang();
-            nameEl.textContent = lang === 'es' ? config.name : config.nameEn;
+            nameEl.textContent = this.getStateName(config);
         }
 
         if (progressEl && typeof OceanDynamics !== 'undefined') {

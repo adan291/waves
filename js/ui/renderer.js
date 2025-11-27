@@ -39,6 +39,15 @@ const RendererModule = (function () {
     // ============================================
 
     /**
+     * Get the conversation container where messages should be added
+     * @private
+     * @returns {HTMLElement} The conversation container
+     */
+    function getConversationContainer() {
+        return document.getElementById('messageDisplay');
+    }
+
+    /**
      * Safe translation helper with fallback
      * @private
      * @param {string} key - Translation key (dot notation)
@@ -114,20 +123,20 @@ const RendererModule = (function () {
             return;
         }
 
-        const messageDisplay = document.getElementById('messageDisplay');
-        if (!messageDisplay) {
+        const conversationContainer = getConversationContainer();
+        if (!conversationContainer) {
             if (typeof Logger !== 'undefined') {
-                Logger.error('Renderer', 'messageDisplay element not found');
+                Logger.error('Renderer', 'Conversation container not found');
             }
             endTiming({ success: false });
             return;
         }
-
+        
         const messageDiv = document.createElement('div');
         messageDiv.className = 'user-message';
         messageDiv.innerHTML = `<p>${escapeHtml(text)}</p>`;
 
-        messageDisplay.appendChild(messageDiv);
+        conversationContainer.appendChild(messageDiv);
         scrollToBottom();
 
         if (typeof Logger !== 'undefined') {
@@ -200,7 +209,7 @@ const RendererModule = (function () {
         whisper.appendChild(audioBtn);
 
         container.appendChild(whisper);
-        messageDisplay.appendChild(container);
+        getConversationContainer().appendChild(container);
         scrollToBottom();
 
         console.log('🌊 Whisper displayed');
@@ -220,14 +229,14 @@ const RendererModule = (function () {
             return;
         }
 
-        const messageDisplay = document.getElementById('messageDisplay');
-        if (!messageDisplay) {
-            console.error('displayWave: messageDisplay element not found');
+        const conversationContainer = getConversationContainer();
+        if (!conversationContainer) {
+            console.error('displayWave: conversation container not found');
             return;
         }
 
         // Get the last message container or create new one
-        let container = messageDisplay.querySelector('.message-container:last-child');
+        let container = conversationContainer.querySelector('.message-container:last-child');
 
         // Ensure messageId exists
         if (!messageId && container && container.dataset.messageId) {
@@ -240,7 +249,7 @@ const RendererModule = (function () {
             container = document.createElement('div');
             container.className = 'message-container';
             container.dataset.messageId = messageId;
-            messageDisplay.appendChild(container);
+            conversationContainer.appendChild(container);
         }
 
         // Create wave section
@@ -334,7 +343,7 @@ const RendererModule = (function () {
             <span class="typing-indicator-text">${escapeHtml(message)}</span>
         `;
 
-        messageDisplay.appendChild(indicator);
+        getConversationContainer().appendChild(indicator);
         scrollToBottom();
 
         console.log('⏳ Typing indicator shown');
@@ -449,4 +458,5 @@ const RendererModule = (function () {
 
 })();
 
-
+// Expose to window for AppFacade
+window.RendererModule = RendererModule;
