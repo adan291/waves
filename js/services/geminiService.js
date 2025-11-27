@@ -266,6 +266,12 @@ class GeminiService {
             return null;
         }
 
+        // Validate text length
+        if (text.length > GEMINI_CONSTANTS.TTS_MAX_LENGTH) {
+            console.warn(`TTS text too long (${text.length} chars). Truncating to ${GEMINI_CONSTANTS.TTS_MAX_LENGTH}`);
+            text = text.substring(0, GEMINI_CONSTANTS.TTS_MAX_LENGTH);
+        }
+
         try {
             const payload = {
                 contents: [{

@@ -244,6 +244,13 @@ const AchievementSystem = {
     pendingNotifications: [],
 
     init() {
+        // Limpiar logros antiguos de localStorage (migración a sessionStorage)
+        try {
+            localStorage.removeItem('whispers-achievements');
+        } catch (e) {
+            // Ignorar errores de limpieza
+        }
+        
         this.loadUnlocked();
         console.log('🏆 Achievement System initialized');
         console.log(`📊 ${this.unlocked.length}/${Object.keys(this.achievements).length} achievements unlocked`);
@@ -396,7 +403,8 @@ const AchievementSystem = {
 
     saveUnlocked() {
         try {
-            localStorage.setItem('whispers-achievements', JSON.stringify(this.unlocked));
+            // Usar sessionStorage para que los logros se limpien al cerrar la sesión
+            sessionStorage.setItem('whispers-achievements', JSON.stringify(this.unlocked));
         } catch (e) {
             console.warn('Failed to save achievements:', e);
         }
@@ -404,7 +412,8 @@ const AchievementSystem = {
 
     loadUnlocked() {
         try {
-            const saved = localStorage.getItem('whispers-achievements');
+            // Usar sessionStorage - los logros se reinician en cada nueva sesión
+            const saved = sessionStorage.getItem('whispers-achievements');
             if (saved) {
                 this.unlocked = JSON.parse(saved);
             }

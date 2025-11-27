@@ -6,6 +6,25 @@
 const OceanStateUI = {
     indicatorElement: null,
     showIndicator: true,
+    boundLanguageHandler: null,
+
+    /**
+     * Get current language code
+     * @returns {string} Language code (es, en, ro)
+     */
+    getLang() {
+        return localStorage.getItem('whispers-language') || 'es';
+    },
+
+    /**
+     * Get translated text for neutral state
+     * @returns {string} Translated neutral text
+     */
+    getNeutralText() {
+        const lang = this.getLang();
+        const translations = { es: 'Neutral', en: 'Neutral', ro: 'Neutru' };
+        return translations[lang] || translations.es;
+    },
 
     /**
      * Initialize ocean state UI
@@ -33,24 +52,63 @@ const OceanStateUI = {
             return; // Already created
         }
 
-        const indicator = document.createElement('div');
-        indicator.id = 'oceanStateIndicator';
-        indicator.className = 'ocean-state-indicator';
-        indicator.innerHTML = `
-            <div class="state-indicator-content">
-                <div class="state-color"></div>
-                <span class="state-name">Neutral</span>
-                <div class="state-progress" style="width: 40%"></div>
-            </div>
-        `;
+        // Check if indicator already exists in DOM
+        let indicator = document.getElementById('oceanStateIndicator');
+        
+        if (!indicator) {
+            // Create new indicator
+            indicator = document.createElement('div');
+            indicator.id = 'oceanStateIndicator';
+            indicator.className = 'ocean-state-indicator';
+            indicator.innerHTML = `
+                <div class="state-indicator-content">
+                    <div class="state-color"></div>
+                    <span class="state-name">${this.getNeutralText()}</span>
+                    <div class="state-progress" style="width: 40%"></div>
+                </div>
+            `;
+            document.body.appendChild(indicator);
+        } else {
+            // Update existing indicator with correct language
+            const nameEl = indicator.querySelector('.state-name');
+            if (nameEl) {
+                nameEl.textContent = this.getNeutralText();
+            }
+        }
 
-        document.body.appendChild(indicator);
         this.indicatorElement = indicator;
+        
+        // Store bound handler for cleanup
+        this.boundLanguageHandler = () => this.refreshIndicatorLanguage();
+        document.addEventListener('language:changed', this.boundLanguageHandler);
 
         // Add click to toggle visibility
         indicator.addEventListener('click', () => {
             this.toggleDetails();
         });
+    },
+
+    /**
+     * Refresh indicator text when language changes
+     */
+    refreshIndicatorLanguage() {
+        if (!this.indicatorElement) return;
+        
+        const nameEl = this.indicatorElement.querySelector('.state-name');
+        if (!nameEl) return;
+        
+        const lang = this.getLang();
+        
+        if (typeof OceanDynamics !== 'undefined') {
+            const state = OceanDynamics.getCurrentState();
+            if (state && state.name) {
+                nameEl.textContent = lang === 'es' ? state.name : (state.nameEn || state.name);
+                return;
+            }
+        }
+        
+        // Fallback to neutral text
+        nameEl.textContent = this.getNeutralText();
     },
 
     /**
@@ -75,7 +133,7 @@ const OceanStateUI = {
         }
 
         if (nameEl) {
-            const lang = localStorage.getItem('whispers-language') || 'es';
+            const lang = this.getLang();
             nameEl.textContent = lang === 'es' ? config.name : config.nameEn;
         }
 
@@ -100,7 +158,7 @@ const OceanStateUI = {
         }
 
         const state = OceanDynamics.getCurrentState();
-        const lang = localStorage.getItem('whispers-language') || 'es';
+        const lang = this.getLang();
         
         const message = lang === 'es' 
             ? `Estado del Océano: ${state.name}\n${state.description}\nVelocidad: ${state.speed}s\nIntensidad: ${state.intensity}`
@@ -142,6 +200,20 @@ const OceanStateUI = {
             this.hide();
         } else {
             this.show();
+        }
+    },
+
+    /**
+     * Cleanup event listeners (call before destroying)
+     */
+    destroy() {
+        if (this.boundLanguageHandler) {
+            document.removeEventListener('language:changed', this.boundLanguageHandler);
+            this.boundLanguageHandler = null;
+        }
+        if (this.indicatorElement) {
+            this.indicatorElement.remove();
+            this.indicatorElement = null;
         }
     }
 };

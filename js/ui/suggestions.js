@@ -27,86 +27,74 @@ const SuggestionsModule = (function() {
         };
     }
 
+    // Helper function to get translations
+    function getTranslations() {
+        const lang = typeof i18n !== 'undefined' ? i18n.getCurrentLanguage() : 'es';
+        const t = typeof translations !== 'undefined' && translations[lang] ? translations[lang] : (translations?.es || {});
+        return t;
+    }
+
     const CONTEXTUAL_SUGGESTIONS = {
         // Estado inicial - Confusión/Exploración
-        confused: [
-            "Me da miedo equivocarme de carrera",
-            "Siento presión por elegir algo pronto",
-            "No sé qué me apasiona realmente",
-            "Tengo varias opciones pero no sé cuál elegir"
-        ],
+        get confused() {
+            const t = getTranslations();
+            return t.suggestions?.examples?.exploration || [];
+        },
         
         // Profundizando - Ansiedad/Preocupación
-        anxious: [
-            "Tengo miedo de invertir años en algo equivocado",
-            "Me preocupa decepcionar a mi familia",
-            "Siento que todos esperan algo de mí",
-            "Tengo miedo de no ser lo suficientemente bueno"
-        ],
-        anxiety: [ // Alias para compatibilidad
-            "Tengo miedo de invertir años en algo equivocado",
-            "Me preocupa decepcionar a mi familia",
-            "Siento que todos esperan algo de mí",
-            "Tengo miedo de no ser lo suficientemente bueno"
-        ],
+        get anxious() {
+            const t = getTranslations();
+            return t.suggestions?.examples?.depth || [];
+        },
+        get anxiety() {
+            const t = getTranslations();
+            return t.suggestions?.examples?.depth || [];
+        },
         
         // Procesando - Reflexión
-        processing: [
-            "Me gusta ayudar a las personas",
-            "Disfruto crear cosas nuevas",
-            "Me interesa entender cómo funcionan las cosas",
-            "Quiero hacer algo que tenga impacto"
-        ],
+        get processing() {
+            const t = getTranslations();
+            return t.suggestions?.examples?.identity || [];
+        },
         
         // Claridad emergente
-        clarity: [
-            "Creo que me inclino más por esta opción",
-            "Ahora veo más claro lo que quiero",
-            "Siento que esta área me llama más",
-            "Empiezo a ver un camino posible"
-        ],
+        get clarity() {
+            const t = getTranslations();
+            return t.suggestions?.examples?.identity || [];
+        },
         
         // Resolución - Acción
-        resolved: [
-            "Voy a investigar más sobre esta carrera",
-            "Quiero hablar con alguien que trabaje en esto",
-            "Voy a probar un curso online para ver si me gusta",
-            "Necesito hacer una lista de pros y contras"
-        ],
-        resolution: [ // Alias para compatibilidad
-            "Voy a investigar más sobre esta carrera",
-            "Quiero hablar con alguien que trabaje en esto",
-            "Voy a probar un curso online para ver si me gusta",
-            "Necesito hacer una lista de pros y contras"
-        ],
-        
-        // Estado neutral - Obtiene traducciones dinámicamente
-        get neutral() {
-            const lang = typeof i18n !== 'undefined' ? i18n.getCurrentLanguage() : 'en';
-            const t = typeof translations !== 'undefined' && translations[lang] ? translations[lang] : translations.en;
-            return t.suggestions.examples.neutral;
+        get resolved() {
+            const t = getTranslations();
+            return t.suggestions?.examples?.action || [];
+        },
+        get resolution() {
+            const t = getTranslations();
+            return t.suggestions?.examples?.action || [];
         },
         
-        // Life Questioning específico - Obtiene traducciones dinámicamente
+        // Estado neutral
+        get neutral() {
+            const t = getTranslations();
+            return t.suggestions?.examples?.neutral || [];
+        },
+        
+        // Life Questioning específico
         get exploration() {
-            const lang = typeof i18n !== 'undefined' ? i18n.getCurrentLanguage() : 'en';
-            const t = typeof translations !== 'undefined' && translations[lang] ? translations[lang] : translations.en;
-            return t.suggestions.examples.exploration;
+            const t = getTranslations();
+            return t.suggestions?.examples?.exploration || [];
         },
         get depth() {
-            const lang = typeof i18n !== 'undefined' ? i18n.getCurrentLanguage() : 'en';
-            const t = typeof translations !== 'undefined' && translations[lang] ? translations[lang] : translations.en;
-            return t.suggestions.examples.depth;
+            const t = getTranslations();
+            return t.suggestions?.examples?.depth || [];
         },
         get identity() {
-            const lang = typeof i18n !== 'undefined' ? i18n.getCurrentLanguage() : 'en';
-            const t = typeof translations !== 'undefined' && translations[lang] ? translations[lang] : translations.en;
-            return t.suggestions.examples.identity;
+            const t = getTranslations();
+            return t.suggestions?.examples?.identity || [];
         },
         get action() {
-            const lang = typeof i18n !== 'undefined' ? i18n.getCurrentLanguage() : 'en';
-            const t = typeof translations !== 'undefined' && translations[lang] ? translations[lang] : translations.en;
-            return t.suggestions.examples.action;
+            const t = getTranslations();
+            return t.suggestions?.examples?.action || [];
         }
     };
 
@@ -404,6 +392,25 @@ document.addEventListener('message:sent', () => {
             }
         }
     }, 500);
+});
+
+// Listen for language changes to update suggestions
+document.addEventListener('language:changed', () => {
+    const container = document.getElementById('suggestionsContainer');
+    if (container) {
+        // Re-render suggestions with new language
+        if (typeof OceanDynamics !== 'undefined') {
+            const currentState = OceanDynamics.getCurrentState();
+            if (currentState && currentState.id) {
+                SuggestionsModule.displayContextual(currentState.id, container);
+            } else {
+                SuggestionsModule.displayInitial(container);
+            }
+        } else {
+            SuggestionsModule.displayInitial(container);
+        }
+        console.log('💭 Suggestions updated for language change');
+    }
 });
 
 console.log('💭 Suggestions module loaded');

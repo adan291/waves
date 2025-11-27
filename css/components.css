@@ -652,6 +652,7 @@ body[data-theme="light"] .modal-container::before {
     border: 1px solid rgba(125, 211, 192, 0.4);
     border-radius: 12px;
     padding: 0.875rem;
+    padding-left: 2.5rem;
     z-index: 1000 !important;
     min-width: 200px;
     max-width: 220px;
@@ -660,17 +661,57 @@ body[data-theme="light"] .modal-container::before {
     animation: slideInRight 0.5s ease-out;
     will-change: transform, opacity;
     transform: translateZ(0);
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
 }
 
 .expression-metrics.minimized {
-    transform: translateX(calc(100% - 50px));
-    opacity: 0.7;
+    right: -180px !important;
+}
+
+.expression-metrics.minimized .metrics-header,
+.expression-metrics.minimized .metrics-content {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.expression-metrics.minimized .metrics-toggle .toggle-arrow {
+    transform: rotate(180deg);
+}
+
+/* Toggle button (arrow) for expression metrics */
+.metrics-toggle {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 50px;
+    background: rgba(125, 211, 192, 0.2);
+    border-right: 1px solid rgba(125, 211, 192, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+    border-radius: 12px 0 0 12px;
+}
+
+.metrics-toggle:hover {
+    background: rgba(125, 211, 192, 0.3);
+}
+
+.metrics-toggle .toggle-arrow {
+    color: #7dd3c0;
+    font-size: 0.9rem;
+    transition: transform 0.3s ease;
 }
 
 .metrics-header {
     margin-bottom: 0.875rem;
     padding-bottom: 0.5rem;
+    transition: opacity 0.3s ease;
 }
 
 .metrics-title {
@@ -681,6 +722,10 @@ body[data-theme="light"] .modal-container::before {
     width: 20px;
     height: 20px;
     font-size: 1.2rem;
+}
+
+.metrics-content {
+    transition: opacity 0.3s ease;
 }
 
 .metric-item {
@@ -771,21 +816,117 @@ body[data-theme="light"] .modal-container::before {
     margin-top: 0.3rem;
 }
 
+/* ===================================
+   ACHIEVEMENT NOTIFICATION
+   =================================== */
+
 .achievement-notification {
+    position: fixed;
+    top: 100px;
+    right: -350px;
     width: 300px;
+    background: rgba(10, 30, 50, 0.95);
+    border: 2px solid rgba(72, 202, 228, 0.4);
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+}
+
+.achievement-notification.show {
+    right: 20px;
+}
+
+/* Notification content */
+.achievement-notification-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
     padding: 1.25rem;
 }
 
-.achievement-icon {
+.achievement-notification .achievement-icon {
     font-size: 2.5rem;
+    flex-shrink: 0;
 }
 
-.achievement-name {
-    font-size: 1rem;
+.achievement-info {
+    flex: 1;
+    min-width: 0;
 }
 
-.achievement-description {
-    font-size: 0.8rem;
+.achievement-unlocked {
+    font-size: 0.75rem;
+    color: #ffd700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+}
+
+.achievement-notification .achievement-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.35rem;
+}
+
+.achievement-notification .achievement-description {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.4;
+    margin-bottom: 0.35rem;
+}
+
+.achievement-rarity {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Close button */
+.achievement-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.achievement-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+/* Rarity colors */
+.achievement-notification.common {
+    border-color: rgba(158, 158, 158, 0.5);
+}
+
+.achievement-notification.rare {
+    border-color: rgba(33, 150, 243, 0.5);
+}
+
+.achievement-notification.epic {
+    border-color: rgba(156, 39, 176, 0.5);
+}
+
+.achievement-notification.legendary {
+    border-color: rgba(255, 193, 7, 0.5);
 }
 
 .back-button {
@@ -1023,8 +1164,21 @@ body[data-theme="light"] .ocean-state-emoji {
 }
 
 body[data-theme="light"] .expression-metrics {
-    background: rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.95);
     border-color: rgba(1, 87, 155, 0.3);
+}
+
+body[data-theme="light"] .metrics-toggle {
+    background: rgba(2, 136, 209, 0.1);
+    border-color: rgba(2, 136, 209, 0.2);
+}
+
+body[data-theme="light"] .metrics-toggle:hover {
+    background: rgba(2, 136, 209, 0.2);
+}
+
+body[data-theme="light"] .metrics-toggle .toggle-arrow {
+    color: #0288d1;
 }
 
 body[data-theme="light"] .metrics-title {
@@ -1048,21 +1202,44 @@ body[data-theme="light"] .metric-bar-fill {
 }
 
 body[data-theme="light"] .achievement-notification {
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.98);
     border-color: rgba(2, 136, 209, 0.4);
-    box-shadow: 0 8px 24px rgba(2, 136, 209, 0.2);
+    box-shadow: 0 10px 40px rgba(2, 136, 209, 0.2);
 }
 
-body[data-theme="light"] .achievement-notification .achievement-title {
-    color: #01579b;
+body[data-theme="light"] .achievement-toggle {
+    background: rgba(2, 136, 209, 0.1);
+    border-color: rgba(2, 136, 209, 0.2);
+}
+
+body[data-theme="light"] .achievement-toggle:hover {
+    background: rgba(2, 136, 209, 0.2);
+}
+
+body[data-theme="light"] .toggle-arrow {
+    color: #0288d1;
+}
+
+body[data-theme="light"] .achievement-unlocked {
+    color: #f57c00;
 }
 
 body[data-theme="light"] .achievement-notification .achievement-name {
-    color: #0277bd;
+    color: #01579b;
 }
 
 body[data-theme="light"] .achievement-notification .achievement-description {
     color: #546e7a;
+}
+
+body[data-theme="light"] .achievement-close {
+    background: rgba(0, 0, 0, 0.05);
+    color: rgba(0, 0, 0, 0.5);
+}
+
+body[data-theme="light"] .achievement-close:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: rgba(0, 0, 0, 0.8);
 }
 
 body[data-theme="light"] .achievement-gallery-overlay {
@@ -1927,62 +2104,64 @@ body[data-theme="light"] .modal-btn-confirm:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 1rem;
-    padding: 1.25rem 2.5rem;
-    font-size: 1.1rem;
+    gap: 0.75rem;
+    padding: 1rem 2rem;
+    font-size: 1rem;
     font-weight: 600;
     border: none;
-    border-radius: 50px;
+    border-radius: 30px;
     cursor: pointer;
     transition: all 0.3s ease;
     font-family: inherit;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.3px;
+    backdrop-filter: blur(10px);
 }
 
 .splash-btn.primary {
-    background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%);
-    color: #0a1128;
-    box-shadow: 0 8px 30px rgba(79, 195, 247, 0.4);
+    background: linear-gradient(135deg, #0077b6 0%, #48cae4 100%);
+    color: #ffffff;
+    box-shadow: 0 8px 25px rgba(0, 119, 182, 0.4);
+    border: none;
 }
 
 .splash-btn.primary:hover {
     transform: translateY(-3px);
-    box-shadow: 0 12px 40px rgba(79, 195, 247, 0.6);
+    box-shadow: 0 12px 35px rgba(0, 119, 182, 0.5);
 }
 
 .splash-btn.secondary {
-    background: rgba(128, 222, 234, 0.15);
-    color: #80deea;
-    border: 2px solid rgba(128, 222, 234, 0.4);
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .splash-btn.secondary:hover {
-    background: rgba(128, 222, 234, 0.25);
-    border-color: rgba(128, 222, 234, 0.6);
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
     transform: translateY(-2px);
 }
 
 .splash-btn.small {
-    padding: 0.75rem 1.5rem;
-    font-size: 0.95rem;
-    margin-top: 2rem;
+    padding: 0.6rem 1.25rem;
+    font-size: 0.9rem;
+    margin-top: 1.5rem;
 }
 
 .splash-btn:active {
-    transform: translateY(0);
+    transform: translateY(0) scale(0.98);
 }
 
 .btn-icon {
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     transition: transform 0.3s ease;
 }
 
 .splash-btn:hover .btn-icon {
-    transform: translateX(5px);
+    transform: translateX(3px);
 }
 
 .splash-btn.secondary:hover .btn-icon {
-    transform: scale(1.2);
+    transform: scale(1.1);
 }
 
 /* Footer */
@@ -2476,113 +2655,11 @@ body[data-theme="light"] .wave-card-btn {
    Logros y Métricas a la Derecha
    =================================== */
 
-/* Expression Metrics - Más pequeño y a la derecha FUERA del container */
-.expression-metrics {
-    position: fixed !important;
-    top: 80px !important;
-    right: 20px !important;
-    left: auto !important;
-    background: rgba(10, 17, 40, 0.95);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(125, 211, 192, 0.4);
-    border-radius: 12px;
-    padding: 0.875rem;
-    z-index: 1000 !important;
-    min-width: 200px;
-    max-width: 220px;
-    width: 220px;
-    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
-    animation: slideInRight 0.5s ease-out;
-    will-change: transform, opacity;
-    transform: translateZ(0);
-    transition: all 0.3s ease;
-}
-
-.expression-metrics.minimized {
-    transform: translateX(calc(100% - 50px));
-    opacity: 0.7;
-}
-
-.metrics-header {
-    margin-bottom: 0.875rem;
-    padding-bottom: 0.5rem;
-}
-
-.metrics-title {
-    font-size: 0.85rem;
-}
-
-.metrics-close {
-    width: 20px;
-    height: 20px;
-    font-size: 1.2rem;
-}
-
-.metric-item {
-    gap: 0.4rem;
-}
-
-.metric-label {
-    font-size: 0.75rem;
-}
-
-.metric-bar {
-    height: 6px;
-}
-
-.metric-value {
-    font-size: 0.8rem;
-}
-
-.metric-overall {
-    margin-top: 0.5rem;
-    padding: 0.75rem;
-}
-
-.overall-label {
-    font-size: 0.7rem;
-}
-
-.overall-score {
-    font-size: 2rem;
-}
-
-.overall-level {
-    font-size: 0.8rem;
-}
-
-.metric-trend {
-    padding: 0.6rem;
-    margin-top: 0.5rem;
-}
-
-.trend-icon {
-    font-size: 1.2rem;
-}
-
-.trend-text {
-    font-size: 0.75rem;
-}
+/* Expression Metrics styles defined above - see line 645 */
 
 /* Ocean State Indicator styles defined above (line 732) */
 
-/* Achievement Notification - Más pequeño */
-.achievement-notification {
-    width: 300px;
-    padding: 1.25rem;
-}
-
-.achievement-icon {
-    font-size: 2.5rem;
-}
-
-.achievement-name {
-    font-size: 1rem;
-}
-
-.achievement-description {
-    font-size: 0.8rem;
-}
+/* Achievement Notification styles defined below in complete section */
 
 /* Botón de Volver */
 .back-button {
@@ -2689,3 +2766,274 @@ body[data-theme="light"] .back-button {
 
 
 
+
+
+/* ===================================
+   ACHIEVEMENT GALLERY MODAL
+   =================================== */
+
+.achievement-gallery-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gallery-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+}
+
+.gallery-content {
+    position: relative;
+    width: 90%;
+    max-width: 800px;
+    max-height: 85vh;
+    background: rgba(10, 30, 50, 0.95);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.gallery-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.gallery-header h2 {
+    margin: 0;
+    color: #fff;
+    font-size: 1.5rem;
+}
+
+.gallery-close {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.gallery-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.gallery-stats {
+    display: flex;
+    gap: 2rem;
+    padding: 1rem 1.5rem;
+    justify-content: center;
+}
+
+.gallery-stat {
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #48cae4;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.gallery-progress-bar {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 0 1.5rem 1rem;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.gallery-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #0077b6, #48cae4);
+    transition: width 0.5s ease;
+}
+
+.gallery-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+}
+
+/* ===================================
+   REPORT MODAL
+   =================================== */
+
+.report-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.report-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+}
+
+.report-container {
+    position: relative;
+    width: 90%;
+    max-width: 900px;
+    max-height: 85vh;
+    background: rgba(10, 30, 50, 0.95);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.report-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.report-title h2 {
+    margin: 0;
+    color: #fff;
+    font-size: 1.5rem;
+}
+
+.report-subtitle {
+    margin: 0.25rem 0 0;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+}
+
+.report-close {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.report-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.report-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+}
+
+.report-section {
+    margin-bottom: 2rem;
+}
+
+.report-section h3 {
+    color: #48cae4;
+    margin-bottom: 1rem;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+}
+
+.summary-card {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1rem;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.summary-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+.summary-label {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 0.25rem;
+}
+
+/* Light theme for modals */
+body[data-theme="light"] .gallery-content,
+body[data-theme="light"] .report-container {
+    background: rgba(255, 255, 255, 0.98);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+body[data-theme="light"] .gallery-header h2,
+body[data-theme="light"] .report-title h2 {
+    color: #01579b;
+}
+
+body[data-theme="light"] .gallery-overlay,
+body[data-theme="light"] .report-overlay {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+body[data-theme="light"] .gallery-close,
+body[data-theme="light"] .report-close {
+    color: #333;
+    background: rgba(0, 0, 0, 0.05);
+}
+
+body[data-theme="light"] .stat-value,
+body[data-theme="light"] .summary-value {
+    color: #0077b6;
+}
+
+body[data-theme="light"] .stat-label,
+body[data-theme="light"] .summary-label,
+body[data-theme="light"] .report-subtitle {
+    color: rgba(0, 0, 0, 0.6);
+}
+
+body[data-theme="light"] .summary-card {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+body[data-theme="light"] .report-section h3 {
+    color: #0077b6;
+}

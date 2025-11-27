@@ -179,7 +179,33 @@ class ResponsePatterns {
      * Check if state aligns with pattern
      */
     stateAlignsWith(state, patternName) {
-        const alignments = {
+        const alignments = this.getStateAlignments();
+        return alignments[state]?.includes(patternName) || false;
+    }
+
+    /**
+     * Get primary pattern for a specific state
+     * @param {string} state - User state
+     * @returns {Object} Pattern object
+     */
+    getPatternForState(state) {
+        // Reuse alignments from stateAlignsWith - first pattern is primary
+        const alignments = this.getStateAlignments();
+        const patternNames = alignments[state];
+        
+        if (patternNames && patternNames.length > 0) {
+            return this.patterns[patternNames[0]];
+        }
+        
+        return this.patterns[PATTERN_NAMES.ACTIVE_LISTENING];
+    }
+
+    /**
+     * Get state-to-pattern alignments (single source of truth)
+     * @returns {Object} State alignments map
+     */
+    getStateAlignments() {
+        return {
             'LOST_DIRECTION': [PATTERN_NAMES.CLARITY_SEEKING, PATTERN_NAMES.LIFE_QUESTIONING],
             'EMOTIONAL_LOW': [PATTERN_NAMES.EMOTIONAL_SOOTHING, PATTERN_NAMES.GENTLE_EXPLORATION],
             'SEEKING_CLARITY': [PATTERN_NAMES.CLARITY_SEEKING, PATTERN_NAMES.DECISION_SUPPORT],
@@ -187,10 +213,49 @@ class ResponsePatterns {
             'BREAKTHROUGH': [PATTERN_NAMES.BREAKTHROUGH_CELEBRATION, PATTERN_NAMES.REFLECTION_DEEPENING],
             'CONFUSED': [PATTERN_NAMES.CLARITY_SEEKING, PATTERN_NAMES.GENTLE_EXPLORATION],
             'ANXIOUS': [PATTERN_NAMES.EMOTIONAL_SOOTHING, PATTERN_NAMES.GENTLE_EXPLORATION],
-            'RESOLVED': [PATTERN_NAMES.BREAKTHROUGH_CELEBRATION, PATTERN_NAMES.REFLECTION_DEEPENING]
+            'RESOLVED': [PATTERN_NAMES.BREAKTHROUGH_CELEBRATION, PATTERN_NAMES.REFLECTION_DEEPENING],
+            'LIFE_QUESTIONING': [PATTERN_NAMES.LIFE_QUESTIONING, PATTERN_NAMES.REFLECTION_DEEPENING],
+            'NEUTRAL': [PATTERN_NAMES.GENTLE_EXPLORATION, PATTERN_NAMES.ACTIVE_LISTENING]
         };
+    }
 
-        return alignments[state]?.includes(patternName) || false;
+    /**
+     * Get prompt for a pattern (used by AdaptiveAssistance)
+     * @param {string|Object} patternNameOrObject - Pattern name or pattern object
+     * @param {Object} context - Conversation context
+     * @returns {string} Prompt text
+     */
+    getPrompt(patternNameOrObject, context = {}) {
+        // Handle both pattern name (string) and pattern object
+        let pattern;
+        if (typeof patternNameOrObject === 'string') {
+            pattern = this.patterns[patternNameOrObject];
+        } else if (patternNameOrObject && patternNameOrObject.name) {
+            pattern = patternNameOrObject;
+        }
+        
+        if (!pattern) {
+            pattern = this.patterns[PATTERN_NAMES.ACTIVE_LISTENING];
+        }
+
+        const lang = context.language || localStorage.getItem('whispers-language') || 'es';
+        const isSpanish = lang === 'es';
+
+        return `You are a compassionate ocean guide using the "${pattern.name}" approach.
+Your tone should be ${pattern.tone} and your approach ${pattern.approach}.
+
+RESPONSE STRUCTURE:
+- Whisper: ${pattern.structure.whisper}
+- Reflection: ${pattern.structure.reflection}
+
+IMPORTANT: Respond in ${isSpanish ? 'Spanish' : 'English'}.
+Format your response as JSON with "whisper" and "reflection" fields.
+
+Example:
+{
+    "whisper": "Your empathetic opening that acknowledges the user...",
+    "reflection": "Your deeper reflection, question, or invitation to explore..."
+}`;
     }
 
     /**

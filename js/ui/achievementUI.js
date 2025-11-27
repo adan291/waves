@@ -64,15 +64,15 @@ const AchievementUI = {
         // Play sound (if available)
         this.playUnlockSound(achievement.rarity);
 
-        // Auto-hide after 5 seconds
+        // Auto-hide after 4 seconds
         await new Promise(resolve => {
             this.notificationTimeout = setTimeout(() => {
                 notification.classList.remove('show');
                 setTimeout(() => {
                     notification.remove();
                     resolve();
-                }, 500);
-            }, 5000);
+                }, 400);
+            }, 4000);
         });
 
         // Process next in queue
@@ -98,18 +98,39 @@ const AchievementUI = {
                     <div class="achievement-rarity">${AchievementSystem.getRarityLabel(achievement.rarity, lang)}</div>
                 </div>
             </div>
-            <div class="achievement-close" onclick="this.parentElement.remove()">×</div>
+            <div class="achievement-close" onclick="AchievementUI.dismissCurrent(this.parentElement)">×</div>
         `;
 
-        // Click to dismiss
+        // Click to dismiss (clear timeout to prevent race condition)
         notification.addEventListener('click', (e) => {
             if (!e.target.classList.contains('achievement-close')) {
+                if (this.notificationTimeout) {
+                    clearTimeout(this.notificationTimeout);
+                }
                 notification.classList.remove('show');
-                setTimeout(() => notification.remove(), 500);
+                setTimeout(() => {
+                    notification.remove();
+                    this.processNotificationQueue();
+                }, 400);
             }
         });
 
         return notification;
+    },
+
+    /**
+     * Dismiss current notification and process queue
+     * @param {HTMLElement} notification - Notification element to dismiss
+     */
+    dismissCurrent(notification) {
+        if (this.notificationTimeout) {
+            clearTimeout(this.notificationTimeout);
+        }
+        notification.classList.remove('show');
+        setTimeout(() => {
+            notification.remove();
+            this.processNotificationQueue();
+        }, 400);
     },
 
     /**
@@ -134,53 +155,6 @@ const AchievementUI = {
         
         const modal = this.createGalleryModal();
         document.body.appendChild(modal);
-        
-        // Setup controls
-        this.setupGalleryControls();
-    },
-    
-    /**
-     * Setup gallery controls (theme and language)
-     */
-    setupGalleryControls() {
-        // Theme toggle
-        const themeToggle = document.getElementById('galleryThemeToggle');
-        if (themeToggle) {
-            const currentTheme = document.body.getAttribute('data-theme') || 'dark';
-            const icon = document.getElementById('galleryThemeIcon');
-            if (icon) {
-                icon.textContent = currentTheme === 'light' ? '🌙' : '☀️';
-            }
-            
-            themeToggle.addEventListener('click', () => {
-                if (typeof toggleTheme === 'function') {
-                    toggleTheme();
-                } else {
-                    const newTheme = document.body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-                    document.body.setAttribute('data-theme', newTheme);
-                    localStorage.setItem('whispers-theme', newTheme);
-                    if (icon) {
-                        icon.textContent = newTheme === 'light' ? '🌙' : '☀️';
-                    }
-                }
-            });
-        }
-        
-        // Language selector
-        const langSelector = document.getElementById('galleryLanguageSelector');
-        if (langSelector) {
-            const currentLang = localStorage.getItem('whispers-language') || 'es';
-            langSelector.value = currentLang;
-            
-            langSelector.addEventListener('change', (e) => {
-                const newLang = e.target.value;
-                localStorage.setItem('whispers-language', newLang);
-                
-                // Close and reopen gallery with new language
-                document.querySelector('.achievement-gallery-modal')?.remove();
-                this.showGallery();
-            });
-        }
     },
 
     /**
@@ -205,19 +179,6 @@ const AchievementUI = {
         modal.innerHTML = `
             <div class="gallery-overlay" onclick="this.parentElement.remove()"></div>
             <div class="gallery-content">
-                <!-- Controls - Top Right -->
-                <div class="gallery-controls">
-                    <button class="gallery-control-btn gallery-theme-toggle" id="galleryThemeToggle" aria-label="Toggle theme" title="Cambiar tema">
-                        <span id="galleryThemeIcon">☀️</span>
-                    </button>
-                    <select class="gallery-control-btn gallery-language-selector" id="galleryLanguageSelector" aria-label="Seleccionar idioma" title="Cambiar idioma">
-                        <option value="es">ES</option>
-                        <option value="en">EN</option>
-                        <option value="fr">FR</option>
-                        <option value="de">DE</option>
-                    </select>
-                </div>
-                
                 <div class="gallery-header">
                     <h2>${typeof i18n !== 'undefined' ? i18n.t('achievements.title') : '🏆 Galería de Logros'}</h2>
                     <button class="gallery-close" onclick="this.closest('.achievement-gallery-modal').remove()">×</button>

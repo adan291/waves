@@ -9,6 +9,14 @@ const ExpressionMetricsUI = {
     updateInterval: null,
 
     /**
+     * Get current language code
+     * @returns {string} Language code (es, en, ro)
+     */
+    getLang() {
+        return localStorage.getItem('whispers-language') || 'es';
+    },
+
+    /**
      * Initialize metrics UI
      */
     init() {
@@ -27,44 +35,47 @@ const ExpressionMetricsUI = {
     createContainer() {
         if (this.container) return;
 
+        const lang = this.getLang();
         const container = document.createElement('div');
         container.id = 'expressionMetrics';
         container.className = 'expression-metrics hidden';
         container.innerHTML = `
+            <div class="metrics-toggle" onclick="ExpressionMetricsUI.toggleMinimize()" title="${lang === 'es' ? 'Minimizar/Expandir' : 'Minimize/Expand'}">
+                <span class="toggle-arrow">▶</span>
+            </div>
             <div class="metrics-header">
-                <span class="metrics-title">Tu Expresión</span>
-                <button class="metrics-close" onclick="ExpressionMetricsUI.hide()">×</button>
+                <span class="metrics-title">${lang === 'es' ? 'Tu Expresión' : 'Your Expression'}</span>
             </div>
             <div class="metrics-content">
                 <div class="metric-item">
-                    <div class="metric-label">Claridad</div>
+                    <div class="metric-label">${lang === 'es' ? 'Claridad' : 'Clarity'}</div>
                     <div class="metric-bar">
                         <div class="metric-fill clarity-fill" style="width: 0%"></div>
                     </div>
                     <div class="metric-value clarity-value">0%</div>
                 </div>
                 <div class="metric-item">
-                    <div class="metric-label">Especificidad</div>
+                    <div class="metric-label">${lang === 'es' ? 'Especificidad' : 'Specificity'}</div>
                     <div class="metric-bar">
                         <div class="metric-fill specificity-fill" style="width: 0%"></div>
                     </div>
                     <div class="metric-value specificity-value">0%</div>
                 </div>
                 <div class="metric-item">
-                    <div class="metric-label">Conciencia Emocional</div>
+                    <div class="metric-label">${lang === 'es' ? 'Conciencia Emocional' : 'Emotional Awareness'}</div>
                     <div class="metric-bar">
                         <div class="metric-fill emotional-fill" style="width: 0%"></div>
                     </div>
                     <div class="metric-value emotional-value">0%</div>
                 </div>
                 <div class="metric-overall">
-                    <div class="overall-label">Puntuación General</div>
+                    <div class="overall-label">${lang === 'es' ? 'Puntuación General' : 'Overall Score'}</div>
                     <div class="overall-score">0</div>
-                    <div class="overall-level">Explorador</div>
+                    <div class="overall-level">${lang === 'es' ? 'Explorador' : 'Explorer'}</div>
                 </div>
                 <div class="metric-trend">
                     <div class="trend-icon">📈</div>
-                    <div class="trend-text">Comenzando tu viaje...</div>
+                    <div class="trend-text">${lang === 'es' ? 'Comenzando tu viaje...' : 'Starting your journey...'}</div>
                 </div>
             </div>
         `;
@@ -98,8 +109,7 @@ const ExpressionMetricsUI = {
         const level = ExpressionAnalyzer.getCurrentLevel();
         const levelEl = this.container.querySelector('.overall-level');
         if (levelEl) {
-            const lang = localStorage.getItem('whispers-language') || 'es';
-            levelEl.textContent = lang === 'es' ? level.name : level.nameEn;
+            levelEl.textContent = this.getLang() === 'es' ? level.name : level.nameEn;
         }
 
         // Update trend
@@ -187,7 +197,7 @@ const ExpressionMetricsUI = {
     },
 
     /**
-     * Schedule auto-hide
+     * Schedule auto-minimize (not hide)
      */
     scheduleAutoHide() {
         if (this.updateInterval) {
@@ -195,8 +205,45 @@ const ExpressionMetricsUI = {
         }
 
         this.updateInterval = setTimeout(() => {
-            this.container.classList.add('minimized');
+            this.minimize();
         }, 5000);
+    },
+
+    /**
+     * Minimize to arrow only
+     */
+    minimize() {
+        if (this.container) {
+            this.container.classList.add('minimized');
+        }
+    },
+
+    /**
+     * Expand from minimized state
+     */
+    expand() {
+        if (this.container) {
+            this.container.classList.remove('minimized');
+            // Reset auto-minimize timer
+            this.scheduleAutoHide();
+        }
+    },
+
+    /**
+     * Toggle between minimized and expanded
+     */
+    toggleMinimize() {
+        if (!this.container) return;
+        
+        if (this.container.classList.contains('minimized')) {
+            this.expand();
+        } else {
+            this.minimize();
+            // Clear auto-hide timer when manually minimized
+            if (this.updateInterval) {
+                clearTimeout(this.updateInterval);
+            }
+        }
     },
 
     /**
@@ -213,7 +260,7 @@ const ExpressionMetricsUI = {
     },
 
     /**
-     * Hide metrics
+     * Hide metrics completely
      */
     hide() {
         if (this.container) {
@@ -244,7 +291,7 @@ const ExpressionMetricsUI = {
             return;
         }
 
-        const lang = localStorage.getItem('whispers-language') || 'es';
+        const lang = this.getLang();
         
         const modal = document.createElement('div');
         modal.className = 'expression-report-modal';

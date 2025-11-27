@@ -84,7 +84,14 @@ const SplashScreen = {
      * @returns {string} HTML string for language options
      */
     _getLanguageOptions() {
-        const lang = localStorage.getItem('whispers-language') || 'es';
+        // Get current language from i18n first, then localStorage
+        let lang = 'es';
+        if (window.i18n && typeof window.i18n.getCurrentLanguage === 'function') {
+            lang = window.i18n.getCurrentLanguage();
+        } else {
+            lang = localStorage.getItem('whispers-language') || 'es';
+        }
+        
         return this.availableLanguages
             .map(code => `<option value="${code}" ${lang === code ? 'selected' : ''}>${code.toUpperCase()}</option>`)
             .join('');
@@ -98,6 +105,7 @@ const SplashScreen = {
 
         // Check if splash should be shown
         const selectedWave = localStorage.getItem('whispers-selected-wave');
+        const currentHash = window.location.hash.replace('#', '');
 
         // Check if we should go directly to wave selection
         const gotoWaveSelection = localStorage.getItem('whispers-goto-wave-selection');
@@ -108,11 +116,22 @@ const SplashScreen = {
             return;
         }
 
-        // If no wave selected, show splash
-        if (!selectedWave) {
-            this.create();
-            this.show();
+        // Handle URL hash routing
+        if (currentHash === 'chat' && selectedWave) {
+            // Go directly to chat if wave already selected
+            return;
         }
+        
+        if (currentHash === 'waves') {
+            // Go to wave selection
+            this.create();
+            this.showWaveSelection();
+            return;
+        }
+
+        // Default: show splash welcome (index.html = home, no hash)
+        this.create();
+        this.show();
     },
 
     create() {
@@ -134,6 +153,9 @@ const SplashScreen = {
         const i18n = this._getI18n();
 
         return `
+            <!-- Animated ocean background for splash -->
+            <div class="splash-ocean-background"></div>
+            
             <!-- Splash Controls -->
             <div class="splash-controls">
                 <button class="splash-control-btn splash-theme-toggle" id="splashThemeToggle" aria-label="Toggle theme">
@@ -305,6 +327,9 @@ const SplashScreen = {
         const i18n = this._getI18n();
         document.title = i18n.t('splash.titleMain');
         
+        // Clear URL hash (index.html = home)
+        this._updateHash('');
+        
         // Hide main app elements
         this._toggleMainAppElements(false);
     },
@@ -323,6 +348,9 @@ const SplashScreen = {
         const i18n = this._getI18n();
         document.title = i18n.t('splash.titleConversation');
         
+        // Update URL hash
+        this._updateHash('chat');
+        
         // Show main app elements
         this._toggleMainAppElements(true);
     },
@@ -336,8 +364,75 @@ const SplashScreen = {
         const i18n = this._getI18n();
         document.title = i18n.t('splash.titleSelection');
         
+        // Update URL hash
+        this._updateHash('waves');
+        
         this.switchView('wave-selection');
         this.renderWaveCards();
+    },
+    
+    /**
+     * Update URL hash without triggering navigation
+     * @private
+     * @param {string} hash - Hash value (empty for home, waves, chat)
+     */
+    _updateHash(hash) {
+        if (history.replaceState) {
+            if (hash === '' || hash === 'index') {
+                // Remove hash for home page
+                history.replaceState(null, null, window.location.pathname);
+            } else {
+                history.replaceState(null, null, `#${hash}`);
+            }
+        } else {
+            window.location.hash = hash;
+        }
+    },
+    
+    /**
+     * Handle hash change for browser navigation
+     */
+    handleHashChange() {
+        const hash = window.location.hash.replace('#', '');
+        
+        switch(hash) {
+            case '':
+            case 'index':
+                // Home page - show splash main
+                if (this.currentView !== 'splash-main') {
+                    const splash = document.getElementById('splashScreen');
+                    if (splash) {
+                        splash.classList.add('active');
+                        splash.style.display = 'flex';
+                    }
+                    this._toggleMainAppElements(false);
+                    this.switchView('splash-main');
+                }
+                break;
+            case 'waves':
+                if (this.currentView !== 'wave-selection') {
+                    const splash = document.getElementById('splashScreen');
+                    if (splash) {
+                        splash.classList.add('active');
+                        splash.style.display = 'flex';
+                    }
+                    this._toggleMainAppElements(false);
+                    this.switchView('wave-selection');
+                    this.renderWaveCards();
+                }
+                break;
+            case 'chat':
+                // Go to chat if wave selected
+                const selectedWave = localStorage.getItem('whispers-selected-wave');
+                if (selectedWave) {
+                    this.hide();
+                } else {
+                    // No wave selected, go to waves
+                    this._updateHash('waves');
+                    this.handleHashChange();
+                }
+                break;
+        }
     },
 
     switchView(viewClass) {
@@ -434,14 +529,49 @@ const SplashScreen = {
         const splash = document.getElementById('splashScreen');
         if (!splash) return;
 
-        const currentView = this.currentView;
+        // Save current state - default to splash-main if not set
+        const currentView = this.currentView || 'splash-main';
+        const wasActive = splash.classList.contains('active');
+        const displayStyle = splash.style.display || 'flex';
+        
+        console.log('🔄 Refreshing splash, currentView:', currentView);
+        
+        // Regenerate HTML
         splash.innerHTML = this.getHTML();
+        
+        // Restore splash visibility
+        splash.classList.add('active');
+        splash.style.display = displayStyle;
+        
+        // Reattach event listeners
         this.attachEventListeners();
-        this.switchView(currentView);
+        
+        // Restore the correct view with active class
+        const views = splash.querySelectorAll('.splash-main, .how-it-works, .wave-selection');
+        views.forEach(view => view.classList.remove('active'));
+        
+        const targetView = splash.querySelector(`.${currentView}`);
+        if (targetView) {
+            targetView.classList.add('active');
+            console.log('🔄 Activated view:', currentView);
+        } else {
+            // Fallback to splash-main
+            const mainView = splash.querySelector('.splash-main');
+            if (mainView) {
+                mainView.classList.add('active');
+                this.currentView = 'splash-main';
+            }
+        }
 
+        // Render wave cards if in wave selection
         if (currentView === 'wave-selection') {
             this.renderWaveCards();
         }
+        
+        // Update theme icon
+        this.updateSplashThemeIcon();
+        
+        console.log('🔄 Splash refreshed for language change');
     },
 
     /**
@@ -488,6 +618,11 @@ if (document.readyState === 'loading') {
 } else {
     SplashScreen.init();
 }
+
+// Listen for hash changes (browser back/forward)
+window.addEventListener('hashchange', () => {
+    SplashScreen.handleHashChange();
+});
 
 // Expose globally
 window.SplashScreen = SplashScreen;

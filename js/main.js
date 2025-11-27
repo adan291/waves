@@ -5,8 +5,18 @@ const CONFIG = {
     API_KEY_URL: 'https://makersuite.google.com/app/apikey'
 };
 
-// Service instance (module-scoped)
+const STORAGE_KEYS = {
+    SELECTED_WAVE: 'whispers-selected-wave',
+    LANGUAGE: 'whispers-language',
+    CONVERSATION_HISTORY: 'whispers-conversation-history',
+    STATE: 'whispers-state',
+    SPLASH_SEEN: 'whispers-splash-seen',
+    GOTO_WAVE_SELECTION: 'whispers-goto-wave-selection'
+};
+
+// Service instances (module-scoped, Singleton pattern)
 let geminiServiceInstance = null;
+let adaptiveAssistanceInstance = null;
 
 function getGeminiService() {
     if (!geminiServiceInstance) {
@@ -14,6 +24,25 @@ function getGeminiService() {
         validateApiKey();
     }
     return geminiServiceInstance;
+}
+
+function getAdaptiveAssistance() {
+    if (!adaptiveAssistanceInstance && typeof AdaptiveAssistance !== 'undefined') {
+        const stateClassifier = new StateClassifier();
+        const responsePatterns = new ResponsePatterns();
+        adaptiveAssistanceInstance = new AdaptiveAssistance(stateClassifier, responsePatterns);
+    }
+    return adaptiveAssistanceInstance;
+}
+
+function getApplicationState() {
+    if (typeof AppFacade !== 'undefined' && typeof AppFacade.getState === 'function') {
+        return AppFacade.getState();
+    }
+    if (typeof getState === 'function') {
+        return getState();
+    }
+    return { conversationHistory: [], isProcessing: false };
 }
 
 function validateApiKey() {
@@ -55,8 +84,16 @@ function init() {
         initializeSuggestions();
 
         // Lazy load non-critical features
-        if (typeof LazyLoader !== 'undefined') {
-            LazyLoader.preload('features');
+        if (typeof LazyLoadManager !== 'undefined') {
+            LazyLoadManager.loadModules([
+                { path: 'js/features/conversationTags.js', name: 'conversationTags' },
+                { path: 'js/features/historyExport.js', name: 'historyExport' },
+                { path: 'js/features/historySearch.js', name: 'historySearch' }
+            ]).catch(err => {
+                if (typeof Logger !== 'undefined') {
+                    Logger.warn('App', 'Failed to lazy load features', { error: err.message });
+                }
+            });
         }
 
         if (typeof Logger !== 'undefined') {
@@ -74,7 +111,10 @@ function init() {
 }
 
 function initializeState() {
-    if (typeof loadFromLocalStorage === 'function') {
+    // Load state from localStorage if AppFacade is available
+    if (typeof AppFacade !== 'undefined' && typeof AppFacade.loadState === 'function') {
+        AppFacade.loadState();
+    } else if (typeof loadFromLocalStorage === 'function') {
         loadFromLocalStorage();
     }
 
@@ -85,13 +125,36 @@ function initializeState() {
     }
 }
 
+function handleError(context, error, options = {}) {
+    // Log error
+    if (typeof Logger !== 'undefined') {
+        Logger.error(context, error.message, { stack: error.stack });
+    } else {
+        console.error(`[${context}]`, error);
+    }
+    
+    // Show UI message if requested
+    if (options.showUI && typeof AppFacade !== 'undefined') {
+        AppFacade.displayMessage({
+            whisper: '🌊 Las olas encuentran resistencia...',
+            wave: options.userMessage || 'Por favor, intenta de nuevo.',
+            persona: 'kiro'
+        });
+    }
+}
+
 function initializeServices() {
     getGeminiService();
 }
 
 function updateInitialUI() {
-    const state = getState();
-    if (typeof updateModeIndicator === 'function') {
+    // Get state safely using helper function
+    const state = getApplicationState();
+    
+    // Update mode indicator if available
+    if (typeof AppFacade !== 'undefined' && typeof AppFacade.updateModeIndicator === 'function') {
+        AppFacade.updateModeIndicator(state.currentMode, state.currentPersona);
+    } else if (typeof updateModeIndicator === 'function') {
         updateModeIndicator(state.currentMode, state.currentPersona);
     }
 }
@@ -113,7 +176,7 @@ function displayInitializationError(error) {
 function handleInputKeyPress(e) {
     if (e.key !== 'Enter') return;
 
-    const state = getState();
+    const state = getApplicationState();
     if (state.isProcessing) return;
 
     const message = e.target.value.trim();
@@ -185,9 +248,9 @@ function handleBackToStart() {
 
 function performWaveChange() {
     // Clear conversation state but keep splash seen flag
-    localStorage.removeItem('whispers-selected-wave');
-    localStorage.removeItem('whispers-conversation-history');
-    localStorage.removeItem('whispers-state');
+    localStorage.removeItem(STORAGE_KEYS.SELECTED_WAVE);
+    localStorage.removeItem(STORAGE_KEYS.CONVERSATION_HISTORY);
+    localStorage.removeItem(STORAGE_KEYS.STATE);
 
     // Clear expression analyzer history
     if (typeof ExpressionAnalyzer !== 'undefined') {
@@ -250,27 +313,24 @@ function toggleTTS() {
         return;
     }
 
-    // Try to use DemoApp's TTS state (if main_demo.js is loaded)
-    if (typeof DemoApp !== 'undefined' && DemoApp.toggleTTS) {
-        DemoApp.toggleTTS();
-        return;
-    }
-
-    // Fallback to AudioService (if available)
-    const audioService = window.AudioService;
-    if (!audioService) {
-        console.warn('⚠️ TTS not available - neither DemoApp nor AudioService found');
+    // Check if audio functions are available
+    const hasAudioService = typeof playTextToSpeech !== 'undefined';
+    if (!hasAudioService) {
+        console.warn('⚠️ TTS not available - AudioService not loaded');
         ttsToggle.disabled = true;
         ttsToggle.title = 'TTS no disponible';
         return;
     }
 
-    // Toggle TTS state
-    audioService.ttsEnabled = !audioService.ttsEnabled;
+    // Toggle TTS state using global audioState
+    if (typeof window.audioState === 'undefined') {
+        window.audioState = { ttsEnabled: false };
+    }
+    window.audioState.ttsEnabled = !window.audioState.ttsEnabled;
 
     // Update button visual state and icon
     const ttsIcon = ttsToggle.querySelector('.tts-icon');
-    if (audioService.ttsEnabled) {
+    if (window.audioState.ttsEnabled) {
         ttsToggle.classList.add('active');
         ttsToggle.title = 'Desactivar lectura automática';
         if (ttsIcon) ttsIcon.textContent = '🔊';
@@ -280,9 +340,8 @@ function toggleTTS() {
         if (ttsIcon) ttsIcon.textContent = '🔇';
 
         // Stop any playing audio
-        if (audioService.currentAudio) {
-            audioService.currentAudio.pause();
-            audioService.currentAudio = null;
+        if (typeof stopAudio !== 'undefined') {
+            stopAudio();
         }
     }
 }
@@ -348,7 +407,11 @@ function initializeSuggestions() {
         return;
     }
 
-    const state = getState();
+    // Get state safely
+    const state = typeof AppFacade !== 'undefined' && typeof AppFacade.getState === 'function'
+        ? AppFacade.getState()
+        : (typeof getState === 'function' ? getState() : {});
+    
     const hasHistory = state.conversationHistory && state.conversationHistory.length > 0;
 
     if (!hasHistory && typeof SuggestionsModule !== 'undefined') {
@@ -512,8 +575,8 @@ async function handleUserMessage(message) {
         const fullText = (scene.whisper || '') + ' ' + (scene.wave || '');
         if (fullText.trim()) {
             // Emit event for TTS system to handle
-            if (typeof UIEventBus !== 'undefined') {
-                UIEventBus.emit('message:displayed', {
+            if (typeof emit !== 'undefined') {
+                emit('message:displayed', {
                     messageId,
                     text: fullText.trim(),
                     scene

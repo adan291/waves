@@ -21,11 +21,13 @@ function clearConversation() {
 }
 
 function stopAudio() {
-    // Stop TTS if playing
-    if (typeof DemoApp !== 'undefined' && DemoApp.audioService) {
-        DemoApp.audioService.stop();
-        console.log('🔇 Audio stopped');
+    // Delegate to AudioService if available (preferred)
+    if (typeof window.AudioService !== 'undefined' && typeof window.AudioService.stopAudio === 'function') {
+        window.AudioService.stopAudio();
+        return;
     }
+    
+    console.log('🔇 Audio stop requested (AudioService not available)');
 }
 
 // Integration with message rendering

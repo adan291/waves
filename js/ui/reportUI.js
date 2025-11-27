@@ -40,72 +40,6 @@ const ReportUI = {
         // Create and show modal
         const modal = this.createModal(this.currentReport);
         document.body.appendChild(modal);
-        // Setup controls
-        this.setupReportControls();
-    },
-
-    setupReportControls() {
-        // Theme toggle
-        const themeToggle = document.getElementById('reportThemeToggle');
-        if (themeToggle) {
-            const icon = document.getElementById('reportThemeIcon');
-
-            // Use ThemeToggle module if available
-            if (typeof ThemeToggle !== 'undefined') {
-                const currentTheme = ThemeToggle.getCurrentTheme();
-                if (icon) icon.textContent = currentTheme === 'light' ? '🌙' : '☀️';
-
-                themeToggle.addEventListener('click', () => {
-                    ThemeToggle.toggle();
-                    // Update local icon immediately for responsiveness
-                    const newTheme = ThemeToggle.getCurrentTheme();
-                    if (icon) icon.textContent = newTheme === 'light' ? '🌙' : '☀️';
-                });
-            } else {
-                // Fallback logic
-                const currentTheme = document.body.getAttribute('data-theme') || 'dark';
-                if (icon) icon.textContent = currentTheme === 'light' ? '🌙' : '☀️';
-
-                themeToggle.addEventListener('click', () => {
-                    if (typeof toggleTheme === 'function') {
-                        toggleTheme();
-                    } else {
-                        const newTheme = document.body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-                        document.body.setAttribute('data-theme', newTheme);
-                        localStorage.setItem('whispers-theme', newTheme);
-                        if (icon) icon.textContent = newTheme === 'light' ? '🌙' : '☀️';
-                    }
-                });
-            }
-        }
-
-        // Language selector
-        const langSelector = document.getElementById('reportLanguageSelector');
-        if (langSelector) {
-            // Use LanguageSelector module if available
-            if (typeof LanguageSelector !== 'undefined') {
-                langSelector.value = LanguageSelector.getCurrentLanguage();
-
-                langSelector.addEventListener('change', (e) => {
-                    LanguageSelector.changeLanguage(e.target.value);
-                    // Close and reopen report with new language
-                    document.querySelector('.report-modal')?.remove();
-                    this.show();
-                });
-            } else {
-                // Fallback logic
-                const currentLang = localStorage.getItem('whispers-language') || 'es';
-                langSelector.value = currentLang;
-
-                langSelector.addEventListener('change', (e) => {
-                    const newLang = e.target.value;
-                    localStorage.setItem('whispers-language', newLang);
-                    // Close and reopen report with new language
-                    document.querySelector('.report-modal')?.remove();
-                    this.show();
-                });
-            }
-        }
     },
 
     createModal(report) {
@@ -128,18 +62,6 @@ const ReportUI = {
         const waveName = lang === 'es' ? report.metadata.selectedWave.name : report.metadata.selectedWave.nameEn;
         return `
             <div class="report-header">
-                <!-- Controls - Top Right -->
-                <div class="report-controls">
-                    <button class="report-control-btn report-theme-toggle" id="reportThemeToggle" aria-label="Toggle theme" title="Cambiar tema">
-                        <span id="reportThemeIcon">☀️</span>
-                    </button>
-                    <select class="report-control-btn report-language-selector" id="reportLanguageSelector" aria-label="Seleccionar idioma" title="Cambiar idioma">
-                        <option value="es">ES</option>
-                        <option value="en">EN</option>
-                        <option value="fr">FR</option>
-                        <option value="de">DE</option>
-                    </select>
-                </div>
                 <div class="report-title">
                     <h2>🌊 ${title}</h2>
                     <p class="report-subtitle">${waveName}</p>
