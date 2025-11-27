@@ -79,25 +79,33 @@ const translations = {
                     "Quiero tomarme tiempo para conocerme mejor",
                     "¿Qué es lo que realmente me hace feliz?",
                     "Necesito entender mis valores antes de decidir",
-                    "Quiero explorar sin presión qué me llama"
+                    "Quiero explorar sin presión qué me llama",
+                    "Me gustaría reflexionar sobre quién soy",
+                    "¿Cuáles son mis verdaderas prioridades?"
                 ],
                 deep: [
                     "Siento que hay algo más profundo detrás de mi confusión",
                     "Tengo miedos que no logro identificar",
                     "¿Por qué me cuesta tanto decidir?",
-                    "Quiero entender qué me está bloqueando"
+                    "Quiero entender qué me está bloqueando",
+                    "Hay patrones en mi vida que se repiten",
+                    "Necesito explorar mis emociones más profundas"
                 ],
                 energetic: [
                     "Necesito decidir pronto entre estas opciones",
                     "Quiero un plan de acción concreto",
                     "¿Cuál es el primer paso que debo dar?",
-                    "Necesito momentum para empezar"
+                    "Necesito momentum para empezar",
+                    "Quiero resolver este conflicto de una vez",
+                    "Dame claridad para actuar ya"
                 ],
                 healing: [
                     "Estoy agotado de tanta presión",
                     "Necesito procesar mis emociones primero",
                     "Me siento abrumado por todas las expectativas",
-                    "Quiero encontrar paz antes de decidir"
+                    "Quiero encontrar paz antes de decidir",
+                    "Necesito sanar antes de avanzar",
+                    "Cargo con un peso que necesito soltar"
                 ]
             },
             examples: {
@@ -264,25 +272,33 @@ const translations = {
                     "I want to take time to know myself better",
                     "What really makes me happy?",
                     "I need to understand my values before deciding",
-                    "I want to explore without pressure what calls me"
+                    "I want to explore without pressure what calls me",
+                    "I'd like to reflect on who I truly am",
+                    "What are my real priorities in life?"
                 ],
                 deep: [
                     "I feel there's something deeper behind my confusion",
                     "I have fears I can't identify",
                     "Why is it so hard for me to decide?",
-                    "I want to understand what's blocking me"
+                    "I want to understand what's blocking me",
+                    "There are patterns in my life that keep repeating",
+                    "I need to explore my deeper emotions"
                 ],
                 energetic: [
                     "I need to decide soon between these options",
                     "I want a concrete action plan",
                     "What's the first step I should take?",
-                    "I need momentum to start"
+                    "I need momentum to start",
+                    "I want to resolve this conflict once and for all",
+                    "Give me clarity to act now"
                 ],
                 healing: [
                     "I'm exhausted from all the pressure",
                     "I need to process my emotions first",
                     "I feel overwhelmed by all the expectations",
-                    "I want to find peace before deciding"
+                    "I want to find peace before deciding",
+                    "I need to heal before moving forward",
+                    "I carry a weight I need to release"
                 ]
             },
             examples: {
@@ -449,25 +465,33 @@ const translations = {
                     "Vreau să îmi iau timp să mă cunosc mai bine",
                     "Ce mă face cu adevărat fericit?",
                     "Trebuie să îmi înțeleg valorile înainte de a decide",
-                    "Vreau să explorez fără presiune ce mă cheamă"
+                    "Vreau să explorez fără presiune ce mă cheamă",
+                    "Aș vrea să reflectez asupra cine sunt cu adevărat",
+                    "Care sunt prioritățile mele reale în viață?"
                 ],
                 deep: [
                     "Simt că există ceva mai profund în spatele confuziei mele",
                     "Am temeri pe care nu le pot identifica",
                     "De ce îmi este atât de greu să decid?",
-                    "Vreau să înțeleg ce mă blochează"
+                    "Vreau să înțeleg ce mă blochează",
+                    "Există tipare în viața mea care se repetă",
+                    "Trebuie să explorez emoțiile mele mai profunde"
                 ],
                 energetic: [
                     "Trebuie să decid curând între aceste opțiuni",
                     "Vreau un plan de acțiune concret",
                     "Care este primul pas pe care ar trebui să îl fac?",
-                    "Am nevoie de impuls pentru a începe"
+                    "Am nevoie de impuls pentru a începe",
+                    "Vreau să rezolv acest conflict odată pentru totdeauna",
+                    "Dă-mi claritate să acționez acum"
                 ],
                 healing: [
                     "Sunt epuizat de toată presiunea",
                     "Trebuie să îmi procesez emoțiile mai întâi",
                     "Mă simt copleșit de toate așteptările",
-                    "Vreau să găsesc pace înainte de a decide"
+                    "Vreau să găsesc pace înainte de a decide",
+                    "Am nevoie să mă vindec înainte de a merge mai departe",
+                    "Port o greutate pe care trebuie să o eliberez"
                 ]
             },
             examples: {
