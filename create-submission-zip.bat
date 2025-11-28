@@ -13,8 +13,8 @@ copy index.html submission-temp\
 copy manifest.json submission-temp\
 copy sw.js submission-temp\
 copy LICENSE submission-temp\
-copy README_GAME_OFF.md submission-temp\README.md
-copy SECURITY_SETUP.md submission-temp\
+copy README.md submission-temp\
+copy favicon.svg submission-temp\
 
 echo [2/5] Copying CSS...
 xcopy /E /I css submission-temp\css
