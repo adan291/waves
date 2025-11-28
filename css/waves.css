@@ -890,3 +890,59 @@ body[data-wave="healing"][data-theme="light"] .ocean-background::after {
     filter: none !important;
     opacity: 0.3 !important;
 }
+
+
+/* ============================================
+   FIX: Wave Selection Header Visibility
+   Ensure header is above all wave animations
+   ============================================ */
+
+.splash-screen .wave-selection .wave-header-box {
+    position: relative !important;
+    z-index: 100 !important;
+    background: rgba(10, 30, 50, 0.92) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.splash-screen .wave-selection .wave-selection-content {
+    position: relative !important;
+    z-index: 10 !important;
+}
+
+.splash-screen .wave-selection .wave-header-title {
+    position: relative !important;
+    z-index: 101 !important;
+    color: #7dd3fc !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.splash-screen .wave-selection .wave-header-subtitle {
+    position: relative !important;
+    z-index: 101 !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    font-size: 1rem;
+}
+
+/* Light theme */
+body[data-theme="light"] .splash-screen .wave-selection .wave-header-box {
+    background: rgba(255, 255, 255, 0.95) !important;
+}
+
+body[data-theme="light"] .splash-screen .wave-selection .wave-header-title {
+    color: #0369a1 !important;
+}
+
+body[data-theme="light"] .splash-screen .wave-selection .wave-header-subtitle {
+    color: rgba(0, 0, 0, 0.75) !important;
+}

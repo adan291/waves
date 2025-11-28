@@ -2236,6 +2236,16 @@ body[data-theme="light"] .modal-btn-confirm:hover {
     margin-top: 2rem;
 }
 
+/* Wave selection header wrapper */
+.wave-selection-header {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.wave-selection-header .wave-selection-subtitle {
+    margin-bottom: 0;
+}
+
 .wave-selection-title {
     font-size: 2.5rem;
     background: linear-gradient(135deg, 
@@ -3052,4 +3062,1101 @@ body[data-theme="light"] .report-section h3 {
 .container > #suggestionsContainer {
     flex-shrink: 0;
     padding: 0 2rem 1rem 2rem;
+}
+
+
+/* Demo Mode Indicator */
+.demo-mode-indicator {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.9), rgba(139, 92, 246, 0.9));
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 1000;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    animation: pulse-demo 2s ease-in-out infinite;
+}
+
+.demo-mode-indicator.hidden {
+    display: none;
+}
+
+.demo-icon {
+    font-size: 1.1rem;
+}
+
+@keyframes pulse-demo {
+    0%, 100% { transform: scale(1); opacity: 0.9; }
+    50% { transform: scale(1.02); opacity: 1; }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .demo-mode-indicator {
+        bottom: 80px;
+        left: 10px;
+        padding: 6px 12px;
+        font-size: 0.75rem;
+    }
+}
+
+
+/* ===================================
+   WAVE-ADAPTIVE BUTTONS & TEXT
+   Ensures visibility across all wave types
+   =================================== */
+
+/* Suggestion buttons - use wave variables */
+.suggestion-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: var(--text-primary, #e0f7fa);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.suggestion-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: var(--text-primary, #e0f7fa);
+}
+
+.suggestions-container {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.suggestions-title {
+    color: var(--text-primary, #80deea);
+}
+
+/* Action buttons - consistent across waves */
+.action-btn,
+.audio-btn,
+.audio-play-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: var(--text-primary, #e0f7fa);
+}
+
+.action-btn:hover:not(:disabled),
+.audio-btn:hover:not(:disabled),
+.audio-play-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Reaction buttons */
+.reaction-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: var(--text-primary, #e0f7fa);
+}
+
+.reaction-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Light theme overrides for all waves */
+body[data-theme="light"] .suggestion-btn,
+body[data-theme="light"] .action-btn,
+body[data-theme="light"] .audio-btn,
+body[data-theme="light"] .audio-play-btn,
+body[data-theme="light"] .reaction-btn {
+    background: rgba(0, 0, 0, 0.08);
+    border-color: rgba(0, 0, 0, 0.2);
+    color: var(--text-primary, #01579b);
+    text-shadow: none;
+}
+
+body[data-theme="light"] .suggestion-btn:hover,
+body[data-theme="light"] .action-btn:hover:not(:disabled),
+body[data-theme="light"] .audio-btn:hover:not(:disabled),
+body[data-theme="light"] .audio-play-btn:hover:not(:disabled),
+body[data-theme="light"] .reaction-btn:hover {
+    background: rgba(0, 0, 0, 0.12);
+    border-color: rgba(0, 0, 0, 0.3);
+}
+
+body[data-theme="light"] .suggestions-container {
+    background: rgba(255, 255, 255, 0.6);
+    border-color: rgba(0, 0, 0, 0.15);
+}
+
+body[data-theme="light"] .suggestions-title {
+    color: var(--text-primary, #01579b);
+    text-shadow: none;
+}
+
+/* Welcome message - wave adaptive */
+.welcome-message .whisper,
+.welcome-message .wave-reflection {
+    color: var(--text-primary, #e0f7fa);
+}
+
+body[data-theme="light"] .welcome-message .whisper,
+body[data-theme="light"] .welcome-message .wave-reflection {
+    color: var(--text-primary, #01579b);
+}
+
+
+/* ===================================
+   UNIFIED DESIGN SYSTEM
+   All buttons, containers and text boxes
+   use consistent glassmorphism style
+   =================================== */
+
+/* --- BASE CONTAINER STYLE --- */
+.suggestions-container,
+.welcome-message,
+.stats-container,
+.toast,
+.modal-container,
+.expression-metrics,
+.ocean-state-indicator,
+.achievement-notification,
+.achievement-gallery,
+.report-container,
+.typing-indicator,
+.message-actions,
+.audio-controls {
+    background: rgba(10, 30, 50, 0.7) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* --- BASE BUTTON STYLE --- */
+.suggestion-btn,
+.action-btn,
+.audio-btn,
+.audio-play-btn,
+.reaction-btn,
+.modal-btn,
+.control-btn-inline,
+.back-btn,
+.send-btn,
+.voice-btn {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+    transition: all 0.3s ease !important;
+}
+
+.suggestion-btn:hover,
+.action-btn:hover:not(:disabled),
+.audio-btn:hover:not(:disabled),
+.audio-play-btn:hover:not(:disabled),
+.reaction-btn:hover,
+.modal-btn:hover,
+.control-btn-inline:hover,
+.back-btn:hover,
+.send-btn:hover,
+.voice-btn:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.15) !important;
+}
+
+.suggestion-btn:active,
+.action-btn:active,
+.audio-btn:active,
+.audio-play-btn:active,
+.reaction-btn:active,
+.modal-btn:active,
+.control-btn-inline:active,
+.back-btn:active,
+.send-btn:active,
+.voice-btn:active {
+    transform: translateY(0) !important;
+}
+
+/* --- BASE TEXT STYLE --- */
+.suggestions-title,
+.welcome-message p,
+.whisper,
+.wave-reflection,
+.mode-text,
+.stat-label,
+.stat-value,
+.metrics-title,
+.metric-label,
+.metric-value,
+.state-name,
+.achievement-name,
+.achievement-description,
+.toast,
+.modal-title,
+.modal-message {
+    color: rgba(255, 255, 255, 0.95) !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Secondary text - slightly dimmer */
+.suggestions-title,
+.stat-label,
+.metric-label,
+.achievement-description {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* --- INPUT FIELDS --- */
+.user-input {
+    background: rgba(10, 30, 50, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.user-input::placeholder {
+    color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.user-input:focus {
+    background: rgba(10, 30, 50, 0.8) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1) !important;
+}
+
+/* --- INPUT CONTAINER --- */
+.input-container {
+    background: rgba(10, 30, 50, 0.7) !important;
+    backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+/* --- USER MESSAGE --- */
+.user-message {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* --- MODE INDICATOR --- */
+.mode-indicator {
+    background: rgba(10, 30, 50, 0.7) !important;
+    backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+/* --- LANGUAGE SELECTOR --- */
+.language-selector {
+    background: rgba(10, 30, 50, 0.7) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.language-selector option {
+    background: rgba(10, 30, 50, 0.95) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* ===================================
+   LIGHT THEME OVERRIDES
+   =================================== */
+
+body[data-theme="light"] .suggestions-container,
+body[data-theme="light"] .welcome-message,
+body[data-theme="light"] .stats-container,
+body[data-theme="light"] .toast,
+body[data-theme="light"] .modal-container,
+body[data-theme="light"] .expression-metrics,
+body[data-theme="light"] .ocean-state-indicator,
+body[data-theme="light"] .achievement-notification,
+body[data-theme="light"] .achievement-gallery,
+body[data-theme="light"] .report-container,
+body[data-theme="light"] .typing-indicator,
+body[data-theme="light"] .message-actions,
+body[data-theme="light"] .audio-controls,
+body[data-theme="light"] .input-container,
+body[data-theme="light"] .mode-indicator {
+    background: rgba(255, 255, 255, 0.75) !important;
+    border-color: rgba(0, 0, 0, 0.15) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+body[data-theme="light"] .suggestion-btn,
+body[data-theme="light"] .action-btn,
+body[data-theme="light"] .audio-btn,
+body[data-theme="light"] .audio-play-btn,
+body[data-theme="light"] .reaction-btn,
+body[data-theme="light"] .modal-btn,
+body[data-theme="light"] .control-btn-inline,
+body[data-theme="light"] .back-btn,
+body[data-theme="light"] .send-btn,
+body[data-theme="light"] .voice-btn {
+    background: rgba(0, 0, 0, 0.06) !important;
+    border-color: rgba(0, 0, 0, 0.15) !important;
+    color: rgba(0, 0, 0, 0.85) !important;
+    text-shadow: none !important;
+}
+
+body[data-theme="light"] .suggestion-btn:hover,
+body[data-theme="light"] .action-btn:hover:not(:disabled),
+body[data-theme="light"] .audio-btn:hover:not(:disabled),
+body[data-theme="light"] .audio-play-btn:hover:not(:disabled),
+body[data-theme="light"] .reaction-btn:hover,
+body[data-theme="light"] .modal-btn:hover,
+body[data-theme="light"] .control-btn-inline:hover,
+body[data-theme="light"] .back-btn:hover,
+body[data-theme="light"] .send-btn:hover,
+body[data-theme="light"] .voice-btn:hover {
+    background: rgba(0, 0, 0, 0.1) !important;
+    border-color: rgba(0, 0, 0, 0.25) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+body[data-theme="light"] .suggestions-title,
+body[data-theme="light"] .welcome-message p,
+body[data-theme="light"] .whisper,
+body[data-theme="light"] .wave-reflection,
+body[data-theme="light"] .mode-text,
+body[data-theme="light"] .stat-label,
+body[data-theme="light"] .stat-value,
+body[data-theme="light"] .metrics-title,
+body[data-theme="light"] .metric-label,
+body[data-theme="light"] .metric-value,
+body[data-theme="light"] .state-name,
+body[data-theme="light"] .achievement-name,
+body[data-theme="light"] .achievement-description,
+body[data-theme="light"] .toast,
+body[data-theme="light"] .modal-title,
+body[data-theme="light"] .modal-message {
+    color: rgba(0, 0, 0, 0.85) !important;
+    text-shadow: none !important;
+}
+
+body[data-theme="light"] .suggestions-title,
+body[data-theme="light"] .stat-label,
+body[data-theme="light"] .metric-label,
+body[data-theme="light"] .achievement-description {
+    color: rgba(0, 0, 0, 0.65) !important;
+}
+
+body[data-theme="light"] .user-input {
+    background: rgba(255, 255, 255, 0.8) !important;
+    border-color: rgba(0, 0, 0, 0.15) !important;
+    color: rgba(0, 0, 0, 0.85) !important;
+}
+
+body[data-theme="light"] .user-input::placeholder {
+    color: rgba(0, 0, 0, 0.4) !important;
+}
+
+body[data-theme="light"] .user-input:focus {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-color: rgba(0, 0, 0, 0.3) !important;
+}
+
+body[data-theme="light"] .user-message {
+    background: rgba(0, 0, 0, 0.05) !important;
+    border-color: rgba(0, 0, 0, 0.1) !important;
+    color: rgba(0, 0, 0, 0.85) !important;
+}
+
+body[data-theme="light"] .language-selector {
+    background: rgba(255, 255, 255, 0.8) !important;
+    border-color: rgba(0, 0, 0, 0.15) !important;
+    color: rgba(0, 0, 0, 0.85) !important;
+}
+
+body[data-theme="light"] .language-selector option {
+    background: #ffffff !important;
+    color: rgba(0, 0, 0, 0.85) !important;
+}
+
+/* ===================================
+   SPECIAL BUTTON STATES
+   =================================== */
+
+/* Confirm button - accent color */
+.modal-btn-confirm {
+    background: rgba(64, 224, 208, 0.3) !important;
+    border-color: rgba(64, 224, 208, 0.5) !important;
+    color: #ffffff !important;
+}
+
+.modal-btn-confirm:hover {
+    background: rgba(64, 224, 208, 0.4) !important;
+    border-color: rgba(64, 224, 208, 0.7) !important;
+}
+
+body[data-theme="light"] .modal-btn-confirm {
+    background: rgba(2, 136, 209, 0.2) !important;
+    border-color: rgba(2, 136, 209, 0.4) !important;
+    color: #01579b !important;
+}
+
+body[data-theme="light"] .modal-btn-confirm:hover {
+    background: rgba(2, 136, 209, 0.3) !important;
+    border-color: rgba(2, 136, 209, 0.6) !important;
+}
+
+/* Recording state */
+.voice-btn.recording {
+    background: rgba(244, 67, 54, 0.3) !important;
+    border-color: rgba(244, 67, 54, 0.5) !important;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Disabled state */
+.suggestion-btn:disabled,
+.action-btn:disabled,
+.audio-btn:disabled,
+.send-btn:disabled {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+}
+
+
+/* ===================================
+   TOP CONTROL BUTTONS (Fixed Header)
+   Back, TTS, Theme, Achievements, Report
+   =================================== */
+
+/* Back button (change wave) */
+#backToStartBtn,
+.back-btn {
+    background: rgba(10, 30, 50, 0.7) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+}
+
+#backToStartBtn:hover,
+.back-btn:hover {
+    background: rgba(10, 30, 50, 0.85) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Top right control buttons */
+#ttsToggle,
+#themeToggle,
+#achievementsBtn,
+#reportBtn,
+.control-btn-inline {
+    background: rgba(10, 30, 50, 0.7) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+}
+
+#ttsToggle:hover,
+#themeToggle:hover,
+#achievementsBtn:hover,
+#reportBtn:hover,
+.control-btn-inline:hover {
+    background: rgba(10, 30, 50, 0.85) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+    transform: translateY(-2px);
+}
+
+/* Achievement count badge */
+.achievement-count {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Language selector in header */
+#languageSelector,
+.language-selector {
+    background: rgba(10, 30, 50, 0.7) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+}
+
+#languageSelector:hover,
+.language-selector:hover {
+    background: rgba(10, 30, 50, 0.85) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+#languageSelector option,
+.language-selector option {
+    background: rgba(10, 30, 50, 0.98) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* ===================================
+   LIGHT THEME - TOP CONTROLS
+   =================================== */
+
+body[data-theme="light"] #backToStartBtn,
+body[data-theme="light"] .back-btn {
+    background: rgba(255, 255, 255, 0.8) !important;
+    border-color: rgba(0, 0, 0, 0.15) !important;
+    color: rgba(0, 0, 0, 0.85) !important;
+    text-shadow: none !important;
+}
+
+body[data-theme="light"] #backToStartBtn:hover,
+body[data-theme="light"] .back-btn:hover {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-color: rgba(0, 0, 0, 0.25) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+body[data-theme="light"] #ttsToggle,
+body[data-theme="light"] #themeToggle,
+body[data-theme="light"] #achievementsBtn,
+body[data-theme="light"] #reportBtn,
+body[data-theme="light"] .control-btn-inline {
+    background: rgba(255, 255, 255, 0.8) !important;
+    border-color: rgba(0, 0, 0, 0.15) !important;
+    color: rgba(0, 0, 0, 0.85) !important;
+    text-shadow: none !important;
+}
+
+body[data-theme="light"] #ttsToggle:hover,
+body[data-theme="light"] #themeToggle:hover,
+body[data-theme="light"] #achievementsBtn:hover,
+body[data-theme="light"] #reportBtn:hover,
+body[data-theme="light"] .control-btn-inline:hover {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-color: rgba(0, 0, 0, 0.25) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+body[data-theme="light"] .achievement-count {
+    color: rgba(0, 0, 0, 0.8) !important;
+}
+
+body[data-theme="light"] #languageSelector,
+body[data-theme="light"] .language-selector {
+    background: rgba(255, 255, 255, 0.8) !important;
+    border-color: rgba(0, 0, 0, 0.15) !important;
+    color: rgba(0, 0, 0, 0.85) !important;
+}
+
+body[data-theme="light"] #languageSelector:hover,
+body[data-theme="light"] .language-selector:hover {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-color: rgba(0, 0, 0, 0.25) !important;
+}
+
+body[data-theme="light"] #languageSelector option,
+body[data-theme="light"] .language-selector option {
+    background: #ffffff !important;
+    color: rgba(0, 0, 0, 0.85) !important;
+}
+
+
+/* ===================================
+   SPLASH SCREEN - UNIFIED STYLES
+   Title, subtitle, buttons with glassmorphism
+   =================================== */
+
+/* Wave selection content */
+.wave-selection-content {
+    text-align: center;
+}
+
+/* Header container - single box for title + subtitle */
+.wave-selection-header {
+    background: rgba(10, 30, 50, 0.85);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    padding: 1.5rem 3rem;
+    margin: 0 auto 2rem auto;
+    display: inline-block;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    position: relative;
+    z-index: 10;
+}
+
+.wave-selection-title {
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 0 0.5rem 0 !important;
+    color: #7dd3fc !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5) !important;
+    font-size: 2rem !important;
+    font-weight: 600 !important;
+}
+
+.wave-selection-subtitle {
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    color: rgba(255, 255, 255, 0.85) !important;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4) !important;
+    font-size: 1.1rem !important;
+    font-weight: 400 !important;
+}
+
+/* Splash control buttons - unified style */
+.splash-control-btn,
+.splash-theme-toggle,
+.splash-language-selector,
+#splashThemeToggle,
+#splashLanguageSelector {
+    background: rgba(10, 30, 50, 0.7) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.splash-control-btn:hover,
+.splash-theme-toggle:hover,
+.splash-language-selector:hover,
+#splashThemeToggle:hover,
+#splashLanguageSelector:hover {
+    background: rgba(10, 30, 50, 0.85) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+}
+
+.splash-language-selector option,
+#splashLanguageSelector option {
+    background: rgba(10, 30, 50, 0.98) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* Back button in wave selection */
+#backToIntroBtn,
+.splash-btn.secondary.small {
+    background: rgba(10, 30, 50, 0.7) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+}
+
+#backToIntroBtn:hover,
+.splash-btn.secondary.small:hover {
+    background: rgba(10, 30, 50, 0.85) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+/* Wave cards */
+.wave-card {
+    background: rgba(10, 30, 50, 0.7) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+.wave-card:hover {
+    background: rgba(10, 30, 50, 0.85) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.wave-card-name,
+.wave-card-description {
+    color: rgba(255, 255, 255, 0.95) !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+}
+
+.wave-card-description {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.wave-card-btn {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.wave-card-btn:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+/* How it works section */
+.how-content h2,
+.how-step h3,
+.how-step p {
+    color: rgba(255, 255, 255, 0.95) !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+}
+
+.how-step {
+    background: rgba(10, 30, 50, 0.7) !important;
+    backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 12px !important;
+    padding: 1.5rem !important;
+}
+
+/* ===================================
+   SPLASH SCREEN - LIGHT THEME
+   =================================== */
+
+body[data-theme="light"] .wave-selection-header {
+    background: rgba(255, 255, 255, 0.85);
+    border-color: rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+body[data-theme="light"] .wave-selection-title {
+    color: #0369a1 !important;
+    text-shadow: none !important;
+}
+
+body[data-theme="light"] .wave-selection-subtitle {
+    color: rgba(0, 0, 0, 0.7) !important;
+    text-shadow: none !important;
+}
+
+body[data-theme="light"] .splash-tagline,
+body[data-theme="light"] .logo-title,
+body[data-theme="light"] .splash-subtitle {
+    color: rgba(0, 0, 0, 0.85) !important;
+    text-shadow: none !important;
+}
+
+body[data-theme="light"] .splash-control-btn,
+body[data-theme="light"] .splash-theme-toggle,
+body[data-theme="light"] .splash-language-selector,
+body[data-theme="light"] #splashThemeToggle,
+body[data-theme="light"] #splashLanguageSelector {
+    background: rgba(255, 255, 255, 0.8) !important;
+    border-color: rgba(0, 0, 0, 0.15) !important;
+    color: rgba(0, 0, 0, 0.85) !important;
+}
+
+body[data-theme="light"] .splash-control-btn:hover,
+body[data-theme="light"] .splash-theme-toggle:hover,
+body[data-theme="light"] .splash-language-selector:hover,
+body[data-theme="light"] #splashThemeToggle:hover,
+body[data-theme="light"] #splashLanguageSelector:hover {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-color: rgba(0, 0, 0, 0.25) !important;
+}
+
+body[data-theme="light"] .splash-language-selector option,
+body[data-theme="light"] #splashLanguageSelector option {
+    background: #ffffff !important;
+    color: rgba(0, 0, 0, 0.85) !important;
+}
+
+body[data-theme="light"] #backToIntroBtn,
+body[data-theme="light"] .splash-btn.secondary.small {
+    background: rgba(255, 255, 255, 0.8) !important;
+    border-color: rgba(0, 0, 0, 0.15) !important;
+    color: rgba(0, 0, 0, 0.85) !important;
+}
+
+body[data-theme="light"] #backToIntroBtn:hover,
+body[data-theme="light"] .splash-btn.secondary.small:hover {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-color: rgba(0, 0, 0, 0.25) !important;
+}
+
+body[data-theme="light"] .wave-card {
+    background: rgba(255, 255, 255, 0.75) !important;
+    border-color: rgba(0, 0, 0, 0.15) !important;
+}
+
+body[data-theme="light"] .wave-card:hover {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-color: rgba(0, 0, 0, 0.25) !important;
+}
+
+body[data-theme="light"] .wave-card-name,
+body[data-theme="light"] .wave-card-description {
+    color: rgba(0, 0, 0, 0.85) !important;
+    text-shadow: none !important;
+}
+
+body[data-theme="light"] .wave-card-description {
+    color: rgba(0, 0, 0, 0.65) !important;
+}
+
+body[data-theme="light"] .wave-card-btn {
+    background: rgba(0, 0, 0, 0.06) !important;
+    border-color: rgba(0, 0, 0, 0.15) !important;
+    color: rgba(0, 0, 0, 0.85) !important;
+}
+
+body[data-theme="light"] .wave-card-btn:hover {
+    background: rgba(0, 0, 0, 0.1) !important;
+    border-color: rgba(0, 0, 0, 0.25) !important;
+}
+
+body[data-theme="light"] .how-content h2,
+body[data-theme="light"] .how-step h3,
+body[data-theme="light"] .how-step p {
+    color: rgba(0, 0, 0, 0.85) !important;
+    text-shadow: none !important;
+}
+
+body[data-theme="light"] .how-step {
+    background: rgba(255, 255, 255, 0.75) !important;
+    border-color: rgba(0, 0, 0, 0.15) !important;
+}
+
+
+/* ===================================
+   FIX: Wave Selection Header Visibility
+   =================================== */
+
+/* Ensure wave-selection-header is always visible and on top */
+.wave-selection-header {
+    background: rgba(10, 30, 50, 0.9) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    border-radius: 16px !important;
+    padding: 1.5rem 3rem !important;
+    margin: 0 auto 2rem auto !important;
+    display: inline-block !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+    position: relative !important;
+    z-index: 100 !important;
+}
+
+.wave-selection-header .wave-selection-title {
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 0 0.5rem 0 !important;
+    color: #7dd3fc !important;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6) !important;
+    font-size: 2rem !important;
+    font-weight: 700 !important;
+    display: block !important;
+}
+
+.wave-selection-header .wave-selection-subtitle {
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    text-shadow: 0 1px 5px rgba(0, 0, 0, 0.5) !important;
+    font-size: 1.1rem !important;
+    font-weight: 400 !important;
+    display: block !important;
+}
+
+/* Light theme */
+body[data-theme="light"] .wave-selection-header {
+    background: rgba(255, 255, 255, 0.92) !important;
+    border-color: rgba(0, 0, 0, 0.15) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15) !important;
+}
+
+body[data-theme="light"] .wave-selection-header .wave-selection-title {
+    color: #0369a1 !important;
+    text-shadow: none !important;
+}
+
+body[data-theme="light"] .wave-selection-header .wave-selection-subtitle {
+    color: rgba(0, 0, 0, 0.7) !important;
+    text-shadow: none !important;
+}
+
+
+/* ===================================
+   FIX: Title inside header must be visible
+   =================================== */
+
+.wave-selection-header h2,
+.wave-selection-header .wave-selection-title,
+h2.wave-selection-title {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 0 0.5rem 0 !important;
+    color: #7dd3fc !important;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7) !important;
+    font-size: 2rem !important;
+    font-weight: 700 !important;
+    display: block !important;
+    position: relative !important;
+    z-index: 1 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.wave-selection-header p,
+.wave-selection-header .wave-selection-subtitle,
+p.wave-selection-subtitle {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6) !important;
+    font-size: 1.1rem !important;
+    font-weight: 400 !important;
+    display: block !important;
+    position: relative !important;
+    z-index: 1 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Light theme */
+body[data-theme="light"] .wave-selection-header h2,
+body[data-theme="light"] .wave-selection-header .wave-selection-title,
+body[data-theme="light"] h2.wave-selection-title {
+    color: #0369a1 !important;
+    text-shadow: none !important;
+}
+
+body[data-theme="light"] .wave-selection-header p,
+body[data-theme="light"] .wave-selection-header .wave-selection-subtitle,
+body[data-theme="light"] p.wave-selection-subtitle {
+    color: rgba(0, 0, 0, 0.75) !important;
+    text-shadow: none !important;
+}
+
+
+/* ===================================
+   NEW: Wave Header Box (Clean Implementation)
+   =================================== */
+
+.wave-header-box {
+    background: rgba(10, 30, 50, 0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 16px;
+    padding: 1.5rem 3rem;
+    margin: 0 auto 2rem auto;
+    display: inline-block;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    position: relative;
+    z-index: 9999;
+}
+
+.wave-header-title {
+    color: #7dd3fc;
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+}
+
+.wave-header-subtitle {
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 1.1rem;
+    font-weight: 400;
+    margin: 0;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
+}
+
+/* Light theme */
+body[data-theme="light"] .wave-header-box {
+    background: rgba(255, 255, 255, 0.95);
+    border-color: rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+body[data-theme="light"] .wave-header-title {
+    color: #0369a1;
+    text-shadow: none;
+}
+
+body[data-theme="light"] .wave-header-subtitle {
+    color: rgba(0, 0, 0, 0.75);
+    text-shadow: none;
+}
+
+
+/* ===================================
+   MESSAGE CONTAINERS - Unified Style
+   =================================== */
+
+/* AI response container - transparent */
+.message-container {
+    background: transparent !important;
+    border: none !important;
+    padding: 0.5rem 0 !important;
+    margin-bottom: 1rem !important;
+    box-shadow: none !important;
+}
+
+/* User message - glassmorphism style - HIGH SPECIFICITY */
+#messageDisplay .user-message,
+.message-display .user-message,
+div.user-message {
+    background: rgba(10, 30, 50, 0.75) !important;
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    border-radius: 12px !important;
+    padding: 0.75rem 1rem !important;
+    margin-bottom: 1rem !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35) !important;
+}
+
+#messageDisplay .user-message p,
+.message-display .user-message p,
+div.user-message p {
+    margin: 0 !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
+}
+
+.whisper,
+.wave-reflection {
+    padding: 0.5rem 0 !important;
+}
+
+.whisper .message-text {
+    color: rgba(200, 230, 255, 0.95) !important;
+    font-style: italic !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+}
+
+.wave-reflection .message-text {
+    color: rgba(255, 255, 255, 0.95) !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Light theme - HIGH SPECIFICITY */
+body[data-theme="light"] #messageDisplay .user-message,
+body[data-theme="light"] .message-display .user-message,
+body[data-theme="light"] div.user-message {
+    background: rgba(255, 255, 255, 0.85) !important;
+    border-color: rgba(0, 0, 0, 0.15) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12) !important;
+}
+
+body[data-theme="light"] #messageDisplay .user-message p,
+body[data-theme="light"] .message-display .user-message p,
+body[data-theme="light"] div.user-message p {
+    color: rgba(0, 0, 0, 0.85) !important;
+    text-shadow: none !important;
+}
+
+body[data-theme="light"] .whisper .message-text {
+    color: rgba(0, 80, 120, 0.9) !important;
+    text-shadow: none !important;
+}
+
+body[data-theme="light"] .wave-reflection .message-text {
+    color: rgba(0, 0, 0, 0.85) !important;
+    text-shadow: none !important;
 }

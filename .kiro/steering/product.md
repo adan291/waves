@@ -1,62 +1,37 @@
 # Product Overview
 
-Whispers of the Wave is a minimal, immersive web experience for conversing with AI in a peaceful ocean-inspired environment.
+Whispers of the Wave is an introspective AI chat experience with an ocean-inspired environment. Built for **Game Off 2025** with theme **WAVES**.
 
 ## Core Features
 
 ### Visual Experience
-- **4 Wave Backgrounds**: Calm, Deep, Energetic, Healing - each with unique animations
+- **4 Wave Backgrounds**: Calm 🌊, Deep 🌀, Energetic ⚡, Healing 💙
 - **Dynamic Ocean States**: Visual feedback based on emotional tone
-- **Dual Response Format**: "Whispers" (italic, light-blue) and "Waves of Reflection" (serif, larger)
-- **Smooth Animations**: Fade-in effects, typing indicators, wave movements
-- **Theme Toggle**: Dark/Light mode with ocean-appropriate color palettes
-- **Responsive Design**: Optimized for desktop, tablet, and mobile
+- **Dual Response Format**: Whispers (poetic) + Waves of Reflection
+- **Theme Toggle**: Dark/Light mode
+- **Responsive Design**: Desktop, tablet, mobile
 
 ### Conversation System
-- **AI Personas**: 4 distinct conversation styles (Guardian, Explorer, Solver, Healer)
-- **Emotional Analysis**: Tracks conversation depth and emotional state
-- **Conversation Memory**: Full session history maintained
-- **Smart Suggestions**: Context-aware conversation starters
-- **Adaptive Assistance**: AI adjusts responses based on user state
+- **AI Personas**: Guardian, Explorer, Solver, Healer
+- **Emotional Analysis**: Tracks conversation depth
+- **Adaptive Assistance**: AI adjusts to user state
+- **Context-aware Suggestions**: Smart conversation starters
 
 ### Internationalization
 - **3 Languages**: Spanish (ES), English (EN), Romanian (RO)
-- **Full Translation**: All UI elements, messages, and personas
-- **Language Selector**: Easy switching in top-right corner
-- **Persistent Preference**: Language choice saved across sessions
+- **Persistent Preference**: Saved in localStorage
 
 ### Achievement System
-- **Milestone Tracking**: Rewards for conversation depth and exploration
-- **Visual Notifications**: Ocean-themed achievement unlocks
-- **Achievement Gallery**: View all earned achievements
-- **Progress Indicators**: Track journey completion
+- **Milestone Tracking**: Rewards for exploration
+- **Visual Notifications**: Ocean-themed unlocks
 
-### Audio Features
-- **Text-to-Speech**: AI responses can be read aloud
-- **Voice Controls**: Toggle TTS on/off
-- **Audio Status**: Visual feedback during audio generation
+### Audio
+- **Text-to-Speech**: AI responses read aloud
+- **Speech-to-Text**: Voice input support
 
-### Technical Excellence
-- **Pure Vanilla JavaScript**: No frameworks or build tools required
-- **Zero Dependencies**: No npm packages needed
-- **Lazy Loading**: Non-critical features load on demand
-- **Performance Optimized**: GPU-accelerated animations, efficient rendering
-- **PWA Ready**: Manifest and service worker for offline capability
-- **Accessibility**: ARIA labels, keyboard navigation, screen reader support
+## Theme Interpretation: WAVES
 
-## User Experience Goals
-
-- Create a peaceful, flowing, wave-like conversational experience
-- Maintain an immersive ocean aesthetic throughout all pages
-- Keep interactions smooth and visually calming
-- Ensure accessibility and responsiveness across all devices
-- Provide meaningful feedback through visual ocean dynamics
-- Support multiple languages for global accessibility
-
-## Game Off 2025 Theme: "Bubble"
-
-The project interprets "bubble" as:
-- **Thought Bubbles**: Conversations as bubbles of reflection
-- **Ocean Bubbles**: Visual metaphor for ideas rising to surface
-- **Safe Bubble**: A peaceful space for self-discovery
-- **Bubble of Time**: Moments of introspection and clarity
+- **Ocean Waves**: Animated backgrounds that flow and respond
+- **Emotional Waves**: Conversation tone affects visuals
+- **Thought Waves**: Ideas rising like bubbles to surface
+- **Sound Waves**: Audio feedback and TTS

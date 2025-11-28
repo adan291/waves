@@ -1,92 +1,108 @@
-# Whispers of the Wave 🌊
+# 🌊 Whispers of the Wave
 
-**Una experiencia de chat inmersiva donde el océano refleja tus emociones.**
+An introspective AI experience where the ocean reflects your emotions. Built for **Game Off 2025** with the theme **WAVES**.
 
-Whispers of the Wave es una aplicación web que combina IA conversacional (Google Gemini) con un entorno visual y auditivo relajante. Diseñada para la reflexión, la calma y el autodescubrimiento.
+![Whispers of the Wave](https://img.shields.io/badge/Game%20Off-2025-blue?style=for-the-badge)
+![Theme](https://img.shields.io/badge/Theme-WAVES-cyan?style=for-the-badge)
+![No Dependencies](https://img.shields.io/badge/Dependencies-Zero-green?style=for-the-badge)
 
-[![Estado](https://img.shields.io/badge/Estado-Completado-success)](PROYECTO_ESTADO_FINAL.md)
-[![Bundle Size](https://img.shields.io/badge/Bundle-668.85%20KB-success)](FASE3_COMPLETADA.md)
-[![Tests](https://img.shields.io/badge/Tests-111%20tests-brightgreen)](tests/)
-[![Cobertura](https://img.shields.io/badge/Cobertura-50%25-brightgreen)](tests/coverage-report.html)
-[![Documentación](https://img.shields.io/badge/Docs-Completa-success)](docs/)
+## 🎮 Play Now
 
----
+**No setup required!** The game includes a Demo Mode that works without any configuration.
 
-## 🎯 Estado del Proyecto
+Simply open `index.html` in your browser:
 
-**Última Actualización**: Noviembre 25, 2025  
-**Estado**: ✅ **PROYECTO COMPLETADO AL 100%**
+```bash
+# Windows
+start index.html
 
-```
-✅ Fase 1: Análisis y Configuración    100%
-✅ Fase 2: Implementación Core         100%
-✅ Fase 3: Optimización                100%
-✅ Fase 4: Testing                     100%
-✅ Fase 5: Documentación Final         100% ✅ COMPLETADA
+# Or use a local server for full features
+python -m http.server 8000
+# Then visit: http://localhost:8000
 ```
 
-**Progreso General**: 100% (5/5 fases) ✅
+### Demo Mode vs Full Mode
 
-**Logros Finales**: 
-- ✅ 111 tests implementados (100% pasando)
-- ✅ 50% de cobertura alcanzada (20/40 módulos)
-- ✅ 9 herramientas de automatización
-- ✅ 8 documentos técnicos completos
-- ✅ Bundle optimizado (668.85 KB)
-- ✅ Arquitectura de 4 capas documentada
-- ✅ 40 módulos documentados
-- ✅ APIs completamente documentadas
+| Feature | Demo Mode | Full Mode (with API key) |
+|---------|-----------|--------------------------|
+| Wave backgrounds | ✅ | ✅ |
+| Theme switching | ✅ | ✅ |
+| Achievements | ✅ | ✅ |
+| AI conversations | Predefined responses | Real Gemini AI |
+| Voice (TTS) | ❌ | ✅ |
 
-**Ver**: [CHANGELOG.md](CHANGELOG.md) para historial completo.
+## ⚙️ Full Setup (Optional)
+
+To enable real AI conversations:
+
+1. Get a free API key from [Google AI Studio](https://makersuite.google.com/app/apikey)
+2. Copy `js/config.local.example.js` to `js/config.local.js`
+3. Add your API key to the config file
+4. Refresh the page
+
+## ✨ Features
+
+- **4 Wave Types**: Calm 🌊, Deep 🌀, Energetic ⚡, Healing 💙
+- **AI Personas**: Guardian, Explorer, Solver, Healer
+- **Dynamic Ocean**: Background responds to emotional tone
+- **Dual Responses**: Whispers (poetic) + Waves of Reflection
+- **Achievements**: Unlock milestones as you explore
+- **i18n**: English, Spanish, Romanian
+- **Dark/Light Themes**: Ocean-appropriate color palettes
+- **Voice Input**: Speech-to-text support
+- **PWA Ready**: Install as an app
+
+## 🎯 Theme Interpretation: WAVES
+
+- **Ocean Waves**: Dynamic animated backgrounds that flow and respond
+- **Emotional Waves**: AI responses adapt to your mood
+- **Thought Waves**: Conversations as ripples of reflection
+- **Sound Waves**: Text-to-speech for immersive experience
+
+## 🖼️ Screenshots
+
+### Wave Selection
+Choose your ocean state - each wave creates a unique atmosphere.
+
+### Conversation
+Chat with AI personas in a peaceful, reflective environment.
+
+### Achievements
+Unlock milestones as you explore the depths of conversation.
+
+## 🛠️ Tech Stack
+
+- Pure Vanilla JavaScript (ES6+)
+- HTML5 + CSS3 with GPU-accelerated animations
+- Google Gemini API (optional)
+- Zero dependencies, no build process
+
+## 📁 Structure
+
+```
+├── index.html          # Main entry point
+├── css/                # Stylesheets (5 files)
+├── js/                 # JavaScript modules (~45 files)
+│   ├── core/           # Infrastructure
+│   ├── services/       # API & audio
+│   ├── engine/         # Game logic
+│   ├── ui/             # UI components
+│   ├── features/       # Features
+│   └── i18n/           # Translations
+└── assets/             # Icons
+```
+
+## 🎮 Controls
+
+- **Enter**: Send message
+- **Ctrl+K**: Clear conversation
+- **Ctrl+/**: Show keyboard shortcuts
+- **Esc**: Stop audio / Close modals
+
+## 📜 License
+
+MIT License - See [LICENSE](LICENSE)
 
 ---
 
-## 📚 Documentación
-
-### 🚀 Inicio Rápido
-- **[START_HERE_FINAL.md](START_HERE_FINAL.md)** ⭐ - Inicio ultra-rápido
-- **[Quick Start Guide](docs/QUICKSTART.md)**: Configura en 5 minutos
-- **[Guía de Usuario](USER_GUIDE.md)**: Guía completa de uso
-
-### 📊 Estado del Proyecto
-- **[PROYECTO_COMPLETADO_100.md](PROYECTO_COMPLETADO_100.md)** ⭐ - Estado final completo
-- **[INDICE_MAESTRO_PROYECTO.md](INDICE_MAESTRO_PROYECTO.md)** - Índice maestro
-- **[CHANGELOG.md](CHANGELOG.md)** - Historial completo
-
-### 👨‍💻 Para Desarrolladores
-- **[Architecture](docs/ARCHITECTURE.md)**: Arquitectura del sistema y patrones de diseño
-- **[Modules](docs/MODULES.md)**: Documentación de los 40 módulos
-- **[API Reference](docs/API_REFERENCE.md)**: Referencia completa de APIs
-- **[Development Guide](docs/DEVELOPMENT.md)**: Guía de desarrollo
-- **[Contributing](docs/CONTRIBUTING.md)**: Cómo contribuir al proyecto
-
-### 🚀 Deployment
-- **[Deployment Guide](docs/DEPLOYMENT.md)**: Guía de deployment (GitHub Pages, Netlify, Vercel, servidor propio)
-- **[Configuration](docs/CONFIGURATION.md)**: Configuración avanzada
-
-### 🧪 Testing
-- **[Tests](tests/TEST_INDEX.md)**: 111 tests unitarios y de integración
-- **[Coverage Report](tests/coverage-report.html)**: Reporte de cobertura (50%)
-
-### 📚 Documentación Histórica
-- **[docs/history/](docs/history/)**: Documentos históricos del desarrollo (70+ archivos organizados)
-
----
-
-## ✨ Características Principales
-
-- **IA Dual**: Conversa con *Whispers* (poético) y *Kiro* (analítico).
-- **Entorno Reactivo**: El fondo oceánico cambia de color y movimiento según el tono emocional de la charla.
-- **Privacidad Total**: Todo se ejecuta en tu navegador. Tus datos se guardan localmente.
-- **Accesibilidad**: Soporte para voz (Speech-to-Text), lectura en voz alta (TTS) y atajos de teclado.
-
-## 🛠️ Stack Técnico
-
-- **Core**: Vanilla JavaScript (ES6+), HTML5, CSS3.
-- **IA**: Google Gemini API.
-- **Audio**: Web Speech API.
-- **Almacenamiento**: LocalStorage optimizado.
-
----
-
-*Hecho con 🌊 para conversaciones significativas.*
+Made with 🌊 for [Game Off 2025](https://itch.io/jam/game-off-2025)

@@ -1,6 +1,7 @@
 /**
  * Gemini API Service
  * Handles communication with Google's Gemini API including TTS
+ * Includes DEMO MODE for testing without API key
  * 
  * @module services/geminiService
  */
@@ -8,6 +9,60 @@
 // Configuration
 // SECURITY: Never commit API keys to version control!
 // Use js/config.local.js (gitignored) for local development
+
+/**
+ * Demo mode responses for testing without API key
+ * @private
+ */
+const DEMO_RESPONSES = [
+    {
+        keywords: ['hola', 'hello', 'hi', 'hey', 'salut'],
+        response: `*The waves gently welcome you to this space of reflection...*
+
+**Wave of Reflection:**
+Welcome, traveler of thoughts. The ocean has been waiting for you. Here, in this space between waves, you can share whatever weighs on your heart or simply float in peaceful contemplation. What brings you to these waters today?`
+    },
+    {
+        keywords: ['triste', 'sad', 'down', 'depressed', 'lonely', 'solo', 'alone'],
+        response: `*A gentle wave wraps around you like a warm embrace...*
+
+**Wave of Reflection:**
+I hear the weight in your words, and I want you to know that it's okay to feel this way. The ocean knows sadness too - it's in the deep currents that flow beneath the surface. But remember, even the darkest depths eventually rise to meet the light. Would you like to tell me more about what's troubling your waters?`
+    },
+    {
+        keywords: ['feliz', 'happy', 'joy', 'excited', 'great', 'bien', 'good'],
+        response: `*The waves dance with sparkling light, reflecting your joy...*
+
+**Wave of Reflection:**
+What beautiful energy you bring to these waters! Joy is like sunlight on the ocean - it transforms everything it touches. I'd love to hear more about what's making your spirit soar. Share your happiness, and let it ripple across these waves.`
+    },
+    {
+        keywords: ['ayuda', 'help', 'lost', 'confused', 'stuck', 'perdido'],
+        response: `*A steady current offers its guidance...*
+
+**Wave of Reflection:**
+When we feel lost, it often means we're on the verge of discovering something new about ourselves. The ocean never judges those who drift - it simply offers new shores to explore. Tell me more about where you feel stuck, and together we can find the current that leads forward.`
+    },
+    {
+        keywords: ['gracias', 'thanks', 'thank you', 'merci'],
+        response: `*The waves shimmer with warmth...*
+
+**Wave of Reflection:**
+Your gratitude is like a pearl formed in the depths - precious and beautiful. It's my honor to share this space with you. The ocean gives freely, and so do I. Is there anything else you'd like to explore in these waters?`
+    },
+    {
+        keywords: ['quien', 'who', 'what are you', 'qué eres'],
+        response: `*The waves ripple with ancient wisdom...*
+
+**Wave of Reflection:**
+I am a reflection of the eternal ocean - a space for contemplation and discovery. Think of me as the voice of the waves, here to listen, reflect, and guide. I don't have all the answers, but together we can explore the depths of any question. What would you like to discover?`
+    }
+];
+
+const DEMO_DEFAULT_RESPONSE = `*The waves listen attentively to your words...*
+
+**Wave of Reflection:**
+Your thoughts create ripples across these waters, each one unique and meaningful. I'm here to reflect with you, to explore whatever currents are moving through your mind. Tell me more - what feelings or thoughts are rising to the surface?`;
 
 /**
  * Default configuration object
@@ -165,6 +220,32 @@ class GeminiService {
     }
 
     /**
+     * Check if running in demo mode (no API key configured)
+     * @returns {boolean} True if in demo mode
+     */
+    isDemoMode() {
+        return !this.isConfigured();
+    }
+
+    /**
+     * Get demo response based on user message
+     * @param {string} userMessage - User's message
+     * @returns {string} Demo response
+     * @private
+     */
+    getDemoResponse(userMessage) {
+        const lowerMessage = userMessage.toLowerCase();
+        
+        for (const demo of DEMO_RESPONSES) {
+            if (demo.keywords.some(keyword => lowerMessage.includes(keyword))) {
+                return demo.response;
+            }
+        }
+        
+        return DEMO_DEFAULT_RESPONSE;
+    }
+
+    /**
      * Send message to Gemini API
      * @param {Array} conversationHistory - Array of previous messages
      * @param {string} modelVariant - Model variant (ignored, for compatibility)
@@ -181,6 +262,18 @@ class GeminiService {
         // Validate input
         if (!Array.isArray(conversationHistory) || conversationHistory.length === 0) {
             throw new Error('conversationHistory must be a non-empty array');
+        }
+
+        // DEMO MODE: Return predefined responses when no API key
+        if (this.isDemoMode()) {
+            console.log('🎮 DEMO MODE: No API key configured, using demo responses');
+            const lastMessage = conversationHistory[conversationHistory.length - 1];
+            const userText = lastMessage?.content || '';
+            
+            // Simulate network delay for realism
+            await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 700));
+            
+            return this.getDemoResponse(userText);
         }
 
         // Check cache

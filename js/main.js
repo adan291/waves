@@ -150,7 +150,16 @@ function handleError(context, error, options = {}) {
 }
 
 function initializeServices() {
-    getGeminiService();
+    const service = getGeminiService();
+    
+    // Show demo mode indicator if no API key
+    if (service && service.isDemoMode && service.isDemoMode()) {
+        const demoIndicator = document.getElementById('demoModeIndicator');
+        if (demoIndicator) {
+            demoIndicator.classList.remove('hidden');
+        }
+        console.log('🎮 Running in DEMO MODE - Configure API key for full experience');
+    }
 }
 
 function updateInitialUI() {

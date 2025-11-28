@@ -83,36 +83,13 @@ const RendererModule = (function () {
     }
 
     /**
-     * Scroll to the last message (top of it, not bottom of container)
+     * Scroll to the last message - DISABLED
+     * Auto-scroll is disabled to let user control their view
      * @private
      */
-    const scrollToLastMessage = (function () {
-        const scroll = () => {
-            const messageDisplay = document.getElementById('messageDisplay');
-            if (!messageDisplay) return;
-            
-            // Find the last message container
-            const messages = messageDisplay.querySelectorAll('.message-container, .user-message');
-            const lastMessage = messages[messages.length - 1];
-            
-            if (lastMessage) {
-                // Calculate position: scroll so last message starts at top of visible area
-                const containerRect = messageDisplay.getBoundingClientRect();
-                const messageRect = lastMessage.getBoundingClientRect();
-                const scrollOffset = messageRect.top - containerRect.top + messageDisplay.scrollTop;
-                
-                messageDisplay.scrollTo({
-                    top: scrollOffset,
-                    behavior: 'smooth'
-                });
-            } else {
-                // Fallback: scroll to top if no messages
-                messageDisplay.scrollTop = 0;
-            }
-        };
-
-        return typeof rafThrottle !== 'undefined' ? rafThrottle(scroll) : scroll;
-    })();
+    const scrollToLastMessage = () => {
+        // Auto-scroll disabled - user controls scroll position
+    };
     
     // Alias for backward compatibility
     const scrollToBottom = scrollToLastMessage;

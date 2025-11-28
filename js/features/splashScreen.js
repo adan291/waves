@@ -219,8 +219,10 @@ const SplashScreen = {
             <!-- Wave Selection View -->
             <div class="wave-selection">
                 <div class="wave-selection-content">
-                    <h2 class="wave-selection-title">${i18n.t('splash.selectWave')}</h2>
-                    <p class="wave-selection-subtitle">${i18n.t('splash.subtitle')}</p>
+                    <div class="wave-header-box">
+                        <div class="wave-header-title">${i18n.t('splash.selectWave')}</div>
+                        <div class="wave-header-subtitle">${i18n.t('splash.subtitle')}</div>
+                    </div>
                     <div class="wave-cards" id="waveCards"></div>
                     <button class="splash-btn secondary small" id="backToIntroBtn" title="${i18n.t('ui.back')}">
                         <span class="btn-icon">←</span>

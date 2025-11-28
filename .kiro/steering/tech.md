@@ -3,50 +3,43 @@
 ## Core Technologies
 
 - **Pure Vanilla JavaScript** - No frameworks or build tools
-- **HTML5** - Semantic markup with accessibility attributes
+- **HTML5** - Semantic markup with accessibility
 - **CSS3** - Keyframe animations with GPU acceleration
-- **Google Gemini API** - AI conversation backend (gemini-pro model)
+- **Google Gemini API** - AI conversation backend
 
 ## Architecture
 
 - **No build process** - Direct browser execution
-- **No dependencies** - Zero npm packages or external libraries
-- **Module pattern** - Separate JS files for concerns (service, UI, main logic)
-- **State management** - Simple object-based state in main.js
+- **No dependencies** - Zero npm packages
+- **Module pattern** - Separate JS files for concerns
+- **Lazy loading** - Non-critical features load on demand
 
 ## API Integration
 
 - Endpoint: `https://generativelanguage.googleapis.com/v1beta/models/`
 - Model: `gemini-pro`
-- API key configuration in `js/geminiService.js`
-- Error handling with user-friendly ocean-themed messages
+- Config: `js/config.local.js` (gitignored)
 
-## Browser Compatibility
+## Running the Application
 
-- Chrome/Edge (Chromium): Full support
-- Firefox: Full support
-- Safari: Full support
-- Mobile browsers: Responsive design with touch-friendly targets
-
-## Common Commands
-
-### Running the Application
 ```bash
-# Simply open index.html in a browser - no build required
-# On Windows:
+# Simply open in browser - no build required
 start index.html
 
-# Or use a simple HTTP server if needed:
+# Or use HTTP server
 python -m http.server 8000
-# Then visit: http://localhost:8000
 ```
 
-### Development
-No compilation, bundling, or transpilation needed. Edit files and refresh browser.
+## Browser Support
 
-## Performance Considerations
+- Chrome/Edge: Full support
+- Firefox: Full support
+- Safari: Full support
+- Mobile: Responsive with touch targets
+
+## Performance
 
 - CSS animations use GPU acceleration
-- Smooth scrolling behavior
-- Minimal DOM manipulation
-- Efficient message parsing and display
+- Lazy loading for non-critical modules
+- Efficient DOM manipulation
+- LocalStorage for persistence
