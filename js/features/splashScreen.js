@@ -158,6 +158,9 @@ const SplashScreen = {
             
             <!-- Splash Controls -->
             <div class="splash-controls">
+                <button class="splash-control-btn splash-ambient-toggle" id="splashAmbientToggle" aria-label="${i18n.t('controls.ambientSound') || 'Ambient Sound'}" title="${i18n.t('controls.ambientSound') || 'Ambient Sound'}">
+                    <span id="splashAmbientIcon">🌊</span>
+                </button>
                 <button class="splash-control-btn splash-theme-toggle" id="splashThemeToggle" aria-label="Toggle theme">
                     <span id="splashThemeIcon">☀️</span>
                 </button>
@@ -234,6 +237,21 @@ const SplashScreen = {
     },
 
     attachEventListeners() {
+        // Ambient sound toggle
+        const ambientToggle = document.getElementById('splashAmbientToggle');
+        if (ambientToggle) {
+            this.updateSplashAmbientIcon();
+            
+            ambientToggle.addEventListener('click', () => {
+                if (typeof window.AmbientSound !== 'undefined') {
+                    window.AmbientSound.toggle();
+                    this.updateSplashAmbientIcon();
+                    // Also update main app button if exists
+                    this.syncAmbientIcons();
+                }
+            });
+        }
+
         // Theme toggle
         const themeToggle = document.getElementById('splashThemeToggle');
         if (themeToggle) {
@@ -607,8 +625,30 @@ const SplashScreen = {
         
         // Update icon
         this.updateSplashThemeIcon();
-        
-        console.log('🎨 Theme toggled manually:', newTheme);
+    },
+
+    /**
+     * Update splash ambient sound icon
+     */
+    updateSplashAmbientIcon() {
+        const icon = document.getElementById('splashAmbientIcon');
+        if (!icon) return;
+
+        const isPlaying = typeof AmbientSound !== 'undefined' && AmbientSound.isPlaying;
+        icon.textContent = '🌊';
+        icon.classList.toggle('muted', !isPlaying);
+    },
+
+    /**
+     * Sync ambient icons between splash and main app
+     */
+    syncAmbientIcons() {
+        // Update main app icon if exists
+        const mainIcon = document.querySelector('#ambientToggle .ambient-icon');
+        if (mainIcon && typeof AmbientSound !== 'undefined') {
+            mainIcon.textContent = '🌊';
+            mainIcon.classList.toggle('muted', !AmbientSound.isPlaying);
+        }
     }
 };
 

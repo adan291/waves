@@ -17,9 +17,20 @@ const Logger = (function() {
         NONE: 4
     };
 
-    // Configuration
+    // Check if debug mode is enabled via localStorage or URL param
+    const isDebugMode = () => {
+        try {
+            if (localStorage.getItem('whispers-debug') === 'true') return true;
+            if (window.location.search.includes('debug=true')) return true;
+            return false;
+        } catch (e) {
+            return false;
+        }
+    };
+
+    // Configuration - WARN level by default, DEBUG if debug mode enabled
     const config = {
-        currentLevel: LogLevel.INFO,
+        currentLevel: isDebugMode() ? LogLevel.DEBUG : LogLevel.WARN,
         enableConsole: true,
         enablePersistence: false,
         maxStoredLogs: 100,
@@ -152,6 +163,24 @@ const Logger = (function() {
 // Export to window
 if (typeof window !== 'undefined') {
     window.Logger = Logger;
+    
+    // Global debug toggle
+    window.enableDebug = () => {
+        localStorage.setItem('whispers-debug', 'true');
+        Logger.setLevel('DEBUG');
+        console.log('🔧 Debug mode ENABLED');
+    };
+    
+    window.disableDebug = () => {
+        localStorage.removeItem('whispers-debug');
+        Logger.setLevel('WARN');
+        console.log('🔧 Debug mode DISABLED');
+    };
+    
+    // Check debug mode for init message
+    const debugEnabled = localStorage.getItem('whispers-debug') === 'true' || 
+                         window.location.search.includes('debug=true');
+    if (debugEnabled) {
+        console.log('📝 Logger module loaded (DEBUG MODE)');
+    }
 }
-
-console.log('📝 Logger module loaded');

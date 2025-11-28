@@ -266,7 +266,7 @@ class GeminiService {
 
         // DEMO MODE: Return predefined responses when no API key
         if (this.isDemoMode()) {
-            console.log('🎮 DEMO MODE: No API key configured, using demo responses');
+            if (typeof Logger !== 'undefined') Logger.debug('Gemini', 'DEMO MODE: Using demo responses');
             const lastMessage = conversationHistory[conversationHistory.length - 1];
             const userText = lastMessage?.content || '';
             
@@ -312,7 +312,7 @@ class GeminiService {
                     try {
                         const endpoint = `${config.endpoint}${model}:generateContent?key=${config.apiKey}`;
                         
-                        console.log(`🌊 Trying ${model} (attempt ${attempt + 1}/${config.maxRetries + 1})`);
+                        if (typeof Logger !== 'undefined') Logger.debug('Gemini', `Trying ${model} (attempt ${attempt + 1}/${config.maxRetries + 1})`);
 
                         const response = await fetch(endpoint, {
                             method: 'POST',
@@ -329,7 +329,7 @@ class GeminiService {
                             
                             // If 503 (overloaded), wait and retry
                             if (response.status === 503 && attempt < config.maxRetries) {
-                                console.log(`⏳ Model overloaded, waiting ${config.retryDelay}ms before retry...`);
+                                if (typeof Logger !== 'undefined') Logger.debug('Gemini', `Model overloaded, waiting ${config.retryDelay}ms before retry...`);
                                 await new Promise(resolve => setTimeout(resolve, config.retryDelay));
                                 continue;
                             }
@@ -351,7 +351,7 @@ class GeminiService {
                                     CacheManager.set('api_response', cacheKey, responseText);
                                 }
 
-                                console.log(`✅ Response received from ${model}`);
+                                if (typeof Logger !== 'undefined') Logger.debug('Gemini', `Response received from ${model}`);
                                 endTiming({ success: true });
                                 return responseText;
                             }
@@ -361,7 +361,7 @@ class GeminiService {
 
                     } catch (attemptError) {
                         lastError = attemptError;
-                        console.warn(`⚠️ Attempt failed:`, attemptError.message);
+                        if (typeof Logger !== 'undefined') Logger.debug('Gemini', `Attempt failed: ${attemptError.message}`);
                         
                         // If not a 503 error, don't retry with same model
                         if (!attemptError.message.includes('503')) {
@@ -372,7 +372,7 @@ class GeminiService {
                 
                 // Try fallback model
                 if (model !== config.fallbackModel) {
-                    console.log(`🔄 Switching to fallback model: ${config.fallbackModel}`);
+                    if (typeof Logger !== 'undefined') Logger.debug('Gemini', `Switching to fallback model: ${config.fallbackModel}`);
                 }
             }
 

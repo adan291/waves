@@ -59,7 +59,8 @@ const translations = {
             backToWaves: 'Volver a la selección de olas',
             speak: 'Hablar',
             search: 'Buscar en historial',
-            reset: 'Reiniciar app'
+            reset: 'Reiniciar app',
+            ambientSound: 'Sonido ambiente'
         },
         modals: {
             changeWaveTitle: '🌊 Cambiar de Ola',
@@ -246,7 +247,8 @@ const translations = {
             backToWaves: 'Back to wave selection',
             speak: 'Speak',
             search: 'Search history',
-            reset: 'Reset app'
+            reset: 'Reset app',
+            ambientSound: 'Ambient sound'
         },
         modals: {
             changeWaveTitle: '🌊 Change Wave',
@@ -433,7 +435,8 @@ const translations = {
             backToWaves: 'Înapoi la selecția valurilor',
             speak: 'Vorbește',
             search: 'Caută în istoric',
-            reset: 'Resetează aplicația'
+            reset: 'Resetează aplicația',
+            ambientSound: 'Sunet ambiental'
         },
         modals: {
             changeWaveTitle: '🌊 Schimbă Valul',

@@ -79,17 +79,41 @@ function saveToHistory(userMessage, aiResponse) {
     }
 }
 
+// Initialize ambient sound toggle
+function initializeAmbientSound() {
+    const btn = document.getElementById('ambientToggle');
+    if (!btn) return;
+
+    // Update icon based on state
+    const updateIcon = () => {
+        const icon = btn.querySelector('.ambient-icon');
+        if (icon && typeof AmbientSound !== 'undefined') {
+            icon.textContent = '🌊';
+            icon.classList.toggle('muted', !AmbientSound.isPlaying);
+        }
+    };
+
+    btn.addEventListener('click', () => {
+        if (typeof AmbientSound !== 'undefined') {
+            AmbientSound.toggle();
+            updateIcon();
+        }
+    });
+
+    // Initial state
+    updateIcon();
+}
+
 // Initialize all integrations
 function initializeFeatureIntegrations() {
-    console.log('🔌 Initializing feature integrations...');
-    
     // Integrate quick reactions
     integrateQuickReactions();
     
     // Integrate history tracking
     integrateHistoryTracking();
-    
-    console.log('✅ Feature integrations complete');
+
+    // Initialize ambient sound
+    initializeAmbientSound();
 }
 
 // Auto-initialize when DOM is ready
