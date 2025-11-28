@@ -659,3 +659,48 @@ body[data-theme="light"] .welcome-message {
     background: rgba(255, 255, 255, 0.7);
     border-color: rgba(1, 87, 155, 0.3);
 }
+
+
+/* ===================================
+   USER MESSAGE - FINAL OVERRIDE
+   Glassmorphism style, slightly lighter
+   =================================== */
+
+.user-message,
+#messageDisplay .user-message,
+.message-display .user-message,
+div.user-message {
+    background: rgba(20, 50, 80, 0.6) !important;
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 12px !important;
+    border-left: none !important;
+    padding: 0.75rem 1rem !important;
+    margin-bottom: 1rem !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
+}
+
+.user-message p,
+#messageDisplay .user-message p,
+div.user-message p {
+    margin: 0 !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Light theme */
+body[data-theme="light"] .user-message,
+body[data-theme="light"] #messageDisplay .user-message,
+body[data-theme="light"] div.user-message {
+    background: rgba(255, 255, 255, 0.7) !important;
+    border-color: rgba(0, 0, 0, 0.12) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+body[data-theme="light"] .user-message p,
+body[data-theme="light"] #messageDisplay .user-message p,
+body[data-theme="light"] div.user-message p {
+    color: rgba(0, 0, 0, 0.85) !important;
+    text-shadow: none !important;
+}

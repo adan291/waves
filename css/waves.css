@@ -715,45 +715,29 @@ body[data-wave="healing"] .wave-reflection {
    WAVE-SPECIFIC USER MESSAGE STYLES
    ============================================ */
 
-body[data-wave="calm"] .user-message {
-    border-left-color: rgba(72, 202, 228, 0.6);
-    background: rgba(0, 119, 182, 0.25);
-}
-
-body[data-wave="deep"] .user-message {
-    border-left-color: rgba(177, 133, 219, 0.6);
-    background: rgba(107, 77, 142, 0.25);
-}
-
-body[data-wave="energetic"] .user-message {
-    border-left-color: rgba(251, 133, 0, 0.6);
-    background: rgba(208, 0, 0, 0.25);
-}
-
+/* User message - unified glassmorphism for all waves */
+body[data-wave="calm"] .user-message,
+body[data-wave="deep"] .user-message,
+body[data-wave="energetic"] .user-message,
 body[data-wave="healing"] .user-message {
-    border-left-color: rgba(149, 213, 178, 0.6);
-    background: rgba(82, 183, 136, 0.25);
+    background: rgba(20, 50, 80, 0.65) !important;
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-left: none !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
 }
 
-/* Light theme user messages */
-body[data-wave="calm"][data-theme="light"] .user-message {
-    background: rgba(144, 224, 239, 0.4);
-    border-left-color: rgba(0, 119, 182, 0.5);
-}
-
-body[data-wave="deep"][data-theme="light"] .user-message {
-    background: rgba(199, 125, 255, 0.25);
-    border-left-color: rgba(60, 9, 108, 0.5);
-}
-
-body[data-wave="energetic"][data-theme="light"] .user-message {
-    background: rgba(255, 190, 152, 0.4);
-    border-left-color: rgba(157, 2, 8, 0.5);
-}
-
+/* Light theme user messages - unified */
+body[data-wave="calm"][data-theme="light"] .user-message,
+body[data-wave="deep"][data-theme="light"] .user-message,
+body[data-wave="energetic"][data-theme="light"] .user-message,
 body[data-wave="healing"][data-theme="light"] .user-message {
-    background: rgba(149, 213, 178, 0.4);
-    border-left-color: rgba(45, 106, 79, 0.5);
+    background: rgba(255, 255, 255, 0.7) !important;
+    border: 1px solid rgba(0, 0, 0, 0.12) !important;
+    border-left: none !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
 }
 
 
@@ -945,4 +929,96 @@ body[data-theme="light"] .splash-screen .wave-selection .wave-header-title {
 
 body[data-theme="light"] .splash-screen .wave-selection .wave-header-subtitle {
     color: rgba(0, 0, 0, 0.75) !important;
+}
+
+
+/* ===================================
+   MESSAGE BOXES - UNIFIED GLASSMORPHISM
+   All message boxes with same style
+   =================================== */
+
+/* User message box */
+.user-message {
+    background: rgba(20, 50, 80, 0.65) !important;
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 12px !important;
+    padding: 0.75rem 1rem !important;
+    margin-bottom: 1rem !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
+}
+
+.user-message p {
+    margin: 0 !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Whisper box (AI poetic response) */
+.whisper {
+    background: rgba(20, 50, 80, 0.65) !important;
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 12px !important;
+    padding: 0.75rem 1rem !important;
+    margin-bottom: 0.75rem !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Wave reflection box (AI reflective response) */
+.wave-reflection {
+    background: rgba(20, 50, 80, 0.65) !important;
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 12px !important;
+    padding: 0.75rem 1rem !important;
+    margin-bottom: 0.5rem !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Message container - transparent */
+.message-container {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+
+/* Text colors */
+.whisper .message-text {
+    color: rgba(180, 220, 255, 0.95) !important;
+    font-style: italic !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+}
+
+.wave-reflection .message-text {
+    color: rgba(255, 255, 255, 0.95) !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Light theme */
+body[data-theme="light"] .user-message,
+body[data-theme="light"] .whisper,
+body[data-theme="light"] .wave-reflection {
+    background: rgba(255, 255, 255, 0.75) !important;
+    border-color: rgba(0, 0, 0, 0.12) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+body[data-theme="light"] .user-message p {
+    color: rgba(0, 0, 0, 0.85) !important;
+    text-shadow: none !important;
+}
+
+body[data-theme="light"] .whisper .message-text {
+    color: rgba(0, 60, 100, 0.9) !important;
+    text-shadow: none !important;
+}
+
+body[data-theme="light"] .wave-reflection .message-text {
+    color: rgba(0, 0, 0, 0.85) !important;
+    text-shadow: none !important;
 }
