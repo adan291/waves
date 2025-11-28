@@ -224,64 +224,26 @@ async function playTextToSpeech(text, geminiService, messageId = null) {
     try {
         console.log('🎤 Generating TTS audio...');
         
-        // Show TTS status indicator
-        showTTSStatus('Generando audio');
-        
         // Generate TTS audio
         const base64Audio = await geminiService.getTTS(text);
         
         if (!base64Audio) {
             console.error('Failed to generate TTS audio');
-            hideTTSStatus();
             return false;
         }
         
-        // Update status
-        showTTSStatus('Reproduciendo');
-        
         // Play the audio
         const success = await playAudio(base64Audio, messageId);
-        
-        // Hide status after a short delay
-        setTimeout(() => hideTTSStatus(), 1000);
         
         return success;
         
     } catch (error) {
         console.error('Error in playTextToSpeech:', error);
-        hideTTSStatus();
         return false;
     }
 }
 
-/**
- * Show TTS status indicator
- * @param {string} message - Status message to display
- * @private
- */
-function showTTSStatus(message = 'Generando audio') {
-    const statusEl = document.getElementById('ttsStatus');
-    if (statusEl) {
-        const textEl = statusEl.querySelector('.tts-status-text');
-        if (textEl) {
-            // Set text without dots (dots are animated via CSS)
-            const baseText = message.replace(/\.+$/, '');
-            textEl.innerHTML = baseText + '<span class="loading-dots"></span>';
-        }
-        statusEl.classList.remove('hidden');
-    }
-}
 
-/**
- * Hide TTS status indicator
- * @private
- */
-function hideTTSStatus() {
-    const statusEl = document.getElementById('ttsStatus');
-    if (statusEl) {
-        statusEl.classList.add('hidden');
-    }
-}
 
 
 // ============================================

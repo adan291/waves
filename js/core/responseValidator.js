@@ -142,6 +142,46 @@ const ResponseValidator = {
     },
 
     /**
+     * Try to extract valid response from text containing embedded JSON
+     * @param {string} text - Text that may contain embedded JSON
+     * @returns {Object|null} Extracted response or null
+     */
+    extractEmbeddedJSON(text) {
+        try {
+            const startIndex = text.indexOf('{"whisper"');
+            const startIndex2 = text.indexOf('{"reflection"');
+            const idx = startIndex !== -1 ? startIndex : startIndex2;
+            
+            if (idx === -1) return null;
+            
+            let braceCount = 0;
+            let endIndex = -1;
+            for (let i = idx; i < text.length; i++) {
+                if (text[i] === '{') braceCount++;
+                if (text[i] === '}') braceCount--;
+                if (braceCount === 0) {
+                    endIndex = i + 1;
+                    break;
+                }
+            }
+            
+            if (endIndex !== -1) {
+                const jsonStr = text.substring(idx, endIndex);
+                const parsed = JSON.parse(jsonStr);
+                if (parsed.whisper && parsed.reflection) {
+                    return {
+                        whisper: String(parsed.whisper).trim(),
+                        reflection: String(parsed.reflection).trim()
+                    };
+                }
+            }
+            return null;
+        } catch (e) {
+            return null;
+        }
+    },
+
+    /**
      * Sanitize response by removing suspicious content
      * @param {Object} response - Response to sanitize
      * @returns {Object} Sanitized response
@@ -155,7 +195,17 @@ const ResponseValidator = {
             let whisper = String(response.whisper || '').trim();
             let reflection = String(response.reflection || '').trim();
 
-            // Remove unparsed JSON
+            // Check if whisper or reflection contains embedded JSON and extract it
+            const combined = whisper + ' ' + reflection;
+            if (combined.includes('{"whisper"') || combined.includes('{"reflection"')) {
+                const extracted = this.extractEmbeddedJSON(combined);
+                if (extracted) {
+                    console.log('✅ Extracted embedded JSON during sanitization');
+                    return extracted;
+                }
+            }
+
+            // Remove unparsed JSON fragments
             whisper = whisper.replace(/\{[\s\S]*?\}/g, '').trim();
             reflection = reflection.replace(/\{[\s\S]*?\}/g, '').trim();
 
@@ -196,8 +246,22 @@ const ResponseValidator = {
                 return this.createDefaultResponse();
             }
 
-            const whisper = String(response.whisper || '').trim();
-            const reflection = String(response.reflection || '').trim();
+            let whisper = String(response.whisper || '').trim();
+            let reflection = String(response.reflection || '').trim();
+
+            // Check if content contains embedded JSON and extract it
+            const combined = whisper + ' ' + reflection;
+            if (combined.includes('{"whisper"') || combined.includes('{"reflection"')) {
+                const extracted = this.extractEmbeddedJSON(combined);
+                if (extracted) {
+                    console.log('✅ Extracted embedded JSON during repair');
+                    return extracted;
+                }
+            }
+
+            // Clean any JSON fragments from the text
+            whisper = whisper.replace(/\{[\s\S]*?\}/g, '').trim();
+            reflection = reflection.replace(/\{[\s\S]*?\}/g, '').trim();
 
             // If whisper is missing or too short, use default
             if (!whisper || whisper.length < 5) {

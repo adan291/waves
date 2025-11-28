@@ -448,18 +448,44 @@ class AdaptiveAssistance {
                 } catch (e) { /* Ignore */ }
             }
 
-            // 2. Try finding raw JSON object
-            const objectMatch = text.match(/\{[^{}]*"whisper"[^{}]*"reflection"[^{}]*\}/);
-            if (objectMatch) {
-                try {
-                    const parsed = JSON.parse(objectMatch[0]);
-                    if (this.isValidResponse(parsed)) return parsed;
-                } catch (e) { /* Ignore */ }
+            // 2. Try finding raw JSON object anywhere in text (improved regex)
+            // Find JSON that starts with {"whisper" or {"reflection"
+            const jsonStartIndex = text.indexOf('{"whisper"');
+            const jsonStartIndex2 = text.indexOf('{"reflection"');
+            const startIndex = jsonStartIndex !== -1 ? jsonStartIndex : jsonStartIndex2;
+            
+            if (startIndex !== -1) {
+                // Find matching closing brace
+                let braceCount = 0;
+                let endIndex = -1;
+                for (let i = startIndex; i < text.length; i++) {
+                    if (text[i] === '{') braceCount++;
+                    if (text[i] === '}') braceCount--;
+                    if (braceCount === 0) {
+                        endIndex = i + 1;
+                        break;
+                    }
+                }
+                
+                if (endIndex !== -1) {
+                    const jsonStr = text.substring(startIndex, endIndex);
+                    try {
+                        const parsed = JSON.parse(jsonStr);
+                        if (this.isValidResponse(parsed)) {
+                            this.log('✅ Extracted embedded JSON successfully');
+                            return parsed;
+                        }
+                    } catch (e) { /* Ignore */ }
+                }
             }
 
             // 3. Fallback: Heuristic split
+            // Remove any JSON-like content first to get clean text
+            const cleanText = text.replace(/\{[\s\S]*?"whisper"[\s\S]*?"reflection"[\s\S]*?\}/g, '').trim();
+            const textToSplit = cleanText || text;
+            
             // Split by double newline first (paragraphs)
-            let parts = text.split(/\n\s*\n/).filter(p => p.trim());
+            let parts = textToSplit.split(/\n\s*\n/).filter(p => p.trim());
 
             if (parts.length >= 2) {
                 return {
@@ -469,7 +495,7 @@ class AdaptiveAssistance {
             }
 
             // Split by single newline if double failed
-            const lines = text.split('\n').filter(line => line.trim());
+            const lines = textToSplit.split('\n').filter(line => line.trim());
             if (lines.length >= 2) {
                 // Try to find a logical split point (question mark or emoji)
                 let splitIndex = lines.findIndex(line => line.includes('?') || line.includes('🔊'));
@@ -486,7 +512,7 @@ class AdaptiveAssistance {
 
             // 4. Last resort
             return {
-                whisper: text,
+                whisper: textToSplit,
                 reflection: '🔊 ¿Qué resuena en ti?'
             };
 

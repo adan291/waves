@@ -170,6 +170,146 @@ const SuggestionsModule = (function() {
     }
 
     // ============================================
+    // AI-GENERATED CONTEXTUAL SUGGESTIONS
+    // ============================================
+
+    let isGeneratingSuggestions = false;
+    let lastSuggestionsCacheKey = null;
+    let lastSuggestionsCache = null;
+
+    // Prompt template for suggestion generation
+    const SUGGESTION_PROMPT_TEMPLATE = `Based on this conversation, generate exactly 3 short follow-up suggestions the user might want to say next. Each suggestion should be 3-8 words, natural and conversational.
+
+User said: "{userMessage}"
+AI responded: "{aiResponse}"
+
+Rules:
+- Write in {language}
+- Return ONLY a JSON array of 3 strings, nothing else
+- Each suggestion should explore a different direction
+- Keep them short and natural
+- No quotes or special formatting
+
+Example output: ["Cuéntame más sobre eso", "¿Cómo puedo empezar?", "Me siento identificado"]`;
+
+    /**
+     * Get language display name
+     * @param {string} langCode - Language code (es, en, ro)
+     * @returns {string} Language name
+     * @private
+     */
+    function getLanguageName(langCode) {
+        const langNames = { es: 'español', en: 'English', ro: 'română' };
+        return langNames[langCode] || 'español';
+    }
+
+    /**
+     * Sanitize user input for prompt inclusion
+     * @param {string} text - Text to sanitize
+     * @returns {string} Sanitized text
+     * @private
+     */
+    function sanitizeForPrompt(text) {
+        if (!text || typeof text !== 'string') return '';
+        // Remove potential prompt injection patterns and limit length
+        return text
+            .replace(/["\n\r]/g, ' ')
+            .substring(0, 500)
+            .trim();
+    }
+
+    /**
+     * Generate contextual suggestions based on conversation
+     * @param {string} aiResponse - Last AI response (whisper + reflection)
+     * @param {string} userMessage - Last user message
+     * @returns {Promise<Array<string>|null>} Generated suggestions or null
+     */
+    async function generateContextualSuggestions(aiResponse, userMessage) {
+        // Guard: prevent concurrent generation
+        if (isGeneratingSuggestions) return null;
+        
+        // Guard: validate inputs
+        if (!aiResponse || !userMessage || typeof GeminiService === 'undefined') return null;
+
+        // Check cache to avoid duplicate API calls
+        const cacheKey = `${userMessage.substring(0, 50)}|${aiResponse.substring(0, 50)}`;
+        if (cacheKey === lastSuggestionsCacheKey && lastSuggestionsCache) {
+            return lastSuggestionsCache;
+        }
+
+        isGeneratingSuggestions = true;
+
+        try {
+            const lang = typeof i18n !== 'undefined' ? i18n.getCurrentLanguage() : 'es';
+            
+            // Build prompt with sanitized inputs
+            const prompt = SUGGESTION_PROMPT_TEMPLATE
+                .replace('{userMessage}', sanitizeForPrompt(userMessage))
+                .replace('{aiResponse}', sanitizeForPrompt(aiResponse))
+                .replace('{language}', getLanguageName(lang));
+
+            // Use singleton pattern for GeminiService
+            const geminiService = GeminiService.getInstance();
+
+            // Build conversation history format expected by sendMessage
+            const conversationHistory = [{ role: 'user', content: prompt }];
+            const response = await geminiService.sendMessage(conversationHistory);
+            
+            // Parse JSON array from response
+            const jsonMatch = response.match(/\[[\s\S]*?\]/);
+            if (jsonMatch) {
+                const suggestions = JSON.parse(jsonMatch[0]);
+                if (Array.isArray(suggestions) && suggestions.length > 0) {
+                    const result = suggestions.slice(0, 3).map(s => String(s).trim());
+                    // Cache successful result
+                    lastSuggestionsCacheKey = cacheKey;
+                    lastSuggestionsCache = result;
+                    return result;
+                }
+            }
+            return null;
+        } catch (error) {
+            console.warn('⚠️ Failed to generate contextual suggestions:', error);
+            return null;
+        } finally {
+            isGeneratingSuggestions = false;
+        }
+    }
+
+    /**
+     * Get localized title for contextual suggestions
+     * @returns {string} Localized title with emoji
+     * @private
+     */
+    function getContextualTitle() {
+        const lang = typeof i18n !== 'undefined' ? i18n.getCurrentLanguage() : 'es';
+        const titles = {
+            es: 'Continúa explorando:',
+            en: 'Continue exploring:',
+            ro: 'Continuă să explorezi:'
+        };
+        return '💭 ' + (titles[lang] || titles.es);
+    }
+
+    /**
+     * Update suggestions with AI-generated contextual ones
+     * @param {string} aiResponse - Last AI response
+     * @param {string} userMessage - Last user message
+     * @param {HTMLElement} container - Container element
+     */
+    async function updateWithContextual(aiResponse, userMessage, container) {
+        if (!container || !aiResponse || !userMessage) return;
+        
+        // Generate contextual suggestions
+        const contextualSuggestions = await generateContextualSuggestions(aiResponse, userMessage);
+        
+        if (contextualSuggestions && contextualSuggestions.length > 0) {
+            renderSuggestions(getContextualTitle(), contextualSuggestions, container);
+            console.log('💭 AI-generated suggestions displayed');
+        }
+    }
+
+    // ============================================
     // PUBLIC API
     // ============================================
 
@@ -337,6 +477,7 @@ const SuggestionsModule = (function() {
         init,
         displayInitial,
         displayContextual,
+        updateWithContextual,
         clear
     };
 
@@ -373,18 +514,16 @@ document.addEventListener('ocean:stateChanged', (event) => {
     }
 });
 
-// Listen for conversation updates to refresh suggestions
-document.addEventListener('message:sent', () => {
-    // Small delay to allow ocean state to update first
-    setTimeout(() => {
-        const container = document.getElementById('suggestionsContainer');
-        if (container && typeof OceanDynamics !== 'undefined') {
-            const currentState = OceanDynamics.getCurrentState();
-            if (currentState && currentState.id) {
-                SuggestionsModule.displayContextual(currentState.id, container);
-            }
+// Listen for AI response to generate contextual suggestions
+document.addEventListener('ai:responseDisplayed', (event) => {
+    const container = document.getElementById('suggestionsContainer');
+    if (container && event.detail) {
+        const { whisper, reflection, userMessage } = event.detail;
+        const aiResponse = `${whisper || ''} ${reflection || ''}`.trim();
+        if (aiResponse && userMessage) {
+            SuggestionsModule.updateWithContextual(aiResponse, userMessage, container);
         }
-    }, 500);
+    }
 });
 
 // Listen for language changes to update suggestions

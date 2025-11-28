@@ -184,10 +184,11 @@ const RendererModule = (function () {
         textSpan.className = 'message-text';
         textSpan.textContent = text;
 
-        // Create audio button using shared controls
+        // Create audio button with unique ID for whisper section
+        const audioId = `${messageId}-whisper`;
         let audioBtn;
         if (typeof createAudioButton === 'function') {
-            audioBtn = createAudioButton(messageId, text);
+            audioBtn = createAudioButton(audioId, text);
         } else {
             // Fallback if controls.js not loaded
             audioBtn = document.createElement('button');
@@ -259,10 +260,11 @@ const RendererModule = (function () {
         textSpan.className = 'message-text';
         textSpan.textContent = text;
 
-        // Create audio button using shared controls
+        // Create audio button with unique ID for wave section
+        const audioId = `${messageId}-wave`;
         let audioBtn;
         if (typeof createAudioButton === 'function') {
-            audioBtn = createAudioButton(messageId, text);
+            audioBtn = createAudioButton(audioId, text);
         } else {
             // Fallback
             audioBtn = document.createElement('button');

@@ -102,9 +102,9 @@ const AmbientSound = (() => {
     }
 
     /**
-     * Play a chime
+     * Play a single chime sound (no scheduling)
      */
-    function playChime() {
+    function playSingleChime() {
         if (!isPlaying || !audioContext) return;
 
         const note = CHIME_NOTES[Math.floor(Math.random() * CHIME_NOTES.length)];
@@ -131,15 +131,25 @@ const AmbientSound = (() => {
         osc2.start(now);
         osc.stop(now + 3.5);
         osc2.stop(now + 3.5);
+    }
 
-        // Schedule next chime
-        const nextDelay = 10000 + Math.random() * 15000;
-        chimeTimeout = setTimeout(() => {
-            playChime();
-            if (Math.random() > 0.7) {
-                setTimeout(playChime, 300);
-            }
-        }, nextDelay);
+    /**
+     * Play chime and schedule next one
+     */
+    function playChime() {
+        if (!isPlaying || !audioContext) return;
+
+        // Play main chime
+        playSingleChime();
+
+        // Occasionally play a second chime for harmony (30% chance)
+        if (Math.random() > 0.7) {
+            setTimeout(playSingleChime, 300 + Math.random() * 200);
+        }
+
+        // Schedule next chime cycle (longer intervals for calm atmosphere)
+        const nextDelay = 15000 + Math.random() * 20000; // 15-35 seconds
+        chimeTimeout = setTimeout(playChime, nextDelay);
     }
 
     function init() {

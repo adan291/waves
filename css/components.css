@@ -64,7 +64,9 @@
     cursor: pointer;
     font-size: 0.85rem;
     font-family: inherit;
-    transition: all 0.3s ease;
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    min-width: 120px;
+    text-align: center;
 }
 
 .audio-btn:hover:not(:disabled) {
@@ -77,6 +79,11 @@
 .audio-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+.audio-btn-disabled {
+    opacity: 0.4;
+    pointer-events: none;
 }
 
 .audio-btn:active:not(:disabled) {
@@ -1411,16 +1418,6 @@ body[data-theme="light"] .history-result-text {
 
 body[data-theme="light"] .history-result-date {
     color: #78909c;
-}
-
-body[data-theme="light"] .tts-status-indicator {
-    background: rgba(255, 255, 255, 0.9);
-    border-color: rgba(2, 136, 209, 0.3);
-    color: #01579b;
-}
-
-body[data-theme="light"] .tts-status-icon {
-    color: #0288d1;
 }
 
 body[data-theme="light"] .audio-btn {

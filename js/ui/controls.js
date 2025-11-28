@@ -166,6 +166,38 @@ async function handleAudioClick(messageId, text, button) {
 }
 
 /**
+ * Disable all audio buttons except the active one
+ * @param {string} activeMessageId - The message ID of the active button (to keep enabled)
+ */
+function disableOtherAudioButtons(activeMessageId) {
+    const allButtons = document.querySelectorAll('.audio-btn');
+    allButtons.forEach(btn => {
+        if (btn.dataset.messageId !== activeMessageId) {
+            btn.disabled = true;
+            btn.classList.add('audio-btn-disabled');
+        }
+    });
+}
+
+/**
+ * Re-enable all audio buttons
+ */
+function enableAllAudioButtons() {
+    const allButtons = document.querySelectorAll('.audio-btn');
+    allButtons.forEach(btn => {
+        // Only re-enable if not in error state
+        if (!btn.textContent.includes('❌')) {
+            btn.disabled = false;
+            btn.classList.remove('audio-btn-disabled');
+            // Reset to listen state if it was disabled
+            if (btn.textContent === getAudioText('listen')) {
+                btn.textContent = getAudioText('listen');
+            }
+        }
+    });
+}
+
+/**
  * Update audio button state
  * @param {string} messageId - Message ID
  * @param {string} state - State (ready, loading, playing, error)
@@ -187,6 +219,13 @@ function updateAudioButtonState(messageId, state) {
     const stateConfig = states[state] || states.ready;
     button.textContent = stateConfig.text;
     button.disabled = stateConfig.disabled;
+    
+    // Disable/enable other buttons based on state
+    if (state === 'loading' || state === 'playing') {
+        disableOtherAudioButtons(messageId);
+    } else if (state === 'ready' || state === 'error') {
+        enableAllAudioButtons();
+    }
     
     // Re-enable error button after 2 seconds
     if (state === 'error') {

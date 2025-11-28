@@ -75,6 +75,7 @@ const translations = {
             reflect: 'Reflexiona sobre:',
             deepen: 'Profundiza en:',
             nextSteps: 'Próximos pasos:',
+            continueExploring: 'Continúa explorando:',
             waves: {
                 calm: [
                     "Quiero tomarme tiempo para conocerme mejor",
@@ -261,6 +262,7 @@ const translations = {
             shareThoughts: 'You can share:',
             exploreWorries: 'Explore your worries:',
             reflect: 'Reflect on:',
+            continueExploring: 'Continue exploring:',
             deepen: 'Deepen into:',
             nextSteps: 'Next steps:',
             waves: {
@@ -449,6 +451,7 @@ const translations = {
             shareThoughts: 'Poți împărtăși:',
             exploreWorries: 'Explorează îngrijorările tale:',
             reflect: 'Reflectează asupra:',
+            continueExploring: 'Continuă să explorezi:',
             deepen: 'Aprofundează în:',
             nextSteps: 'Pașii următori:',
             waves: {

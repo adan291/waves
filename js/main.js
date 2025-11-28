@@ -641,19 +641,11 @@ async function handleUserMessage(message) {
             }
         }
 
-        // Display contextual suggestions based on state
+        // Generate AI-powered contextual suggestions based on conversation
         const container = document.getElementById('suggestionsContainer');
         if (container && typeof SuggestionsModule !== 'undefined') {
-            if (lifeQuestioningState.active) {
-                // Life Questioning mode suggestions
-                SuggestionsModule.displayContextual(lifeQuestioningState.currentLevel, container);
-            } else if (typeof OceanDynamics !== 'undefined') {
-                // Ocean state-based suggestions
-                const oceanState = OceanDynamics.getCurrentState();
-                if (oceanState && oceanState.id) {
-                    SuggestionsModule.displayContextual(oceanState.id, container);
-                }
-            }
+            const aiResponse = `${scene.whisper} ${scene.wave}`.trim();
+            SuggestionsModule.updateWithContextual(aiResponse, message, container);
         }
 
         // Update conversation history with state information
