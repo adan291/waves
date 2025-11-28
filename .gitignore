@@ -27,3 +27,9 @@ logs/*.log
 # Temporary files
 *.tmp
 .cache/
+
+# Build/submission files
+*.zip
+
+# Kiro IDE
+.kiro/
