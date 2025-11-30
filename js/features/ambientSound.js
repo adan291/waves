@@ -174,7 +174,11 @@ const AmbientSound = (() => {
         }
 
         isPlaying = true;
-        localStorage.setItem(STORAGE_KEY, 'true');
+        try {
+            if (typeof localStorage !== 'undefined' && localStorage) {
+                localStorage.setItem(STORAGE_KEY, 'true');
+            }
+        } catch (e) { /* localStorage not available */ }
 
         // Start first wave after brief delay (let user hear the silence first)
         waveTimeout = setTimeout(playWave, 500);
@@ -187,7 +191,11 @@ const AmbientSound = (() => {
         if (!isPlaying) return;
 
         isPlaying = false;
-        localStorage.setItem(STORAGE_KEY, 'false');
+        try {
+            if (typeof localStorage !== 'undefined' && localStorage) {
+                localStorage.setItem(STORAGE_KEY, 'false');
+            }
+        } catch (e) { /* localStorage not available */ }
 
         if (waveTimeout) clearTimeout(waveTimeout);
         if (chimeTimeout) clearTimeout(chimeTimeout);

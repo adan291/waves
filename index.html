@@ -55,16 +55,19 @@
     <script>
         (function () {
             // Get saved theme or default to 'dark'
-            const STORAGE_KEY = 'whispers-theme';
-            let theme = 'dark'; // Default theme
+            var STORAGE_KEY = 'whispers-theme';
+            var theme = 'dark'; // Default theme
 
             try {
-                const saved = localStorage.getItem(STORAGE_KEY);
-                if (saved && (saved === 'dark' || saved === 'light')) {
-                    theme = saved;
+                if (typeof localStorage !== 'undefined' && localStorage) {
+                    var saved = localStorage.getItem(STORAGE_KEY);
+                    if (saved && (saved === 'dark' || saved === 'light')) {
+                        theme = saved;
+                    }
                 }
             } catch (e) {
-                // localStorage not available, use default
+                // localStorage not available (e.g., itch.io iframe), use default
+                console.warn('localStorage not available, using default theme');
             }
 
             // Apply theme attribute to html element IMMEDIATELY before body renders
@@ -77,13 +80,16 @@
     <script>
         (function () {
             // Get saved wave or default to none
-            const WAVE_KEY = 'whispers-selected-wave';
-            let wave = null;
+            var WAVE_KEY = 'whispers-selected-wave';
+            var wave = null;
 
             try {
-                wave = localStorage.getItem(WAVE_KEY);
+                if (typeof localStorage !== 'undefined' && localStorage) {
+                    wave = localStorage.getItem(WAVE_KEY);
+                }
             } catch (e) {
-                // localStorage not available
+                // localStorage not available (e.g., itch.io iframe)
+                console.warn('localStorage not available for wave selection');
             }
 
             // Apply wave attribute IMMEDIATELY to html element
@@ -117,6 +123,17 @@
 </head>
 
 <body>
+    <!-- Fallback message for browsers without JavaScript -->
+    <noscript>
+        <div style="position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#001d3d,#0077b6);display:flex;align-items:center;justify-content:center;color:#fff;font-family:sans-serif;text-align:center;padding:2rem;z-index:99999;">
+            <div>
+                <h1 style="font-size:2rem;margin-bottom:1rem;">🌊 Whispers of the Wave</h1>
+                <p style="font-size:1.1rem;opacity:0.9;">This experience requires JavaScript to run.</p>
+                <p style="font-size:0.9rem;opacity:0.7;margin-top:1rem;">Please enable JavaScript in your browser settings.</p>
+            </div>
+        </div>
+    </noscript>
+    
     <!-- Animated ocean background layer -->
     <div class="ocean-background"></div>
 

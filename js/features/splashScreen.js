@@ -89,12 +89,49 @@ const SplashScreen = {
         if (window.i18n && typeof window.i18n.getCurrentLanguage === 'function') {
             lang = window.i18n.getCurrentLanguage();
         } else {
-            lang = localStorage.getItem('whispers-language') || 'es';
+            lang = this._getStorage('whispers-language') || 'es';
         }
         
         return this.availableLanguages
             .map(code => `<option value="${code}" ${lang === code ? 'selected' : ''}>${code.toUpperCase()}</option>`)
             .join('');
+    },
+
+    /**
+     * Safe localStorage getter
+     * @private
+     */
+    _getStorage(key) {
+        try {
+            return localStorage.getItem(key);
+        } catch (e) {
+            console.warn('localStorage not available:', e);
+            return null;
+        }
+    },
+
+    /**
+     * Safe localStorage setter
+     * @private
+     */
+    _setStorage(key, value) {
+        try {
+            localStorage.setItem(key, value);
+        } catch (e) {
+            console.warn('localStorage not available:', e);
+        }
+    },
+
+    /**
+     * Safe localStorage remover
+     * @private
+     */
+    _removeStorage(key) {
+        try {
+            localStorage.removeItem(key);
+        } catch (e) {
+            console.warn('localStorage not available:', e);
+        }
     },
 
     init() {
@@ -104,13 +141,13 @@ const SplashScreen = {
         }
 
         // Check if splash should be shown
-        const selectedWave = localStorage.getItem('whispers-selected-wave');
+        const selectedWave = this._getStorage('whispers-selected-wave');
         const currentHash = window.location.hash.replace('#', '');
 
         // Check if we should go directly to wave selection
-        const gotoWaveSelection = localStorage.getItem('whispers-goto-wave-selection');
+        const gotoWaveSelection = this._getStorage('whispers-goto-wave-selection');
         if (gotoWaveSelection) {
-            localStorage.removeItem('whispers-goto-wave-selection');
+            this._removeStorage('whispers-goto-wave-selection');
             this.create();
             this.showWaveSelection();
             return;
@@ -443,7 +480,7 @@ const SplashScreen = {
                 break;
             case 'chat':
                 // Go to chat if wave selected
-                const selectedWave = localStorage.getItem('whispers-selected-wave');
+                const selectedWave = this._getStorage('whispers-selected-wave');
                 if (selectedWave) {
                     this.hide();
                 } else {
@@ -526,8 +563,8 @@ const SplashScreen = {
 
     selectWave(wave) {
         // Save selection
-        localStorage.setItem('whispers-selected-wave', wave.id);
-        localStorage.setItem('whispers-splash-seen', 'true');
+        this._setStorage('whispers-selected-wave', wave.id);
+        this._setStorage('whispers-splash-seen', 'true');
 
         // Apply wave background
         if (typeof WaveBackground !== 'undefined' && WaveBackground.applyWaveBackground) {

@@ -57,7 +57,14 @@ const WaveBackground = (() => {
         // BUT: Don't restart animation here - let ThemeToggle handle that
         document.addEventListener('theme:changed', () => {
             // Only update the data-wave attribute, don't restart animation
-            const currentWave = localStorage.getItem('whispers-selected-wave');
+            let currentWave = null;
+            try {
+                if (typeof localStorage !== 'undefined' && localStorage) {
+                    currentWave = localStorage.getItem('whispers-selected-wave');
+                }
+            } catch (e) {
+                // localStorage not available (e.g., itch.io iframe)
+            }
             if (currentWave) {
                 document.documentElement.setAttribute('data-wave', currentWave);
                 document.body.setAttribute('data-wave', currentWave);
@@ -78,8 +85,16 @@ const WaveBackground = (() => {
             return;
         }
         
-        // Get wave from parameter or localStorage
-        const wave = waveId || localStorage.getItem('whispers-selected-wave') || '';
+        // Get wave from parameter or localStorage (with safe access for iframe environments)
+        let storedWave = '';
+        try {
+            if (typeof localStorage !== 'undefined' && localStorage) {
+                storedWave = localStorage.getItem('whispers-selected-wave') || '';
+            }
+        } catch (e) {
+            // localStorage not available (e.g., itch.io iframe)
+        }
+        const wave = waveId || storedWave;
         
         // Validate wave ID
         if (wave && !_isValidWave(wave)) {

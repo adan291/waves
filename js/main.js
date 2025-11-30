@@ -52,6 +52,46 @@ function validateApiKey() {
     }
 }
 
+/**
+ * Safe localStorage getter for environments where it may be blocked (e.g., itch.io iframe)
+ */
+function safeGetStorage(key) {
+    try {
+        if (typeof localStorage !== 'undefined' && localStorage) {
+            return localStorage.getItem(key);
+        }
+    } catch (e) {
+        console.warn('localStorage not available:', e.message);
+    }
+    return null;
+}
+
+/**
+ * Safe localStorage setter
+ */
+function safeSetStorage(key, value) {
+    try {
+        if (typeof localStorage !== 'undefined' && localStorage) {
+            localStorage.setItem(key, value);
+        }
+    } catch (e) {
+        console.warn('localStorage not available:', e.message);
+    }
+}
+
+/**
+ * Safe localStorage remover
+ */
+function safeRemoveStorage(key) {
+    try {
+        if (typeof localStorage !== 'undefined' && localStorage) {
+            localStorage.removeItem(key);
+        }
+    } catch (e) {
+        console.warn('localStorage not available:', e.message);
+    }
+}
+
 function init() {
     const endTiming = typeof PerformanceMonitor !== 'undefined'
         ? PerformanceMonitor.time('app_initialization')
@@ -62,8 +102,8 @@ function init() {
             Logger.info('App', 'Initializing Whispers of the Wave');
         }
 
-        // Check if splash screen should be shown
-        const shouldShowSplash = !localStorage.getItem('whispers-selected-wave');
+        // Check if splash screen should be shown (safe localStorage access)
+        const shouldShowSplash = !safeGetStorage('whispers-selected-wave');
 
         if (shouldShowSplash) {
             if (typeof Logger !== 'undefined') {
@@ -263,9 +303,9 @@ function handleBackToStart() {
 
 function performWaveChange() {
     // Clear conversation state but keep splash seen flag
-    localStorage.removeItem(STORAGE_KEYS.SELECTED_WAVE);
-    localStorage.removeItem(STORAGE_KEYS.CONVERSATION_HISTORY);
-    localStorage.removeItem(STORAGE_KEYS.STATE);
+    safeRemoveStorage(STORAGE_KEYS.SELECTED_WAVE);
+    safeRemoveStorage(STORAGE_KEYS.CONVERSATION_HISTORY);
+    safeRemoveStorage(STORAGE_KEYS.STATE);
 
     // Clear expression analyzer history
     if (typeof ExpressionAnalyzer !== 'undefined') {
@@ -316,7 +356,7 @@ function performWaveChange() {
         }, 100);
     } else {
         // Fallback: reload page
-        localStorage.setItem('whispers-goto-wave-selection', 'true');
+        safeSetStorage('whispers-goto-wave-selection', 'true');
         window.location.reload();
     }
 }
@@ -383,7 +423,7 @@ function updateWelcomeMessage(wave) {
             ? i18n.t('personas.guardian') 
             : 'El Guardián de la Ola');
         
-        const lang = localStorage.getItem(STORAGE_KEYS.LANGUAGE) || 'es';
+        const lang = safeGetStorage(STORAGE_KEYS.LANGUAGE) || 'es';
         const welcomeText = typeof i18n !== 'undefined' 
             ? i18n.t('ui.welcomeMessage')
             : { es: 'Comparte lo que llevas dentro, y las olas reflejarán tu verdad.',
@@ -550,7 +590,7 @@ async function handleUserMessage(message) {
         }
 
         // Get selected wave
-        const selectedWave = localStorage.getItem('whispers-selected-wave') || 'calm';
+        const selectedWave = safeGetStorage('whispers-selected-wave') || 'calm';
 
         // Enhance conversation context with detailed analysis
         let enhancedContext = {};
@@ -684,7 +724,7 @@ async function handleUserMessage(message) {
 
         // Analyze expression metrics
         if (typeof ExpressionAnalyzer !== 'undefined') {
-            const lang = localStorage.getItem('whispers-language') || 'es';
+            const lang = safeGetStorage('whispers-language') || 'es';
             const metrics = ExpressionAnalyzer.analyze(message, lang);
 
             // Update UI
@@ -704,7 +744,7 @@ async function handleUserMessage(message) {
                     improvement: ExpressionAnalyzer.getImprovementTrend().improvement,
                     currentLevel: ExpressionAnalyzer.getCurrentLevel().level,
                     statesReached: state.statesReached || [],
-                    selectedWave: state.selectedWave?.id || localStorage.getItem('whispers-selected-wave')
+                    selectedWave: state.selectedWave?.id || safeGetStorage('whispers-selected-wave')
                 };
 
                 const newAchievements = AchievementSystem.check(achievementStats);

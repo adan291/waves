@@ -22,6 +22,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    /* Fallback background for when JS/CSS fails to load properly (e.g., itch.io iframe) */
+    background: linear-gradient(135deg, #001d3d 0%, #003566 50%, #0077b6 100%);
 }
 
 /* Smooth fade-in for content */
