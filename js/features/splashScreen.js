@@ -327,10 +327,10 @@ const SplashScreen = {
             });
         }
 
-        // Start journey button
+        // Start journey button - check API key first
         const startBtn = document.getElementById('startJourneyBtn');
         if (startBtn) {
-            startBtn.addEventListener('click', () => this.showWaveSelection());
+            startBtn.addEventListener('click', () => this.handleStartJourney());
         }
 
         // How it works button
@@ -579,7 +579,32 @@ const SplashScreen = {
         // Hide splash
         this.hide();
 
+        // Add change API key button to main UI
+        if (typeof ApiKeySetup !== 'undefined') {
+            ApiKeySetup.addChangeKeyButton();
+        }
+
         console.log('🌊 Wave selected:', wave.id);
+    },
+
+    /**
+     * Handle start journey - check API key first
+     */
+    handleStartJourney() {
+        // Check if API key is configured
+        if (typeof ApiKeySetup !== 'undefined' && !ApiKeySetup.isConfigured()) {
+            // Show API key setup modal
+            ApiKeySetup.showModal({
+                allowCancel: false,
+                onSuccess: () => {
+                    console.log('🔑 API key configured successfully');
+                    this.showWaveSelection();
+                }
+            });
+        } else {
+            // API key already configured, proceed to wave selection
+            this.showWaveSelection();
+        }
     },
 
     refresh() {

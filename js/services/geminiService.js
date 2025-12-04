@@ -80,16 +80,52 @@ const DEFAULT_CONFIG = {
 
 
 /**
+ * Get API key from localStorage (user-provided) or config
+ * @returns {string} API key
+ * @private
+ */
+function getStoredApiKey() {
+    try {
+        if (typeof localStorage !== 'undefined' && localStorage) {
+            const storedKey = localStorage.getItem('whispers-gemini-api-key');
+            if (storedKey && storedKey.length > 0) {
+                return storedKey;
+            }
+        }
+    } catch (e) {
+        console.warn('localStorage not available:', e.message);
+    }
+    return null;
+}
+
+/**
  * Get configuration with fallbacks
+ * Priority: localStorage > localConfig > placeholder
  * @returns {Object} Configuration object
  * @private
  */
 function getGeminiConfig() {
+    // Priority 1: User-provided key from localStorage
+    const storedKey = getStoredApiKey();
+    if (storedKey) {
+        return {
+            ...DEFAULT_CONFIG,
+            apiKey: storedKey
+        };
+    }
+    
+    // Priority 2: Developer config (for local development)
+    if (typeof localConfig !== 'undefined' && localConfig.apiKey) {
+        return {
+            ...DEFAULT_CONFIG,
+            apiKey: localConfig.apiKey
+        };
+    }
+    
+    // Priority 3: Placeholder (demo mode)
     return {
         ...DEFAULT_CONFIG,
-        apiKey: (typeof localConfig !== 'undefined' && localConfig.apiKey)
-            ? localConfig.apiKey
-            : 'YOUR_API_KEY_HERE'
+        apiKey: 'YOUR_API_KEY_HERE'
     };
 }
 

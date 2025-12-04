@@ -177,6 +177,24 @@ const translations = {
             connectionError: 'Error de conexión. Intenta de nuevo.',
             genericError: 'Algo salió mal. Por favor intenta de nuevo.'
         },
+        apiKey: {
+            title: '🔑 Configurar API Key',
+            subtitle: 'Para usar Whispers of the Wave necesitas una API key gratuita de Google Gemini.',
+            step1: '1. Visita Google AI Studio',
+            step2: '2. Inicia sesión con tu cuenta de Google',
+            step3: '3. Crea una nueva API key (es gratis)',
+            step4: '4. Copia y pega la key aquí abajo',
+            placeholder: 'Pega tu API key aquí...',
+            getKey: 'Obtener API Key Gratis',
+            save: 'Guardar y Comenzar',
+            cancel: 'Cancelar',
+            validating: 'Validando...',
+            success: '✓ API key válida',
+            error: '✗ API key inválida',
+            errorEmpty: 'Por favor, introduce una API key',
+            note: '💡 Tu API key se guarda solo en tu navegador y nunca se comparte.',
+            changeKey: 'Cambiar API Key'
+        },
         splash: {
             title: 'Whispers of the Wave',
             subtitle: 'Un viaje de autoconocimiento guiado por las olas',
@@ -366,6 +384,24 @@ const translations = {
             connectionError: 'Connection error. Please try again.',
             genericError: 'Something went wrong. Please try again.'
         },
+        apiKey: {
+            title: '🔑 Configure API Key',
+            subtitle: 'To use Whispers of the Wave you need a free Google Gemini API key.',
+            step1: '1. Visit Google AI Studio',
+            step2: '2. Sign in with your Google account',
+            step3: '3. Create a new API key (it\'s free)',
+            step4: '4. Copy and paste the key below',
+            placeholder: 'Paste your API key here...',
+            getKey: 'Get Free API Key',
+            save: 'Save and Start',
+            cancel: 'Cancel',
+            validating: 'Validating...',
+            success: '✓ Valid API key',
+            error: '✗ Invalid API key',
+            errorEmpty: 'Please enter an API key',
+            note: '💡 Your API key is stored only in your browser and never shared.',
+            changeKey: 'Change API Key'
+        },
         splash: {
             title: 'Whispers of the Wave',
             subtitle: 'A journey of self-discovery guided by the waves',
@@ -554,6 +590,24 @@ const translations = {
             apiKeyMissing: 'Te rog configurează cheia API Gemini',
             connectionError: 'Eroare de conexiune. Încearcă din nou.',
             genericError: 'Ceva nu a mers bine. Te rog încearcă din nou.'
+        },
+        apiKey: {
+            title: '🔑 Configurează API Key',
+            subtitle: 'Pentru a folosi Whispers of the Wave ai nevoie de o cheie API gratuită Google Gemini.',
+            step1: '1. Vizitează Google AI Studio',
+            step2: '2. Conectează-te cu contul tău Google',
+            step3: '3. Creează o nouă cheie API (este gratuită)',
+            step4: '4. Copiază și lipește cheia mai jos',
+            placeholder: 'Lipește cheia API aici...',
+            getKey: 'Obține API Key Gratuit',
+            save: 'Salvează și Începe',
+            cancel: 'Anulează',
+            validating: 'Se validează...',
+            success: '✓ Cheie API validă',
+            error: '✗ Cheie API invalidă',
+            errorEmpty: 'Te rog introdu o cheie API',
+            note: '💡 Cheia ta API este stocată doar în browserul tău și nu este partajată niciodată.',
+            changeKey: 'Schimbă API Key'
         },
         splash: {
             title: 'Whispers of the Wave',

@@ -1,0 +1,65 @@
+# Whispers of the Wave - Configuración para itch.io
+
+## Subir a itch.io
+
+### Preparación del ZIP
+1. Ejecuta `create-submission-zip.bat` para crear el ZIP de submission
+2. El ZIP incluirá todos los archivos necesarios
+
+### Configuración en itch.io
+1. Sube el ZIP como "HTML" game
+2. Marca "This file will be played in the browser"
+3. Configura el viewport: 1280x720 (o "Embed in page")
+4. Habilita "SharedArrayBuffer support" si es necesario para audio
+
+## Sistema de API Key
+
+### ¿Cómo funciona?
+- Los usuarios necesitan su propia API key gratuita de Google Gemini
+- Al hacer clic en "Comenzar Viaje", se les pedirá configurar su API key
+- La key se guarda en localStorage (solo en su navegador)
+- Cada usuario usa su propio límite gratuito de la API
+
+### Ventajas
+- Tu API key nunca se expone públicamente
+- No hay límite de usuarios (cada uno usa su propia cuota)
+- No necesitas backend ni servidor
+- Funciona perfectamente en itch.io
+
+### Instrucciones para usuarios
+Los usuarios verán un modal con instrucciones claras:
+1. Visitar https://aistudio.google.com/app/apikey
+2. Iniciar sesión con cuenta Google
+3. Crear API key (gratis)
+4. Pegar la key en el juego
+
+### Modo Demo
+Si el usuario no configura API key, el juego funciona en modo demo
+con respuestas predefinidas (indicado con "🎮 Demo Mode").
+
+## Descripción sugerida para itch.io
+
+```
+🌊 Whispers of the Wave
+
+An introspective AI chat experience with an ocean-inspired environment.
+
+⚠️ SETUP REQUIRED:
+This game requires a FREE Google Gemini API key to work.
+When you start, you'll be guided to get your free key (takes 2 minutes).
+
+🎮 Features:
+- 4 unique wave environments
+- AI-powered conversations
+- Multiple languages (ES/EN/RO)
+- Achievement system
+- Dark/Light themes
+
+Built for Game Off 2025 - Theme: WAVES
+```
+
+## Notas técnicas
+- El juego es 100% client-side (HTML/CSS/JS)
+- No requiere servidor backend
+- Compatible con el iframe de itch.io
+- localStorage puede estar limitado en algunos navegadores
